@@ -15,7 +15,7 @@
                         <div class="col-md-12">
                             {% load crispy_forms_tags %}
                             <div class="signupform">
-                                <form method="post" action="settings" enctype="multipart/form-data">
+                                <form method="post" action="/rrf/settings" enctype="multipart/form-data">
                                   {% csrf_token %}
                                   {{ form|crispy }}
                                     <br><br>

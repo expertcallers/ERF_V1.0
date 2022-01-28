@@ -25,12 +25,12 @@ def Login(request):
             designation = request.user.profile.emp_desi
 
             if designation == "Manager":
-                return redirect("/manager-dashboard")
+                return redirect("/rrf/manager-dashboard")
             else:
-                return redirect("/hr-dashboard")
+                return redirect("/rrf/hr-dashboard")
         else:
             messages.info(request, 'Invalid user !')
-            return redirect("/")
+            return redirect("/rrf/")
     else:
         pass
 
@@ -46,7 +46,7 @@ def ManagerDashboard(request):
         return render(request, "manager_dashboard.html",data)
     else:
         messages.info(request, "Invalid Request. You have been logged out :)")
-        return redirect("/")
+        return redirect("/rrf/")
 
 @login_required
 def HRDashboard(request):
@@ -62,7 +62,7 @@ def HRDashboard(request):
         return render(request, "hr_dashboard.html",data)
     else:
         messages.info(request, "Invalid Request. You have been logged out :)")
-        return redirect("/")
+        return redirect("/rrf/")
 
 @login_required
 def job_requisition(request):
@@ -138,9 +138,9 @@ def job_requisition(request):
         a.edited_by = [now_datetime,req_raised_by,created_by_id,"Created"]
         a.save()
         if request.user.profile.emp_desi == "Manager":
-            return redirect("/manager-dashboard")
+            return redirect("/rrf/manager-dashboard")
         else:
-            return redirect("/hr-dashboard")
+            return redirect("/rrf/hr-dashboard")
     else:
         today = date.today()
         data = {"today":today}
@@ -156,7 +156,7 @@ def jobRequisitionOpen(request):
         return render(request, "hr_job_requisition_table.html", data)
     else:
         messages.info(request,"Invalid Request. You have been logged out :)")
-        return redirect("/")
+        return redirect("/rrf/")
 
 
 @login_required
@@ -191,12 +191,12 @@ def jobRequisitionSelf(request,type):
             return render(request, "self_job_requisition_table.html", data)
         else:
             messages.info(request, "Invalid Request. You have been logged out :)")
-            return redirect("/")
+            return redirect("/rrf/")
             logout(request)
 
     else:
         messages.info(request, "Invalid Request. You have been logged out :)")
-        return redirect("/")
+        return redirect("/rrf/")
 
 
 @login_required
@@ -238,20 +238,13 @@ def jobRequisitionAll(request,type):
             return render(request, "self_job_requisition_table.html", data)
         else:
             messages.info(request, "Invalid Request. You have been logged out :)")
-            return redirect("/")
+            return redirect("/rrf/")
     elif type == "designation":
         if request.method == "POST":
             department = request.POST["department"]
-            print(department)
             designation = request.POST.get("designation")
-            print(designation)
-
             start = request.POST.get("start_date")
-            print(start)
-
             end = request.POST.get("end_date")
-            print(end)
-
             if start:
                 if designation:
                     job = JobRequisition.objects.filter(department=department, designation=designation,
@@ -268,11 +261,11 @@ def jobRequisitionAll(request,type):
             return render(request, "self_job_requisition_table.html", data)
         else:
             messages.info(request, "Invalid Request. You have been logged out :)")
-            return redirect("/")
+            return redirect("/rrf/")
 
     else:
         messages.info(request, "Invalid Request. You have been logged out :)")
-        return redirect("/")
+        return redirect("/rrf/")
 
 
 
@@ -283,7 +276,6 @@ def jobRequisitionEditUpdate(request):
         candidate_remark = request.POST["can_remark"]
         comments = request.POST["comments"]
         closure_date = request.POST.get("clos_date")
-
         candidate_name_1 = request.POST.get("cand_name_1")
         source_1 = request.POST.get("source_1")
         referral_emp_name_1 = request.POST.get("emp_name_1")
@@ -404,16 +396,12 @@ def jobRequisitionEditUpdate(request):
         referral_emp_id_20 = request.POST.get("emp_id_20")
         social_20 = request.POST.get("social_20")
         partner_20 = request.POST.get("partner_20")
-
-
-
         recruited_people = request.POST["rec_peo"]
         request_status = request.POST.get("req_status")
         if request_status:
             request_status = request_status
         else:
             request_status = "Pending"
-
 
         e = JobRequisition.objects.get(id=id)
         if request_status == "Completed":
@@ -576,10 +564,10 @@ def jobRequisitionEditUpdate(request):
         adding = previous+",\n"+edited_by
         a.edited_by = adding
         a.save()
-        return redirect("/hr-dashboard")
+        return redirect("/rrf/hr-dashboard")
     else:
         messages.info(request, "Invalid Request. You have been logged out :)")
-        return redirect("/")
+        return redirect("/rrf/")
 
 
 @login_required
@@ -596,7 +584,7 @@ def change_password(request):
             user.save()
             user.profile.save()
             logout(request)
-            return redirect('/')
+            return redirect('/rrf/')
         else:
             messages.error(request, 'Please correct the error below.')
     else:
