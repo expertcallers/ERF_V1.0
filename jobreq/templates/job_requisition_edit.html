@@ -147,7 +147,7 @@
                         <hr>
                       </div>
                     </div>
-                <form method="POST" action="/rrf/job-requisition-update" enctype="multipart/form-data">
+                <form method="POST" action="/erf/job-requisition-update" enctype="multipart/form-data">
                     {% csrf_token %}
 
 
@@ -1834,13 +1834,6 @@
                     <div class="row mt-4">
                       <div class="col-md-3">
                         <div class="form-group">
-                          <label for="clos_date">Closure Date</label>
-                          <input type="hidden" value="{{job.closure_date}}" id="myclos_date">
-                          <input type="date" value="" name="clos_date" id="clos_date" class="form-control">
-                        </div>
-                      </div>
-                      <div class="col-md-3">
-                        <div class="form-group">
                           <label for="rec_peo">No of people recruited</label>
                           <input type="number" onchange="enableStatus(this);" required name="rec_peo" min="1" max="{{job.hc_req}}" id="rec_peo" class="form-control" value="{{job.recruited_people}}">
                         </div>
@@ -1848,10 +1841,17 @@
                       <div class="col-md-3">
                         <div class="form-group">
                           <label for="req_status">Requisition Status</label>
-                          <select name="req_status" id="req_status" class="form-control">
+                          <select name="req_status" onchange="closureDate(this);" id="req_status" class="form-control">
                             <option value="Pending">Pending</option>
                             <option value="Completed">Completed</option>
                           </select>
+                        </div>
+                      </div>
+                      <div class="col-md-3 d-none" id="closure_date">
+                        <div class="form-group">
+                          <label for="clos_date">Closure Date</label>
+                          <input type="hidden" value="{{job.closure_date}}" id="myclos_date">
+                          <input type="date" value="" name="clos_date" id="clos_date" class="form-control">
                         </div>
                       </div>
                       <div class="col-md-3">
@@ -1890,14 +1890,22 @@
       var clos_date = document.getElementById('clos_date');
       if (e.value==hc) {
         status.removeAttribute("disabled")
-        clos_date.setAttribute("required","")
       } else {
         status.setAttribute("disabled","disabled")
+      }
+    }
+
+    function closureDate(e){
+      if (e.value=="Completed"){
+        $("#closure_date").removeClass("d-none");
+        clos_date.setAttribute("required","")
+      } else {
+        $("#closure_date").addClass("d-none");
         clos_date.removeAttribute("required","")
       }
     }
-  {% for i in number %}
 
+  {% for i in number %}
     function makeReq_{{i}}(e) {
       if (e.value != ""){
         $("[name=source_{{i}}]").attr("required","required")
@@ -2021,14 +2029,11 @@
       }
       var shift_time = document.getElementById('shift_time');
       var f = document.getElementById('shift');
-      if (f.value == "Fixed - Timing") {
-        shift_time.classList.remove("d-none");
-      } else {
+      if (f.value == "Rotational - Timing") {
         shift_time.classList.add("d-none");
+      } else {
+        shift_time.classList.remove("d-none");
       }
-
-
-
 
     </script>
 {% endblock %}

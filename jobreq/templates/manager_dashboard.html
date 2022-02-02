@@ -16,7 +16,7 @@
                   <div class="card-data widgetCardData">
                     <h2 class="box-title mt-5" style="color: #2A3F54;">All Requisitions</h2>
                     <h1>{{all}}</h1>
-                    <a href="job-requisition-table/all" title="Style Builder" class="anchor btn btn-default" style="background: #1ABB9C; color: #fff;">
+                    <a href="/erf/job-requisition-table/all" title="Style Builder" class="anchor btn btn-default" style="background: #1ABB9C; color: #fff;">
                       View
                     </a>
                   </div>
@@ -33,7 +33,7 @@
                   <div class="card-data widgetCardData">
                     <h2 class="box-title mt-5" style="color: #2A3F54;">Open Requisitions</h2>
                     <h1>{{open}}</h1>
-                    <a href="job-requisition-table/open" title="Style Builder" class="anchor btn btn-default" style="background: #1ABB9C; color: #fff;">
+                    <a href="/erf/job-requisition-table/open" title="Style Builder" class="anchor btn btn-default" style="background: #1ABB9C; color: #fff;">
                       View
                     </a>
                   </div>
@@ -50,7 +50,7 @@
                   <div class="card-data widgetCardData">
                     <h2 class="box-title mt-5" style="color: #2A3F54;">Completed Requisitions</h2>
                     <h1>{{closed}}</h1>
-                    <a href="job-requisition-table/closed" title="Style Builder" class="anchor btn btn-default" style="background: #1ABB9C; color: #fff;">
+                    <a href="/erf/job-requisition-table/closed" title="Style Builder" class="anchor btn btn-default" style="background: #1ABB9C; color: #fff;">
                       View
                     </a>
                   </div>
@@ -69,7 +69,7 @@
                   </div>
                   <div class="card-body">
                     <div class="row">
-                      <form action="/rrf/job-requisition-table/range" method="POST" enctype="multipart/form-data">
+                      <form action="/erf/job-requisition-table/range" method="POST" enctype="multipart/form-data">
                         {% csrf_token %}
                         <div class="col-md-12">
                           <div class="row">
@@ -115,4 +115,34 @@
         </div>
         <!-- /page content -->
 
+{% endblock %}
+
+{% block scripts %}
+<script>
+
+  $today = new Date();
+  $today = moment($today).format("YYYY-MM-DD");
+
+  $cam_start = $("#cam_start");
+  $cam_end = $("#cam_end");
+  $cam_start.attr("max",$today)
+  $cam_end.attr("max",$today)
+  function cam_end_datefn(){
+    $cam_start = $("#cam_start").val()
+    $cam_end.attr("min",$cam_start)
+    $cam_end.attr("required","required")
+  }
+
+
+  $start = $("#start");
+  $end = $("#end");
+  $start.attr("max",$today)
+  $end.attr("max",$today)
+  function end_datefn(){
+    $start = $("#start").val()
+    $end.attr("min",$start)
+    $end.attr("required","required")
+  }
+
+</script>
 {% endblock %}

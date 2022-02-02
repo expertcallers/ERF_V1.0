@@ -10,6 +10,10 @@ from .models import *
 
 # Create your views here.
 
+
+number = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]
+
+
 def index(request):
     logout(request)
     return render(request, "index.html")
@@ -24,13 +28,13 @@ def Login(request):
             login(request, user)
             designation = request.user.profile.emp_desi
 
-            if designation == "Manager":
-                return redirect("/rrf/manager-dashboard")
+            if designation == "Manager" or designation == "Assistant Manager":
+                return redirect("/erf/manager-dashboard")
             else:
-                return redirect("/rrf/hr-dashboard")
+                return redirect("/erf/hr-dashboard")
         else:
             messages.info(request, 'Invalid user !')
-            return redirect("/rrf/")
+            return redirect("/erf/")
     else:
         pass
 
@@ -38,7 +42,7 @@ def Login(request):
 def ManagerDashboard(request):
     designation = request.user.profile.emp_desi
     emp_id = request.user.profile.emp_id
-    if designation == "Manager":
+    if designation == "Manager" or designation == "Assistant Manager":
         all = JobRequisition.objects.filter(created_by_id=emp_id).count()
         open = JobRequisition.objects.filter(created_by_id=emp_id,status=False).count()
         closed = JobRequisition.objects.filter(created_by_id=emp_id,status=True).count()
@@ -46,7 +50,7 @@ def ManagerDashboard(request):
         return render(request, "manager_dashboard.html",data)
     else:
         messages.info(request, "Invalid Request. You have been logged out :)")
-        return redirect("/rrf/")
+        return redirect("/erf/")
 
 @login_required
 def HRDashboard(request):
@@ -62,7 +66,7 @@ def HRDashboard(request):
         return render(request, "hr_dashboard.html",data)
     else:
         messages.info(request, "Invalid Request. You have been logged out :)")
-        return redirect("/rrf/")
+        return redirect("/erf/")
 
 @login_required
 def job_requisition(request):
@@ -137,10 +141,11 @@ def job_requisition(request):
         now_datetime = datetime.datetime.now().strftime('%b %d,%Y %H:%M:%S')
         a.edited_by = [now_datetime,req_raised_by,created_by_id,"Created"]
         a.save()
+        messages.info(request, "Job Requisition Added Successfully !!")
         if request.user.profile.emp_desi == "Manager":
-            return redirect("/rrf/manager-dashboard")
+            return redirect("/erf/manager-dashboard")
         else:
-            return redirect("/rrf/hr-dashboard")
+            return redirect("/erf/hr-dashboard")
     else:
         today = date.today()
         data = {"today":today}
@@ -150,13 +155,12 @@ def job_requisition(request):
 def jobRequisitionOpen(request):
     designation = request.user.profile.emp_desi
     if designation == "HR":
-        number = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
         job = JobRequisition.objects.filter(status=False)
-        data = {"job":job,"number":number}
-        return render(request, "hr_job_requisition_table.html", data)
+        data = {"job":job,"number":number,"type":"open"}
+        return render(request, "job_requisition_table.html", data)
     else:
         messages.info(request,"Invalid Request. You have been logged out :)")
-        return redirect("/rrf/")
+        return redirect("/erf/")
 
 
 @login_required
@@ -164,16 +168,16 @@ def jobRequisitionSelf(request,type):
     user = request.user.profile.emp_id
     if type == "all":
         job = JobRequisition.objects.filter(created_by_id=user)
-        data = {"job":job,"type":type}
-        return render(request, "self_job_requisition_table.html", data)
+        data = {"job":job,"type":type,"number":number}
+        return render(request, "job_requisition_table.html", data)
     elif type == "open":
         job = JobRequisition.objects.filter(created_by_id=user,status=False)
-        data = {"job": job,"type":type}
-        return render(request, "self_job_requisition_table.html", data)
+        data = {"job": job,"type":type,"number":number}
+        return render(request, "job_requisition_table.html", data)
     elif type == "closed":
         job = JobRequisition.objects.filter(created_by_id=user,status=True)
-        data = {"job": job,"type":type}
-        return render(request, "self_job_requisition_table.html", data)
+        data = {"job": job,"type":type,"number":number}
+        return render(request, "job_requisition_table.html", data)
     elif type == "range":
         if request.method == "POST":
             status = request.POST["status"]
@@ -187,37 +191,40 @@ def jobRequisitionSelf(request,type):
                 job = JobRequisition.objects.filter(created_by_id=user,status=True,requisition_date__range=[start, end])
             else:
                 pass
-            data = {"job":job,"type":type}
-            return render(request, "self_job_requisition_table.html", data)
+            data = {"job":job,"type":type,"number":number}
+            return render(request, "job_requisition_table.html", data)
         else:
             messages.info(request, "Invalid Request. You have been logged out :)")
-            return redirect("/rrf/")
-            logout(request)
+            return redirect("/erf/")
 
     else:
         messages.info(request, "Invalid Request. You have been logged out :)")
-        return redirect("/rrf/")
+        return redirect("/erf/")
 
 
 @login_required
 def jobRequisitionEditView(request,id):
-    job = JobRequisition.objects.get(id=id)
-    today = date.today()
-    number = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]
-    data = {"today": today,"job":job,"number":number}
-    return render(request, "job_requisition_edit.html", data)
+    designation = request.user.profile.emp_desi
+    if designation == "HR":
+        job = JobRequisition.objects.get(id=id)
+        today = date.today()
+        data = {"today": today,"job":job,"number":number}
+        return render(request, "job_requisition_edit.html", data)
+    else:
+        messages.info(request, "Invalid Request. You have been logged out :)")
+        return redirect("/erf/")
+
 
 @login_required
 def jobRequisitionAll(request,type):
-    number = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]
     if type == "all":
         job = JobRequisition.objects.all()
         data = {"job":job,"type":type,"number":number}
-        return render(request, "self_job_requisition_table.html", data)
+        return render(request, "job_requisition_table.html", data)
     if type == "closed":
         job = JobRequisition.objects.filter(status=True)
         data = {"job":job,"type":type,"number":number}
-        return render(request, "self_job_requisition_table.html", data)
+        return render(request, "job_requisition_table.html", data)
     elif type == "range":
         if request.method == "POST":
             manager = request.POST["manager"]
@@ -226,6 +233,10 @@ def jobRequisitionAll(request,type):
             end = request.POST["end_date"]
             if manager == "all" and status == "all":
                 job = JobRequisition.objects.filter(requisition_date__range=[start, end])
+            elif manager == "all" and status == "open":
+                job = JobRequisition.objects.filter(status=False, requisition_date__range=[start, end])
+            elif manager == "all" and status == "closed":
+                job = JobRequisition.objects.filter(status=True, requisition_date__range=[start, end])
             elif manager != "all" and status == "all":
                 job = JobRequisition.objects.filter(created_by_id=manager,requisition_date__range=[start, end])
             elif manager != "all" and status == "open":
@@ -235,10 +246,10 @@ def jobRequisitionAll(request,type):
             else:
                 pass
             data = {"job":job,"type":type,"number":number}
-            return render(request, "self_job_requisition_table.html", data)
+            return render(request, "job_requisition_table.html", data)
         else:
             messages.info(request, "Invalid Request. You have been logged out :)")
-            return redirect("/rrf/")
+            return redirect("/erf/")
     elif type == "designation":
         if request.method == "POST":
             department = request.POST["department"]
@@ -258,14 +269,13 @@ def jobRequisitionAll(request,type):
                     job = JobRequisition.objects.filter(department=department)
 
             data = {"job": job, "type": type, "number": number}
-            return render(request, "self_job_requisition_table.html", data)
+            return render(request, "job_requisition_table.html", data)
         else:
             messages.info(request, "Invalid Request. You have been logged out :)")
-            return redirect("/rrf/")
-
+            return redirect("/erf/")
     else:
         messages.info(request, "Invalid Request. You have been logged out :)")
-        return redirect("/rrf/")
+        return redirect("/erf/")
 
 
 
@@ -404,152 +414,155 @@ def jobRequisitionEditUpdate(request):
             request_status = "Pending"
 
         e = JobRequisition.objects.get(id=id)
+
         if request_status == "Completed":
             e.status = True
             e.closed_by = request.user.profile.emp_name
             e.closed_by_id = request.user.profile.emp_id
+
         if closure_date:
             e.closure_date = closure_date
 
-        e.candidate_name_1 = candidate_name_1
-        e.source_1 = source_1
-        e.source_emp_name_1 = referral_emp_name_1
-        e.source_emp_id_1 = referral_emp_id_1
-        e.source_social_1 = social_1
-        e.source_partners_1 = partner_1
-
-        e.candidate_name_2 = candidate_name_2
-        e.source_2 = source_2
-        e.source_emp_name_2 = referral_emp_name_2
-        e.source_emp_id_2 = referral_emp_id_2
-        e.source_social_2 = social_2
-        e.source_partners_2 = partner_2
-
-        e.candidate_name_3 = candidate_name_3
-        e.source_3 = source_3
-        e.source_emp_name_3 = referral_emp_name_3
-        e.source_emp_id_3 = referral_emp_id_3
-        e.source_social_3 = social_3
-        e.source_partners_3 = partner_3
-
-        e.candidate_name_4 = candidate_name_4
-        e.source_4 = source_4
-        e.source_emp_name_4 = referral_emp_name_4
-        e.source_emp_id_4 = referral_emp_id_4
-        e.source_social_4 = social_4
-        e.source_partners_4 = partner_4
-
-        e.candidate_name_5 = candidate_name_5
-        e.source_5 = source_5
-        e.source_emp_name_5 = referral_emp_name_5
-        e.source_emp_id_5 = referral_emp_id_5
-        e.source_social_5 = social_5
-        e.source_partners_5 = partner_5
-
-        e.candidate_name_6 = candidate_name_6
-        e.source_6 = source_6
-        e.source_emp_name_6 = referral_emp_name_6
-        e.source_emp_id_6 = referral_emp_id_6
-        e.source_social_6 = social_6
-        e.source_partners_6 = partner_6
-
-        e.candidate_name_7 = candidate_name_7
-        e.source_7 = source_7
-        e.source_emp_name_7 = referral_emp_name_7
-        e.source_emp_id_7 = referral_emp_id_7
-        e.source_social_7 = social_7
-        e.source_partners_7 = partner_7
-
-        e.candidate_name_8 = candidate_name_8
-        e.source_8 = source_8
-        e.source_emp_name_8 = referral_emp_name_8
-        e.source_emp_id_8 = referral_emp_id_8
-        e.source_social_8 = social_8
-        e.source_partners_8 = partner_8
-
-        e.candidate_name_9 = candidate_name_9
-        e.source_9 = source_9
-        e.source_emp_name_9 = referral_emp_name_9
-        e.source_emp_id_9 = referral_emp_id_9
-        e.source_social_9 = social_9
-        e.source_partners_9 = partner_9
-
-        e.candidate_name_10 = candidate_name_10
-        e.source_10 = source_10
-        e.source_emp_name_10 = referral_emp_name_10
-        e.source_emp_id_10 = referral_emp_id_10
-        e.source_social_10 = social_10
-        e.source_partners_10 = partner_10
-
-        e.candidate_name_11 = candidate_name_11
-        e.source_11 = source_11
-        e.source_emp_name_11 = referral_emp_name_11
-        e.source_emp_id_11 = referral_emp_id_11
-        e.source_social_11 = social_11
-        e.source_partners_11 = partner_11
-
-        e.candidate_name_12 = candidate_name_12
-        e.source_12 = source_12
-        e.source_emp_name_12 = referral_emp_name_12
-        e.source_emp_id_12 = referral_emp_id_12
-        e.source_social_12 = social_12
-        e.source_partners_12 = partner_12
-
-        e.candidate_name_13 = candidate_name_13
-        e.source_13 = source_13
-        e.source_emp_name_13 = referral_emp_name_13
-        e.source_emp_id_13 = referral_emp_id_13
-        e.source_social_13 = social_13
-        e.source_partners_13 = partner_13
-
-        e.candidate_name_14 = candidate_name_14
-        e.source_14 = source_14
-        e.source_emp_name_14 = referral_emp_name_14
-        e.source_emp_id_14 = referral_emp_id_14
-        e.source_social_14 = social_14
-        e.source_partners_14 = partner_14
-
-        e.candidate_name_15 = candidate_name_15
-        e.source_15 = source_15
-        e.source_emp_name_15 = referral_emp_name_15
-        e.source_emp_id_15 = referral_emp_id_15
-        e.source_social_15 = social_15
-        e.source_partners_15 = partner_15
-
-        e.candidate_name_16 = candidate_name_16
-        e.source_16 = source_16
-        e.source_emp_name_16 = referral_emp_name_16
-        e.source_emp_id_16 = referral_emp_id_16
-        e.source_social_16 = social_16
-        e.source_partners_16 = partner_16
-
-        e.candidate_name_17 = candidate_name_17
-        e.source_17 = source_17
-        e.source_emp_name_17 = referral_emp_name_17
-        e.source_emp_id_17 = referral_emp_id_17
-        e.source_social_17 = social_17
-        e.source_partners_17 = partner_17
-
-        e.candidate_name_18 = candidate_name_18
-        e.source_18 = source_18
-        e.source_emp_name_18 = referral_emp_name_18
-        e.source_emp_id_18 = referral_emp_id_18
-        e.source_social_18 = social_18
-        e.source_partners_18 = partner_18
-
-        e.candidate_name_19 = candidate_name_19
-        e.source_19 = source_19
-        e.source_emp_name_19 = referral_emp_name_19
-        e.source_emp_id_19 = referral_emp_id_19
-        e.source_social_19 = social_19
-        e.source_partners_19 = partner_19
-
-        e.candidate_name_20 = candidate_name_20
-        e.source_20 = source_20
-        e.source_emp_name_20 = referral_emp_name_20
-        e.source_emp_id_20 = referral_emp_id_20
-        e.source_social_20 = social_20
-        e.source_partners_20 = partner_20
+        if candidate_name_1:
+            e.candidate_name_1 = candidate_name_1
+            e.source_1 = source_1
+            e.source_emp_name_1 = referral_emp_name_1
+            e.source_emp_id_1 = referral_emp_id_1
+            e.source_social_1 = social_1
+            e.source_partners_1 = partner_1
+        if candidate_name_2:
+            e.candidate_name_2 = candidate_name_2
+            e.source_2 = source_2
+            e.source_emp_name_2 = referral_emp_name_2
+            e.source_emp_id_2 = referral_emp_id_2
+            e.source_social_2 = social_2
+            e.source_partners_2 = partner_2
+        if candidate_name_3:
+            e.candidate_name_3 = candidate_name_3
+            e.source_3 = source_3
+            e.source_emp_name_3 = referral_emp_name_3
+            e.source_emp_id_3 = referral_emp_id_3
+            e.source_social_3 = social_3
+            e.source_partners_3 = partner_3
+        if candidate_name_4:
+            e.candidate_name_4 = candidate_name_4
+            e.source_4 = source_4
+            e.source_emp_name_4 = referral_emp_name_4
+            e.source_emp_id_4 = referral_emp_id_4
+            e.source_social_4 = social_4
+            e.source_partners_4 = partner_4
+        if candidate_name_5:
+            e.candidate_name_5 = candidate_name_5
+            e.source_5 = source_5
+            e.source_emp_name_5 = referral_emp_name_5
+            e.source_emp_id_5 = referral_emp_id_5
+            e.source_social_5 = social_5
+            e.source_partners_5 = partner_5
+        if candidate_name_6:
+            e.candidate_name_6 = candidate_name_6
+            e.source_6 = source_6
+            e.source_emp_name_6 = referral_emp_name_6
+            e.source_emp_id_6 = referral_emp_id_6
+            e.source_social_6 = social_6
+            e.source_partners_6 = partner_6
+        if candidate_name_7:
+            e.candidate_name_7 = candidate_name_7
+            e.source_7 = source_7
+            e.source_emp_name_7 = referral_emp_name_7
+            e.source_emp_id_7 = referral_emp_id_7
+            e.source_social_7 = social_7
+            e.source_partners_7 = partner_7
+        if candidate_name_8:
+            e.candidate_name_8 = candidate_name_8
+            e.source_8 = source_8
+            e.source_emp_name_8 = referral_emp_name_8
+            e.source_emp_id_8 = referral_emp_id_8
+            e.source_social_8 = social_8
+            e.source_partners_8 = partner_8
+        if candidate_name_9:
+            e.candidate_name_9 = candidate_name_9
+            e.source_9 = source_9
+            e.source_emp_name_9 = referral_emp_name_9
+            e.source_emp_id_9 = referral_emp_id_9
+            e.source_social_9 = social_9
+            e.source_partners_9 = partner_9
+        if candidate_name_10:
+            e.candidate_name_10 = candidate_name_10
+            e.source_10 = source_10
+            e.source_emp_name_10 = referral_emp_name_10
+            e.source_emp_id_10 = referral_emp_id_10
+            e.source_social_10 = social_10
+            e.source_partners_10 = partner_10
+        if candidate_name_11:
+            e.candidate_name_11 = candidate_name_11
+            e.source_11 = source_11
+            e.source_emp_name_11 = referral_emp_name_11
+            e.source_emp_id_11 = referral_emp_id_11
+            e.source_social_11 = social_11
+            e.source_partners_11 = partner_11
+        if candidate_name_12:
+            e.candidate_name_12 = candidate_name_12
+            e.source_12 = source_12
+            e.source_emp_name_12 = referral_emp_name_12
+            e.source_emp_id_12 = referral_emp_id_12
+            e.source_social_12 = social_12
+            e.source_partners_12 = partner_12
+        if candidate_name_13:
+            e.candidate_name_13 = candidate_name_13
+            e.source_13 = source_13
+            e.source_emp_name_13 = referral_emp_name_13
+            e.source_emp_id_13 = referral_emp_id_13
+            e.source_social_13 = social_13
+            e.source_partners_13 = partner_13
+        if candidate_name_14:
+            e.candidate_name_14 = candidate_name_14
+            e.source_14 = source_14
+            e.source_emp_name_14 = referral_emp_name_14
+            e.source_emp_id_14 = referral_emp_id_14
+            e.source_social_14 = social_14
+            e.source_partners_14 = partner_14
+        if candidate_name_15:
+            e.candidate_name_15 = candidate_name_15
+            e.source_15 = source_15
+            e.source_emp_name_15 = referral_emp_name_15
+            e.source_emp_id_15 = referral_emp_id_15
+            e.source_social_15 = social_15
+            e.source_partners_15 = partner_15
+        if candidate_name_16:
+            e.candidate_name_16 = candidate_name_16
+            e.source_16 = source_16
+            e.source_emp_name_16 = referral_emp_name_16
+            e.source_emp_id_16 = referral_emp_id_16
+            e.source_social_16 = social_16
+            e.source_partners_16 = partner_16
+        if candidate_name_17:
+            e.candidate_name_17 = candidate_name_17
+            e.source_17 = source_17
+            e.source_emp_name_17 = referral_emp_name_17
+            e.source_emp_id_17 = referral_emp_id_17
+            e.source_social_17 = social_17
+            e.source_partners_17 = partner_17
+        if candidate_name_18:
+            e.candidate_name_18 = candidate_name_18
+            e.source_18 = source_18
+            e.source_emp_name_18 = referral_emp_name_18
+            e.source_emp_id_18 = referral_emp_id_18
+            e.source_social_18 = social_18
+            e.source_partners_18 = partner_18
+        if candidate_name_19:
+            e.candidate_name_19 = candidate_name_19
+            e.source_19 = source_19
+            e.source_emp_name_19 = referral_emp_name_19
+            e.source_emp_id_19 = referral_emp_id_19
+            e.source_social_19 = social_19
+            e.source_partners_19 = partner_19
+        if candidate_name_20:
+            e.candidate_name_20 = candidate_name_20
+            e.source_20 = source_20
+            e.source_emp_name_20 = referral_emp_name_20
+            e.source_emp_id_20 = referral_emp_id_20
+            e.source_social_20 = social_20
+            e.source_partners_20 = partner_20
 
         e.recruited_people = recruited_people
         e.request_status = request_status
@@ -564,11 +577,11 @@ def jobRequisitionEditUpdate(request):
         adding = previous+",\n"+edited_by
         a.edited_by = adding
         a.save()
-        return redirect("/rrf/hr-dashboard")
+        messages.info(request, "Requisition Updated Successfully !!")
+        return redirect("/erf/hr-dashboard")
     else:
         messages.info(request, "Invalid Request. You have been logged out :)")
-        return redirect("/rrf/")
-
+        return redirect("/erf/")
 
 @login_required
 def change_password(request):
@@ -584,10 +597,9 @@ def change_password(request):
             user.save()
             user.profile.save()
             logout(request)
-            return redirect('/rrf/')
+            return redirect('/erf/')
         else:
             messages.error(request, 'Please correct the error below.')
     else:
         form = PasswordChangeForm(request.user)
     return render(request, 'settings.html', {'form': form})
-

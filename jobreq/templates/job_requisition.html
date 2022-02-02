@@ -27,7 +27,7 @@
             <div class="col-md-12">
               <div class="card">
                 <div class="card-body">
-                  <form method="post" action="/rrf/job-requisition" enctype="multipart/form-data">
+                  <form method="post" action="/erf/job-requisition" enctype="multipart/form-data">
                     {% csrf_token %}
                     <div class="row">
                       <div class="col-md-3">
@@ -773,85 +773,7 @@
                         <hr>
                       </div>
                     </div>
-                    <div class="row">
-                      <div class="col-md-3">
-                        <div class="form-group">
-                          <label for="cand_name">Candidate Name</label>
-                          <textarea name="cand_name" id="cand_name" disabled class="form-control"></textarea>
-                        </div>
-                      </div>
-                      <div class="col-md-3">
-                        <div class="form-group">
-                          <label for="clos_date">Closure Date</label>
-                          <input type="date" name="clos_date" disabled id="clos_date" class="form-control">
-                        </div>
-                      </div>
-                      <div class="col-md-3">
-                        <div class="form-group">
-                          <label for="source">Source</label>
-                          <div id="source" style="display: block; width: 100%;">
-                            <input type="radio" name="source" disabled onchange="mysource(this)" id="sou_walk" value="Walk In">
-                            <label for="sou_walk">Walk In</label>
-                            <input type="radio" name="source" disabled onchange="mysource(this)" id="sou_referral" value="Employee Referral">
-                            <label for="sou_referral">Employee Referral</label><br>
-                            <input type="radio" name="source" disabled onchange="mysource(this)" id="sou_social" value="Social">
-                            <label for="sou_social">Social</label>
-                            <input type="radio" name="source" disabled onchange="mysource(this)" id="sou_partner" value="Partners (Agency)">
-                            <label for="sou_partner">Partners (Agency)</label>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="col-md-3 d-none" id="pleasefill">
-                        <div class="form-group">
-                          <p>Please Fill</p>
-                          <div id="source1">
-                            <div id="part_select" class="d-none">
-                              <label for="partner">Select From List</label>
-                              <select class="form-control select2" name="partner" id="partner" style="width:100%;">
-                                <option value="" selected disabled>Please Choose</option>
-                                <option value="Cappricous">Cappricous</option>
-                                <option value="V4u">V4u</option>
-                                <option value="Yukthi">Yukthi</option>
-                                <option value="Amino Infotech">Amino Infotech</option>
-                                <option value="ShubadraJobs">ShubadraJobs</option>
-                                <option value="Delphic">Delphic</option>
-                                <option value="E & Q">E & Q</option>
-                                <option value="Brain & Skills">Brain & Skills</option>
-                                <option value="NJ">NJ</option>
-                                <option value="Bright E">Bright E</option>
-                                <option value="Swastik">Swastik</option>
-                                <option value="Allience Manpower">Allience Manpower</option>
-                                <option value="Blue collar">Blue collar</option>
-                                <option value="Futuretech">Futuretech</option>
-                                <option value="Quick consultancy">Quick consultancy</option>
-                                <option value="Vijay consultancy">Vijay consultancy</option>
-                                <option value="Career mint">Career mint</option>
-                                <option value="Job Zio">Job Zio</option>
-                                <option value="Jobzion Consultants">Jobzion Consultants</option>
-                                <option value="Laksh Agency">Laksh Agency</option>
-                                <option value="I5 Career">I5 Career</option>
-                                <option value="Millenium Jobs">Millenium Jobs</option>
-                                <option value="Ahmins Consultancy">Ahmins Consultancy</option>
-                              </select>
-                            </div>
-                            <input type="text" name="emp_name" id="emp_name" class="form-control d-none" placeholder="Employee Name">
-                            <input type="text" name="emp_id" id="emp_id" class="form-control d-none" placeholder="Employee ID">
-                            <div style="display: block; width: 100%;">
-                              <input type="radio" name="social" class="d-none" id="fb" value="FB">
-                              <label for="fb" class="d-none" id="fblabel">FB</label>
-                              <input type="radio" class="d-none" name="social" id="insta" value="Insta">
-                              <label for="insta" class="d-none" id="instalabel">Insta</label><br>
-                              <input type="radio" class="d-none" name="social" id="news" value="News Paper">
-                              <label for="news" class="d-none" id="newslabel">News Paper</label>
-                              <input type="radio" class="d-none" name="social" id="linkedin" value="LinkedIn">
-                              <label for="linkedin" class="d-none" id="linkedinklabel">LinkedIn</label><br>
-                              <input type="radio" class="d-none" name="social" id="website" value="Website">
-                              <label for="website" class="d-none" id="websitelabel">Website</label>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
+
                     <div class="row mt-4">
                       <div class="col-md-12" align="center">
                         <button type="submit" class="btn btn-success btn-lg" onclick="return confirmm(this);"  >Submit</button>

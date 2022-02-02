@@ -17,7 +17,7 @@
                   <div class="card-data widgetCardData">
                     <h2 class="box-title mt-5" style="color: #2A3F54;">All Requisitions</h2>
                     <h1>{{all}}</h1>
-                    <a href="job-requisition-all/all" title="Style Builder" class="anchor btn btn-default" style="background: #1ABB9C; color: #fff;">
+                    <a href="/erf/job-requisition-all/all" title="Style Builder" class="anchor btn btn-default" style="background: #1ABB9C; color: #fff;">
                       View
                     </a>
                   </div>
@@ -34,7 +34,7 @@
                   <div class="card-data widgetCardData">
                     <h2 class="box-title mt-5" style="color: #2A3F54;">Open Requisitions</h2>
                     <h1>{{open}}</h1>
-                    <a href="/job-requisition-table-hr" title="Style Builder" class="anchor btn btn-default" style="background: #1ABB9C; color: #fff;">
+                    <a href="/erf/job-requisition-table-hr" title="Style Builder" class="anchor btn btn-default" style="background: #1ABB9C; color: #fff;">
                       View
                     </a>
                   </div>
@@ -51,7 +51,7 @@
                   <div class="card-data widgetCardData">
                     <h2 class="box-title mt-5" style="color: #2A3F54;">Completed Requisitions</h2>
                     <h1>{{closed}}</h1>
-                    <a href="job-requisition-all/closed" title="Style Builder" class="anchor btn btn-default" style="background: #1ABB9C; color: #fff;">
+                    <a href="/erf/job-requisition-all/closed" title="Style Builder" class="anchor btn btn-default" style="background: #1ABB9C; color: #fff;">
                       View
                     </a>
                   </div>
@@ -68,7 +68,7 @@
                   <div class="card-data widgetCardData">
                     <h2 class="box-title mt-5" style="color: #2A3F54;">Added By Me</h2>
                     <h1>{{added}}</h1>
-                    <a href="job-requisition-table/all" title="Style Builder" class="anchor btn btn-default" style="background: #1ABB9C; color: #fff;">
+                    <a href="/erf/job-requisition-table/all" title="Style Builder" class="anchor btn btn-default" style="background: #1ABB9C; color: #fff;">
                       View
                     </a>
                   </div>
@@ -84,7 +84,7 @@
                 </div>
                 <div class="card-body">
                   <div class="row">
-                    <form action="/rrf/job-requisition-all/range" method="POST" enctype="multipart/form-data">
+                    <form action="/erf/job-requisition-all/range" method="POST" enctype="multipart/form-data">
                       {% csrf_token %}
                       <div class="col-md-12">
                         <div class="row">
@@ -146,7 +146,7 @@
                 </div>
                 <div class="card-body">
                   <div class="row">
-                    <form action="/rrf/job-requisition-all/designation" method="POST" enctype="multipart/form-data">
+                    <form action="/erf/job-requisition-all/designation" method="POST" enctype="multipart/form-data">
                       {% csrf_token %}
                       <div class="col-md-12">
                         <div class="row">
@@ -253,7 +253,7 @@
                               </div>
                               <div id="dep_it" class="d-none">
                                 <select name="designation" class="form-control select2" id="dep_it_select">
-                                  <option value="selected disabled">Please Select</option>
+                                  <option value="" selected disabled>Please Select</option>
                                   <option value="System Admin - L1">System Admin - L1</option>
                                   <option value="System Admin - L2">System Admin - L2</option>
                                   <option value="Team Leader">Team Leader</option>
@@ -263,7 +263,7 @@
                               </div>
                               <div id="dep_admin" class="d-none">
                                 <select name="designation" class="form-control select2" id="dep_admin_select">
-                                  <option value="selected disabled">Please Select</option>
+                                  <option value="" selected disabled>Please Select</option>
                                   <option value="Office Boy">Office Boy</option>
                                   <option value="Office Admin">Office Admin</option>
                                   <option value="Admin Executive">Admin Executive</option>
@@ -275,7 +275,7 @@
                               </div>
                               <div id="dep_ld" class="d-none">
                                 <select name="designation" class="form-control select2" id="dep_ld_select">
-                                  <option value="selected disabled">Please Select</option>
+                                  <option value="" selected disabled>Please Select</option>
                                   <option value="Softskills Trainer">Softskills Trainer</option>
                                   <option value="Process Trainer - Sales">Process Trainer - Sales</option>
                                   <option value="Process Trainer - Customer Service">Process Trainer - Customer Service</option>
@@ -290,7 +290,7 @@
                               </div>
                               <div id="dep_sales" class="d-none">
                                 <select name="designation" class="form-control select2" id="dep_sales_select">
-                                  <option value="selected disabled">Please Select</option>
+                                  <option value="" selected disabled>Please Select</option>
                                   <option value="Content Developer">Content Developer</option>
                                   <option value="Business Development Executive">Business Development Executive</option>
                                   <option value="Business Development Manager">Business Development Manager</option>

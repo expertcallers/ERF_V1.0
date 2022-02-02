@@ -1,4 +1,5 @@
 {% extends 'common_base.html' %}
+
 {% block main %}
   {% load static %}
         <!-- page content -->
@@ -6,14 +7,12 @@
 
           <div class="page-title">
             <div class="title_left">
-              {% if type == "all" %}
-              <h3>All Job Requisition Form</h3>
-              {% elif type == "open" %}
-              <h3>Open Job Requisition </h3>
+              {% if type == "open" %}
+              <h3>Open Job Requisition</h3>
               {% elif type == "closed" %}
-              <h3>Completed Job Requisition </h3>
-              {% else %}
-              <h3>Job Requisition </h3>
+              <h3>Completed Job Requisition</h3>
+              {% elif type == "all" %}
+              <h3>All Job Requisition</h3>
               {% endif %}
             </div>
           </div>
@@ -56,6 +55,11 @@
                           <td>
                             <div style="display: inline-flex;">
                               <button class="btn btn-success btn-sm" data-toggle="modal" data-target="#view_{{i.id}}">View</button>
+                              {% if request.user.profile.emp_desi == "HR" and  i.status == False %}
+                              <a href="/erf/job-requisition-edit/{{i.id}}">
+                                <button class="btn btn-primary btn-sm">Update</button>
+                              </a>
+                              {% endif %}
                             </div>
                           </td>
                       </tr>
@@ -230,7 +234,7 @@
                           </div>
 
                           {% if i.hc_req >= 1 %}
-                          <div class="row">
+                          <div class="row d-none" id="candidate_1_{{i.id}}">
                             <div class="col-md-3">
                               <div class="form-group">
                                 <label for="v_{{i.id}}cand_name_1">Candidate Name</label>
@@ -269,7 +273,7 @@
                           {% endif %}
 
                           {% if i.hc_req >= 2 %}
-                          <div class="row">
+                          <div class="row d-none" id="candidate_2_{{i.id}}">
                             <div class="col-md-3">
                               <div class="form-group">
                                 <label for="v_{{i.id}}cand_name_2">Candidate Name</label>
@@ -306,9 +310,8 @@
                              </div>
                           </div>
                           {% endif %}
-
                           {% if i.hc_req >= 3 %}
-                          <div class="row">
+                          <div class="row d-none" id="candidate_3_{{i.id}}">
                             <div class="col-md-3">
                               <div class="form-group">
                                 <label for="v_{{i.id}}cand_name_3">Candidate Name</label>
@@ -347,7 +350,7 @@
                           {% endif %}
 
                           {% if i.hc_req >= 4 %}
-                          <div class="row">
+                          <div class="row d-none" id="candidate_4_{{i.id}}">
                             <div class="col-md-3">
                               <div class="form-group">
                                 <label for="v_{{i.id}}cand_name_4">Candidate Name</label>
@@ -386,7 +389,7 @@
                           {% endif %}
 
                           {% if i.hc_req >= 5 %}
-                          <div class="row">
+                          <div class="row d-none" id="candidate_5_{{i.id}}">
                             <div class="col-md-3">
                               <div class="form-group">
                                 <label for="v_{{i.id}}cand_name_5">Candidate Name</label>
@@ -425,7 +428,7 @@
                           {% endif %}
 
                           {% if i.hc_req >= 6 %}
-                          <div class="row">
+                          <div class="row d-none" id="candidate_6_{{i.id}}">
                             <div class="col-md-3">
                               <div class="form-group">
                                 <label for="v_{{i.id}}cand_name_6">Candidate Name</label>
@@ -464,7 +467,7 @@
                           {% endif %}
 
                           {% if i.hc_req >= 7 %}
-                          <div class="row">
+                          <div class="row d-none" id="candidate_7_{{i.id}}">
                             <div class="col-md-3">
                               <div class="form-group">
                                 <label for="v_{{i.id}}cand_name_7">Candidate Name</label>
@@ -503,7 +506,7 @@
                           {% endif %}
 
                           {% if i.hc_req >= 8 %}
-                          <div class="row">
+                          <div class="row d-none" id="candidate_8_{{i.id}}">
                             <div class="col-md-3">
                               <div class="form-group">
                                 <label for="v_{{i.id}}cand_name_8">Candidate Name</label>
@@ -542,7 +545,7 @@
                           {% endif %}
 
                           {% if i.hc_req >= 9 %}
-                          <div class="row">
+                          <div class="row d-none" id="candidate_9_{{i.id}}">
                             <div class="col-md-3">
                               <div class="form-group">
                                 <label for="v_{{i.id}}cand_name_9">Candidate Name</label>
@@ -581,7 +584,7 @@
                           {% endif %}
 
                           {% if i.hc_req >= 10 %}
-                          <div class="row">
+                          <div class="row d-none" id="candidate_10_{{i.id}}">
                             <div class="col-md-3">
                               <div class="form-group">
                                 <label for="v_{{i.id}}cand_name_10">Candidate Name</label>
@@ -620,7 +623,7 @@
                           {% endif %}
 
                           {% if i.hc_req >= 11 %}
-                          <div class="row">
+                          <div class="row d-none" id="candidate_11_{{i.id}}">
                             <div class="col-md-3">
                               <div class="form-group">
                                 <label for="v_{{i.id}}cand_name_11">Candidate Name</label>
@@ -659,7 +662,7 @@
                           {% endif %}
 
                           {% if i.hc_req >= 12 %}
-                          <div class="row">
+                          <div class="row d-none" id="candidate_12_{{i.id}}">
                             <div class="col-md-3">
                               <div class="form-group">
                                 <label for="v_{{i.id}}cand_name_12">Candidate Name</label>
@@ -698,7 +701,7 @@
                           {% endif %}
 
                           {% if i.hc_req >= 13 %}
-                          <div class="row">
+                          <div class="row d-none" id="candidate_13_{{i.id}}">
                             <div class="col-md-3">
                               <div class="form-group">
                                 <label for="v_{{i.id}}cand_name_13">Candidate Name</label>
@@ -737,7 +740,7 @@
                           {% endif %}
 
                           {% if i.hc_req >= 14 %}
-                          <div class="row">
+                          <div class="row d-none" id="candidate_14_{{i.id}}">
                             <div class="col-md-3">
                               <div class="form-group">
                                 <label for="v_{{i.id}}cand_name_14">Candidate Name</label>
@@ -776,7 +779,7 @@
                           {% endif %}
 
                           {% if i.hc_req >= 15 %}
-                          <div class="row">
+                          <div class="row d-none" id="candidate_15_{{i.id}}">
                             <div class="col-md-3">
                               <div class="form-group">
                                 <label for="v_{{i.id}}cand_name_15">Candidate Name</label>
@@ -815,7 +818,7 @@
                           {% endif %}
 
                           {% if i.hc_req >= 16 %}
-                          <div class="row">
+                          <div class="row d-none" id="candidate_16_{{i.id}}">
                             <div class="col-md-3">
                               <div class="form-group">
                                 <label for="v_{{i.id}}cand_name_16">Candidate Name</label>
@@ -854,7 +857,7 @@
                           {% endif %}
 
                           {% if i.hc_req >= 17 %}
-                          <div class="row">
+                          <div class="row d-none" id="candidate_17_{{i.id}}">
                             <div class="col-md-3">
                               <div class="form-group">
                                 <label for="v_{{i.id}}cand_name_17">Candidate Name</label>
@@ -893,7 +896,7 @@
                           {% endif %}
 
                           {% if i.hc_req >= 18 %}
-                          <div class="row">
+                          <div class="row d-none" id="candidate_18_{{i.id}}">
                             <div class="col-md-3">
                               <div class="form-group">
                                 <label for="v_{{i.id}}cand_name_18">Candidate Name</label>
@@ -932,7 +935,7 @@
                           {% endif %}
 
                           {% if i.hc_req >= 19 %}
-                          <div class="row">
+                          <div class="row d-none" id="candidate_19_{{i.id}}">
                             <div class="col-md-3">
                               <div class="form-group">
                                 <label for="v_{{i.id}}cand_name_19">Candidate Name</label>
@@ -971,7 +974,7 @@
                           {% endif %}
 
                           {% if i.hc_req >= 20 %}
-                          <div class="row">
+                          <div class="row d-none" id="candidate_20_{{i.id}}">
                             <div class="col-md-3">
                               <div class="form-group">
                                 <label for="v_{{i.id}}cand_name_20">Candidate Name</label>
@@ -1048,7 +1051,6 @@
       </div>
     {% endfor %}
     <!-- End View Pop-Up -->
-
 {% endblock %}
 
 {% block scripts %}
@@ -1071,27 +1073,90 @@
       {% endif %}
       var shift_time = document.getElementById('v_{{i.id}}shift_time');
       var f = document.getElementById('v_{{i.id}}shift');
-      if (f.value == "Fixed - Timing") {
-        shift_time.classList.remove("d-none");
-      } else {
+      if (f.value == "Rotational - Timing"){
         shift_time.classList.add("d-none");
+      } else {
+        shift_time.classList.remove("d-none");
       }
 
-      {% for j in number %}
-        {% if i.hc_req >= j %}
-          $( document ).ready(function() {
-            var soc_{{j}} = document.getElementById('v_{{i.id}}source_{{j}}').value;
-            if (soc_{{j}} == "Employee Referral") {
-              document.getElementById('v_{{i.id}}emp_val_{{j}}').classList.remove("d-none");
-            }
-            if ( soc_{{j}} == "Social") {
-              document.getElementById('v_{{i.id}}social_val_{{j}}').classList.remove("d-none");
-            }
-            if (soc_{{j}} == "Partners (Agency)") {
-              document.getElementById('v_{{i.id}}partner_val_{{j}}').classList.remove("d-none");
-            }
-          });
+
+        {% if i.candidate_name_1 %}
+          $("#candidate_1_{{i.id}}").removeClass("d-none");
         {% endif %}
+        {% if i.candidate_name_2 %}
+          $("#candidate_2_{{i.id}}").removeClass("d-none");
+        {% endif %}
+        {% if i.candidate_name_3 %}
+          $("#candidate_3_{{i.id}}").removeClass("d-none");
+        {% endif %}
+        {% if i.candidate_name_4 %}
+          $("#candidate_4_{{i.id}}").removeClass("d-none");
+        {% endif %}
+        {% if i.candidate_name_5 %}
+          $("#candidate_5_{{i.id}}").removeClass("d-none");
+        {% endif %}
+        {% if i.candidate_name_6 %}
+          $("#candidate_6_{{i.id}}").removeClass("d-none");
+        {% endif %}
+        {% if i.candidate_name_7 %}
+          $("#candidate_7_{{i.id}}").removeClass("d-none");
+        {% endif %}
+        {% if i.candidate_name_8 %}
+          $("#candidate_8_{{i.id}}").removeClass("d-none");
+        {% endif %}
+        {% if i.candidate_name_9 %}
+          $("#candidate_9_{{i.id}}").removeClass("d-none");
+        {% endif %}
+        {% if i.candidate_name_10 %}
+          $("#candidate_10_{{i.id}}").removeClass("d-none");
+        {% endif %}
+        {% if i.candidate_name_11 %}
+          $("#candidate_11_{{i.id}}").removeClass("d-none");
+        {% endif %}
+        {% if i.candidate_name_12 %}
+          $("#candidate_12_{{i.id}}").removeClass("d-none");
+        {% endif %}
+        {% if i.candidate_name_13 %}
+          $("#candidate_13_{{i.id}}").removeClass("d-none");
+        {% endif %}
+        {% if i.candidate_name_14 %}
+          $("#candidate_14_{{i.id}}").removeClass("d-none");
+        {% endif %}
+        {% if i.candidate_name_15 %}
+          $("#candidate_15_{{i.id}}").removeClass("d-none");
+        {% endif %}
+        {% if i.candidate_name_16 %}
+          $("#candidate_16_{{i.id}}").removeClass("d-none");
+        {% endif %}
+        {% if i.candidate_name_17 %}
+          $("#candidate_17_{{i.id}}").removeClass("d-none");
+        {% endif %}
+        {% if i.candidate_name_18 %}
+          $("#candidate_18_{{i.id}}").removeClass("d-none");
+        {% endif %}
+        {% if i.candidate_name_19 %}
+          $("#candidate_19_{{i.id}}").removeClass("d-none");
+        {% endif %}
+        {% if i.candidate_name_20 %}
+          $("#candidate_20_{{i.id}}").removeClass("d-none");
+        {% endif %}
+
+
+      {% for j in number %}
+         {% if i.hc_req >= j %}
+            $( document ).ready(function() {
+              var soc_{{j}} = document.getElementById('v_{{i.id}}source_{{j}}').value;
+              if (soc_{{j}} == "Employee Referral") {
+                document.getElementById('v_{{i.id}}emp_val_{{j}}').classList.remove("d-none");
+              }
+              if ( soc_{{j}} == "Social") {
+                document.getElementById('v_{{i.id}}social_val_{{j}}').classList.remove("d-none");
+              }
+              if (soc_{{j}} == "Partners (Agency)") {
+                document.getElementById('v_{{i.id}}partner_val_{{j}}').classList.remove("d-none");
+              }
+            });
+         {% endif %}
       {% endfor %}
 
     </script>
