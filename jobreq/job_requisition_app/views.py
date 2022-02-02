@@ -7,12 +7,11 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from .models import *
 
-
 # Create your views here.
-
-
 number = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]
-
+# Designation List
+hr_list = ['HR','HR Manager','Manager ER','HR Lead','Sr Recruiter','MIS Executive HR','Lead HRBP','Employee Relations Specialist','Payroll Specialist','Recruiter','HR Generalist']
+am_mgr_list = ['Assistant Manager','Learning and Development Head','Quality Head','Operations Manager','Service Delivery Manager','Command Centre Head','Manager']
 
 def index(request):
     logout(request)
@@ -28,10 +27,14 @@ def Login(request):
             login(request, user)
             designation = request.user.profile.emp_desi
 
-            if designation == "Manager" or designation == "Assistant Manager":
+            if designation in am_mgr_list:
                 return redirect("/erf/manager-dashboard")
-            else:
+            elif designation in hr_list:
                 return redirect("/erf/hr-dashboard")
+            else:
+                messages.info(request, 'Not authorised to view this page !')
+                return redirect("/erf/")
+
         else:
             messages.info(request, 'Invalid user !')
             return redirect("/erf/")
@@ -42,7 +45,7 @@ def Login(request):
 def ManagerDashboard(request):
     designation = request.user.profile.emp_desi
     emp_id = request.user.profile.emp_id
-    if designation == "Manager" or designation == "Assistant Manager":
+    if designation in am_mgr_list:
         all = JobRequisition.objects.filter(created_by_id=emp_id).count()
         open = JobRequisition.objects.filter(created_by_id=emp_id,status=False).count()
         closed = JobRequisition.objects.filter(created_by_id=emp_id,status=True).count()
@@ -56,7 +59,7 @@ def ManagerDashboard(request):
 def HRDashboard(request):
     designation = request.user.profile.emp_desi
     usr = request.user
-    if designation == "HR":
+    if designation in hr_list:
         manager = Profile.objects.all()
         all = JobRequisition.objects.all().count()
         open = JobRequisition.objects.filter(status=False).count()
@@ -154,7 +157,7 @@ def job_requisition(request):
 @login_required
 def jobRequisitionOpen(request):
     designation = request.user.profile.emp_desi
-    if designation == "HR":
+    if designation in hr_list:
         job = JobRequisition.objects.filter(status=False)
         data = {"job":job,"number":number,"type":"open"}
         return render(request, "job_requisition_table.html", data)
@@ -205,7 +208,7 @@ def jobRequisitionSelf(request,type):
 @login_required
 def jobRequisitionEditView(request,id):
     designation = request.user.profile.emp_desi
-    if designation == "HR":
+    if designation in hr_list:
         job = JobRequisition.objects.get(id=id)
         today = date.today()
         data = {"today": today,"job":job,"number":number}
@@ -603,3 +606,26 @@ def change_password(request):
     else:
         form = PasswordChangeForm(request.user)
     return render(request, 'settings.html', {'form': form})
+
+
+# create User
+def createUserandProfile(request):
+
+    emp = Employee.objects.all()
+    for i in emp:
+        user = User.objects.filter(username=i.emp_id)
+        if user.exists():
+            print(i.emp_name + ' ' + 'exist')
+        else:
+            usr = User.objects.create_user(username=i.emp_id, password=str(i.emp_id))
+
+            profile = Profile.objects.create(
+                emp_id = i.emp_id,emp_name = i.emp_name, emp_desi = i.emp_desi,
+                emp_rm1 = i.emp_rm1, emp_rm1_id = i.emp_rm1_id,emp_rm2 = i.emp_rm2, emp_rm2_id = i.emp_rm2_id,emp_rm3 = i.emp_rm3,
+                emp_rm3_id=i.emp_rm3_id,
+                emp_process = i.emp_process, user_id = usr.id
+
+                                          )
+            profile.save()
+            usr.save()
+            print('created'+ i.emp_name)

@@ -15,7 +15,7 @@ class Profile(models.Model):
     emp_rm2_id = models.CharField(max_length=30)
     emp_rm3 = models.CharField(max_length=100)
     emp_rm3_id = models.CharField(max_length=30)
-    agent_status = models.CharField(max_length=30)
+    agent_status = models.CharField(max_length=30,default='Active')
 
     def __str__(self):
         return self.emp_name
@@ -215,3 +215,16 @@ class Tickets(models.Model):
     created_by_id = models.CharField(max_length=30)
     created_date = models.DateField()
     edited_by = models.TextField(null=True,blank=True)
+
+
+class Employee(models.Model):
+    emp_id = models.CharField(max_length=200)
+    emp_name =models.CharField(max_length=200)
+    emp_desi = models.CharField(max_length=200)
+    emp_rm1 = models.CharField(max_length=200)
+    emp_rm1_id = models.CharField(max_length=200)
+    emp_rm2 = models.CharField(max_length=200)
+    emp_rm2_id = models.CharField(max_length=200)
+    emp_rm3 = models.CharField(max_length=200)
+    emp_rm3_id = models.CharField(max_length=200)
+    emp_process = models.CharField(max_length=200)

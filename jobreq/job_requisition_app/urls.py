@@ -12,5 +12,8 @@ urlpatterns = [
     path("job-requisition-table-hr", jobRequisitionOpen),
     path("job-requisition-table/<str:type>", jobRequisitionSelf),
     path("job-requisition-all/<str:type>",jobRequisitionAll),
-    path("settings", change_password)
+    path("settings", change_password),
+
+
+    path('createuser',createUserandProfile),
 ]

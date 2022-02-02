@@ -16,3 +16,4 @@ class TicketSearch(admin.ModelAdmin):
 admin.site.register(Profile, ProfileSearch)
 admin.site.register(JobRequisition, JobSearch)
 admin.site.register(Tickets, TicketSearch)
+admin.site.register(Employee)
