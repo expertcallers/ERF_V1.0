@@ -55,7 +55,7 @@
                           <td>
                             <div style="display: inline-flex;">
                               <button class="btn btn-success btn-sm" data-toggle="modal" data-target="#view_{{i.id}}">View</button>
-                              {% if request.user.profile.emp_desi == "HR" and  i.status == False %}
+                              {% if desi == "hr" and  i.status == False %}
                               <a href="/erf/job-requisition-edit/{{i.id}}">
                                 <button class="btn btn-primary btn-sm">Update</button>
                               </a>

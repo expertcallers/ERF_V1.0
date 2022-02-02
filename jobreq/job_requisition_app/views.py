@@ -156,10 +156,14 @@ def job_requisition(request):
         a.edited_by = [now_datetime,req_raised_by,created_by_id,"Created"]
         a.save()
         messages.info(request, "Job Requisition Added Successfully !!")
-        if request.user.profile.emp_desi == "Manager":
+        if request.user.profile.emp_desi in am_mgr_list:
             return redirect("/erf/manager-dashboard")
-        else:
+        elif request.user.profile.emp_desi in hr_list:
             return redirect("/erf/hr-dashboard")
+        else:
+            messages.info(request, "Invalid Request. You have been logged out :)")
+            return redirect("/erf/")
+
     else:
         today = date.today()
         data = {"today":today}
@@ -170,7 +174,7 @@ def jobRequisitionOpen(request):
     designation = request.user.profile.emp_desi
     if designation in hr_list:
         job = JobRequisition.objects.filter(status=False)
-        data = {"job":job,"number":number,"type":"open"}
+        data = {"job":job,"number":number,"type":"open",'desi':'hr'}
         return render(request, "job_requisition_table.html", data)
     else:
         messages.info(request,"Invalid Request. You have been logged out :)")
@@ -635,7 +639,6 @@ def createUserandProfile(request):
                 emp_rm1 = i.emp_rm1, emp_rm1_id = i.emp_rm1_id,emp_rm2 = i.emp_rm2, emp_rm2_id = i.emp_rm2_id,emp_rm3 = i.emp_rm3,
                 emp_rm3_id=i.emp_rm3_id,
                 emp_process = i.emp_process, user_id = usr.id
-
                                           )
             profile.save()
             usr.save()
