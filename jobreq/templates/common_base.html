@@ -87,11 +87,7 @@
             <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
               <div class="menu_section">
                 <ul class="nav side-menu">
-                  {% if request.user.profile.emp_desi == "HR" %}
-                  <li><a href="/erf/hr-dashboard"><i class="fa fa-home"></i> Dashboard</a></li>
-                  {% else %}
-                  <li><a href="/erf/manager-dashboard"><i class="fa fa-home"></i> Dashboard</a></li>
-                  {% endif %}
+                  <li><a href="/erf/dashboard"><i class="fa fa-home"></i> Dashboard</a></li>
                 </ul>
               </div>
 

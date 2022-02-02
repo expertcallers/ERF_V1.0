@@ -41,6 +41,17 @@ def Login(request):
     else:
         pass
 
+def dashboardRedirects(request):
+    designation = request.user.profile.emp_desi
+    if designation in am_mgr_list:
+        return redirect("/erf/manager-dashboard")
+    elif designation in hr_list:
+        return redirect("/erf/hr-dashboard")
+    else:
+        messages.info(request, 'Not authorised to view this page !')
+        return redirect("/erf/")
+
+
 @login_required
 def ManagerDashboard(request):
     designation = request.user.profile.emp_desi
