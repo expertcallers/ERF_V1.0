@@ -1,4 +1,4 @@
-{% extends 'hr_base.html' %}
+{% extends 'common_base.html' %}
 
 {% block main %}
   {% load static %}
@@ -152,7 +152,7 @@
 
 
 {% if job.hc_req >= 1 %}
-<div class="row">
+<div class="row" style="border-bottom: 1px solid">
   <div class="col-md-4">
     <div class="form-group">
       <label for="cand_name_1">01. Candidate Name</label>
@@ -173,6 +173,37 @@
         <label for="sou_social_1">Social</label>
         <input type="radio" class="source_1" name="source_1" onchange="esource_1(this)" id="sou_partner_1" value="Partners (Agency)">
         <label for="sou_partner_1">Partners (Agency)</label>
+        <input type="radio" class="source_1" name="source_1" onchange="esource_1(this)" id="sou_internal_1" value="Internal Movement">
+        <label for="sou_internal_1">Internal Movement</label>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-4 d-none" id="internal_1">
+    <div class="form-group">
+      <div class="row">
+        <div class="col-md-12">
+          <label for="internal_emp_1">Select Employee</label>
+          <input type="hidden" id="internal_emp_view_1"  value="{{job.source_internal_emp_name_1}}">
+
+
+          <select class="form-control select2" name="internal_emp_id_1" id="internal_emp_1">
+              <option value="" selected disabled>Please Select Employee</option>
+              {% for i in employees %}
+               <option value="{{i.emp_id}}">{{i.emp_name}} ({{i.emp_id}})</option>
+              {% endfor %}
+          </select>
+        </div>
+        <div class="col-md-12">
+          <label for="internal_cam_1">Select Campaign</label>
+          <input type="hidden" id="internal_cam_view_1" value="{{job.source_internal_campaign_name_1}}">
+          <select class="form-control select2" name="internal_campaign_1" id="internal_cam_1">
+              <option value="" selected disabled>Please Select Campaign</option>
+              {% for i in campaigns %}
+              <option value="{{i.campaign_name}}">{{i.campaign_name}}</option>
+              {% endfor %}
+          </select>
+        </div>
       </div>
     </div>
   </div>
@@ -235,7 +266,7 @@
 {% endif %}
 
 {% if job.hc_req >= 2 %}
-<div class="row">
+<div class="row" style="border-bottom: 1px solid">
   <div class="col-md-4">
     <div class="form-group">
       <label for="cand_name_2">02. Candidate Name</label>
@@ -256,6 +287,38 @@
         <label for="sou_social_2">Social</label>
         <input type="radio" class="source_2" name="source_2" onchange="esource_2(this)" id="sou_partner_2" value="Partners (Agency)">
         <label for="sou_partner_2">Partners (Agency)</label>
+        <input type="radio" class="source_2" name="source_2" onchange="esource_2(this)" id="sou_internal_2" value="Internal Movement">
+        <label for="sou_internal_2">Internal Movement</label>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-4 d-none" id="internal_2">
+    <div class="form-group">
+      <div class="row">
+        <div class="col-md-12">
+          <label for="internal_emp_2">Select Employee</label>
+          <input type="hidden" id="internal_emp_view_2" value="{{job.source_internal_emp_name_2}}">
+
+
+          <select class="form-control select2" name="internal_emp_id_2" id="internal_emp_2">
+              <option value="" selected disabled>Please Select Employee</option>
+              {% for i in employees %}
+               <option value="{{i.emp_id}}">{{i.emp_name}} ({{i.emp_id}})</option>
+              {% endfor %}
+          </select>
+        </div>
+        <div class="col-md-12">
+          <label for="internal_cam_2">Select Campaign</label>
+          <input type="hidden" id="internal_cam_view_2" value="{{job.source_internal_campaign_name_2}}">
+
+          <select class="form-control select2" name="internal_campaign_2" id="internal_cam_2">
+              <option value="" selected disabled>Please Select Campaign</option>
+              {% for i in campaigns %}
+              <option value="{{i.campaign_name}}">{{i.campaign_name}}</option>
+              {% endfor %}
+          </select>
+        </div>
       </div>
     </div>
   </div>
@@ -318,7 +381,7 @@
 {% endif %}
 
 {% if job.hc_req >= 3 %}
-<div class="row">
+<div class="row" style="border-bottom: 1px solid">
   <div class="col-md-4">
     <div class="form-group">
       <label for="cand_name_3">03. Candidate Name</label>
@@ -339,6 +402,39 @@
         <label for="sou_social_3">Social</label>
         <input type="radio" class="source_3" name="source_3" onchange="esource_3(this)" id="sou_partner_3" value="Partners (Agency)">
         <label for="sou_partner_3">Partners (Agency)</label>
+        <input type="radio" class="source_3" name="source_3" onchange="esource_3(this)" id="sou_internal_3" value="Internal Movement">
+        <label for="sou_internal_3">Internal Movement</label>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-4 d-none" id="internal_3">
+    <div class="form-group">
+      <div class="row">
+        <div class="col-md-12">
+          <label for="internal_emp_3">Select Employee</label>
+          <input type="hidden" id="internal_emp_view_3" name="source_internal_emp_name_3" value="{{job.source_internal_emp_name_3}}">
+<!--          -->
+
+
+          <select class="form-control select2" name="internal_emp_id_3" id="internal_emp_3">
+              <option value="" selected disabled>Please Select Employee</option>
+              {% for i in employees %}
+               <option value="{{i.emp_id}}">{{i.emp_name}} ({{i.emp_id}})</option>
+              {% endfor %}
+          </select>
+        </div>
+        <div class="col-md-12">
+          <label for="internal_cam_3">Select Campaign</label>
+          <input type="hidden" id="internal_cam_view_3" value="{{job.source_internal_campaign_name_3}}">
+
+          <select class="form-control select2" name="internal_campaign_3" id="internal_cam_3">
+              <option value="" selected disabled>Please Select Campaign</option>
+              {% for i in campaigns %}
+              <option value="{{i.campaign_name}}">{{i.campaign_name}}</option>
+              {% endfor %}
+          </select>
+        </div>
       </div>
     </div>
   </div>
@@ -402,7 +498,7 @@
 {% endif %}
 
 {% if job.hc_req >= 4 %}
-<div class="row">
+<div class="row" style="border-bottom: 1px solid">
   <div class="col-md-4">
     <div class="form-group">
       <label for="cand_name_4">04. Candidate Name</label>
@@ -423,6 +519,38 @@
         <label for="sou_social_4">Social</label>
         <input type="radio" class="source_4" name="source_4" onchange="esource_4(this)" id="sou_partner_4" value="Partners (Agency)">
         <label for="sou_partner_4">Partners (Agency)</label>
+        <input type="radio" class="source_4" name="source_4" onchange="esource_4(this)" id="sou_internal_4" value="Internal Movement">
+        <label for="sou_internal_4">Internal Movement</label>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-4 d-none" id="internal_4">
+    <div class="form-group">
+      <div class="row">
+        <div class="col-md-12">
+          <label for="internal_emp_4">Select Employee</label>
+          <input type="hidden" id="internal_emp_view_4" value="{{job.source_internal_emp_name_4}}">
+
+
+          <select class="form-control select2" name="internal_emp_id_4" id="internal_emp_4">
+              <option value="" selected disabled>Please Select Employee</option>
+              {% for i in employees %}
+               <option value="{{i.emp_id}}">{{i.emp_name}} ({{i.emp_id}})</option>
+              {% endfor %}
+          </select>
+        </div>
+        <div class="col-md-12">
+          <label for="internal_cam_4">Select Campaign</label>
+          <input type="hidden" id="internal_cam_view_4" value="{{job.source_internal_campaign_name_4}}">
+
+          <select class="form-control select2" name="internal_campaign_4" id="internal_cam_4">
+              <option value="" selected disabled>Please Select Campaign</option>
+              {% for i in campaigns %}
+              <option value="{{i.campaign_name}}">{{i.campaign_name}}</option>
+              {% endfor %}
+          </select>
+        </div>
       </div>
     </div>
   </div>
@@ -486,7 +614,7 @@
 {% endif %}
 
 {% if job.hc_req >= 5 %}
-<div class="row">
+<div class="row" style="border-bottom: 1px solid">
   <div class="col-md-4">
     <div class="form-group">
       <label for="cand_name_5">05. Candidate Name</label>
@@ -507,6 +635,38 @@
         <label for="sou_social_5">Social</label>
         <input type="radio" class="source_5" name="source_5" onchange="esource_5(this)" id="sou_partner_5" value="Partners (Agency)">
         <label for="sou_partner_5">Partners (Agency)</label>
+        <input type="radio" class="source_5" name="source_5" onchange="esource_5(this)" id="sou_internal_5" value="Internal Movement">
+        <label for="sou_internal_5">Internal Movement</label>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-4 d-none" id="internal_5">
+    <div class="form-group">
+      <div class="row">
+        <div class="col-md-12">
+          <label for="internal_emp_5">Select Employee</label>
+          <input type="hidden" id="internal_emp_view_5" value="{{job.source_internal_emp_name_5}}">
+
+
+          <select class="form-control select2" name="internal_emp_id_5" id="internal_emp_5">
+              <option value="" selected disabled>Please Select Employee</option>
+              {% for i in employees %}
+               <option value="{{i.emp_id}}">{{i.emp_name}} ({{i.emp_id}})</option>
+              {% endfor %}
+          </select>
+        </div>
+        <div class="col-md-12">
+          <label for="internal_cam_5">Select Campaign</label>
+          <input type="hidden" id="internal_cam_view_5" value="{{job.source_internal_campaign_name_5}}">
+
+          <select class="form-control select2" name="internal_campaign_5" id="internal_cam_5">
+              <option value="" selected disabled>Please Select Campaign</option>
+              {% for i in campaigns %}
+              <option value="{{i.campaign_name}}">{{i.campaign_name}}</option>
+              {% endfor %}
+          </select>
+        </div>
       </div>
     </div>
   </div>
@@ -591,6 +751,38 @@
         <label for="sou_social_6">Social</label>
         <input type="radio" class="source_6" name="source_6" onchange="esource_6(this)" id="sou_partner_6" value="Partners (Agency)">
         <label for="sou_partner_6">Partners (Agency)</label>
+        <input type="radio" class="source_6" name="source_6" onchange="esource_6(this)" id="sou_internal_6" value="Internal Movement">
+        <label for="sou_internal_6">Internal Movement</label>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-4 d-none" id="internal_6">
+    <div class="form-group">
+      <div class="row">
+        <div class="col-md-12">
+          <label for="internal_emp_6">Select Employee</label>
+          <input type="hidden" id="internal_emp_view_6" value="{{job.source_internal_emp_name_6}}">
+
+
+          <select class="form-control select2" name="internal_emp_id_6" id="internal_emp_6">
+              <option value="" selected disabled>Please Select Employee</option>
+              {% for i in employees %}
+               <option value="{{i.emp_id}}">{{i.emp_name}} ({{i.emp_id}})</option>
+              {% endfor %}
+          </select>
+        </div>
+        <div class="col-md-12">
+          <label for="internal_cam_6">Select Campaign</label>
+          <input type="hidden" id="internal_cam_view_6" value="{{job.source_internal_campaign_name_6}}">
+
+          <select class="form-control select2" name="internal_campaign_6" id="internal_cam_6">
+              <option value="" selected disabled>Please Select Campaign</option>
+              {% for i in campaigns %}
+              <option value="{{i.campaign_name}}">{{i.campaign_name}}</option>
+              {% endfor %}
+          </select>
+        </div>
       </div>
     </div>
   </div>
@@ -675,6 +867,38 @@
         <label for="sou_social_7">Social</label>
         <input type="radio" class="source_7" name="source_7" onchange="esource_7(this)" id="sou_partner_7" value="Partners (Agency)">
         <label for="sou_partner_7">Partners (Agency)</label>
+        <input type="radio" class="source_7" name="source_7" onchange="esource_7(this)" id="sou_internal_7" value="Internal Movement">
+        <label for="sou_internal_7">Internal Movement</label>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-4 d-none" id="internal_7">
+    <div class="form-group">
+      <div class="row">
+        <div class="col-md-12">
+          <label for="internal_emp_7">Select Employee</label>
+          <input type="hidden" id="internal_emp_view_7" value="{{job.source_internal_emp_name_7}}">
+
+
+          <select class="form-control select2" name="internal_emp_id_7" id="internal_emp_7">
+              <option value="" selected disabled>Please Select Employee</option>
+              {% for i in employees %}
+               <option value="{{i.emp_id}}">{{i.emp_name}} ({{i.emp_id}})</option>
+              {% endfor %}
+          </select>
+        </div>
+        <div class="col-md-12">
+          <label for="internal_cam_7">Select Campaign</label>
+          <input type="hidden" id="internal_cam_view_7" value="{{job.source_internal_campaign_name_7}}">
+
+          <select class="form-control select2" name="internal_campaign_7" id="internal_cam_7">
+              <option value="" selected disabled>Please Select Campaign</option>
+              {% for i in campaigns %}
+              <option value="{{i.campaign_name}}">{{i.campaign_name}}</option>
+              {% endfor %}
+          </select>
+        </div>
       </div>
     </div>
   </div>
@@ -759,6 +983,38 @@
         <label for="sou_social_8">Social</label>
         <input type="radio" class="source_8" name="source_8" onchange="esource_8(this)" id="sou_partner_8" value="Partners (Agency)">
         <label for="sou_partner_8">Partners (Agency)</label>
+        <input type="radio" class="source_8" name="source_8" onchange="esource_8(this)" id="sou_internal_8" value="Internal Movement">
+        <label for="sou_internal_8">Internal Movement</label>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-4 d-none" id="internal_8">
+    <div class="form-group">
+      <div class="row">
+        <div class="col-md-12">
+          <label for="internal_emp_8">Select Employee</label>
+          <input type="hidden" id="internal_emp_view_8" value="{{job.source_internal_emp_name_8}}">
+
+
+          <select class="form-control select2" name="internal_emp_id_8" id="internal_emp_8">
+              <option value="" selected disabled>Please Select Employee</option>
+              {% for i in employees %}
+               <option value="{{i.emp_id}}">{{i.emp_name}} ({{i.emp_id}})</option>
+              {% endfor %}
+          </select>
+        </div>
+        <div class="col-md-12">
+          <label for="internal_cam_8">Select Campaign</label>
+          <input type="hidden" id="internal_cam_view_8" value="{{job.source_internal_campaign_name_8}}">
+
+          <select class="form-control select2" name="internal_campaign_8" id="internal_cam_8">
+              <option value="" selected disabled>Please Select Campaign</option>
+              {% for i in campaigns %}
+              <option value="{{i.campaign_name}}">{{i.campaign_name}}</option>
+              {% endfor %}
+          </select>
+        </div>
       </div>
     </div>
   </div>
@@ -843,6 +1099,38 @@
         <label for="sou_social_9">Social</label>
         <input type="radio" class="source_9" name="source_9" onchange="esource_9(this)" id="sou_partner_9" value="Partners (Agency)">
         <label for="sou_partner_9">Partners (Agency)</label>
+        <input type="radio" class="source_9" name="source_9" onchange="esource_9(this)" id="sou_internal_9" value="Internal Movement">
+        <label for="sou_internal_9">Internal Movement</label>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-4 d-none" id="internal_9">
+    <div class="form-group">
+      <div class="row">
+        <div class="col-md-12">
+          <label for="internal_emp_9">Select Employee</label>
+          <input type="hidden" id="internal_emp_view_9" value="{{job.source_internal_emp_name_9}}">
+
+
+          <select class="form-control select2" name="internal_emp_id_9" id="internal_emp_9">
+              <option value="" selected disabled>Please Select Employee</option>
+              {% for i in employees %}
+               <option value="{{i.emp_id}}">{{i.emp_name}} ({{i.emp_id}})</option>
+              {% endfor %}
+          </select>
+        </div>
+        <div class="col-md-12">
+          <label for="internal_cam_9">Select Campaign</label>
+          <input type="hidden" id="internal_cam_view_9" value="{{job.source_internal_campaign_name_9}}">
+
+          <select class="form-control select2" name="internal_campaign_9" id="internal_cam_9">
+              <option value="" selected disabled>Please Select Campaign</option>
+              {% for i in campaigns %}
+              <option value="{{i.campaign_name}}">{{i.campaign_name}}</option>
+              {% endfor %}
+          </select>
+        </div>
       </div>
     </div>
   </div>
@@ -927,6 +1215,38 @@
         <label for="sou_social_10">Social</label>
         <input type="radio" class="source_10" name="source_10" onchange="esource_10(this)" id="sou_partner_10" value="Partners (Agency)">
         <label for="sou_partner_10">Partners (Agency)</label>
+        <input type="radio" class="source_10" name="source_10" onchange="esource_10(this)" id="sou_internal_10" value="Internal Movement">
+        <label for="sou_internal_10">Internal Movement</label>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-4 d-none" id="internal_10">
+    <div class="form-group">
+      <div class="row">
+        <div class="col-md-12">
+          <label for="internal_emp_10">Select Employee</label>
+          <input type="hidden" id="internal_emp_view_10" value="{{job.source_internal_emp_name_10}}">
+
+
+          <select class="form-control select2" name="internal_emp_id_10" id="internal_emp_10">
+              <option value="" selected disabled>Please Select Employee</option>
+              {% for i in employees %}
+               <option value="{{i.emp_id}}">{{i.emp_name}} ({{i.emp_id}})</option>
+              {% endfor %}
+          </select>
+        </div>
+        <div class="col-md-12">
+          <label for="internal_cam_10">Select Campaign</label>
+                    <input type="hidden" id="internal_cam_view_10" value="{{job.source_internal_campaign_name_10}}">
+
+          <select class="form-control select2" name="internal_campaign_10" id="internal_cam_10">
+              <option value="" selected disabled>Please Select Campaign</option>
+              {% for i in campaigns %}
+              <option value="{{i.campaign_name}}">{{i.campaign_name}}</option>
+              {% endfor %}
+          </select>
+        </div>
       </div>
     </div>
   </div>
@@ -1011,6 +1331,35 @@
         <label for="sou_social_11">Social</label>
         <input type="radio" class="source_11" name="source_11" onchange="esource_11(this)" id="sou_partner_11" value="Partners (Agency)">
         <label for="sou_partner_11">Partners (Agency)</label>
+        <input type="radio" class="source_11" name="source_11" onchange="esource_11(this)" id="sou_internal_11" value="Internal Movement">
+        <label for="sou_internal_11">Internal Movement</label>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-4 d-none" id="internal_11">
+    <div class="form-group">
+      <div class="row">
+        <div class="col-md-12">
+          <label for="internal_emp_11">Select Employee</label>
+          <input type="hidden" id="internal_emp_view_11" value="{{job.source_internal_emp_name_11}}">
+          <select class="form-control select2" name="internal_emp_id_11" id="internal_emp_11">
+              <option value="" selected disabled>Please Select Employee</option>
+              {% for i in employees %}
+               <option value="{{i.emp_id}}">{{i.emp_name}} ({{i.emp_id}})</option>
+              {% endfor %}
+          </select>
+        </div>
+        <div class="col-md-12">
+          <label for="internal_cam_11">Select Campaign</label>
+          <input type="hidden" id="internal_cam_view_11" value="{{job.source_internal_campaign_name_11}}">
+          <select class="form-control select2" name="internal_campaign_11" id="internal_cam_11">
+              <option value="" selected disabled>Please Select Campaign</option>
+              {% for i in campaigns %}
+              <option value="{{i.campaign_name}}">{{i.campaign_name}}</option>
+              {% endfor %}
+          </select>
+        </div>
       </div>
     </div>
   </div>
@@ -1095,6 +1444,35 @@
         <label for="sou_social_12">Social</label>
         <input type="radio" class="source_12" name="source_12" onchange="esource_12(this)" id="sou_partner_12" value="Partners (Agency)">
         <label for="sou_partner_12">Partners (Agency)</label>
+        <input type="radio" class="source_12" name="source_12" onchange="esource_12(this)" id="sou_internal_12" value="Internal Movement">
+        <label for="sou_internal_12">Internal Movement</label>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-4 d-none" id="internal_12">
+    <div class="form-group">
+      <div class="row">
+        <div class="col-md-12">
+          <label for="internal_emp_12">Select Employee</label>
+          <input type="hidden" id="internal_emp_view_12" value="{{job.source_internal_emp_name_12}}">
+          <select class="form-control select2" name="internal_emp_id_12" id="internal_emp_12">
+              <option value="" selected disabled>Please Select Employee</option>
+              {% for i in employees %}
+               <option value="{{i.emp_id}}">{{i.emp_name}} ({{i.emp_id}})</option>
+              {% endfor %}
+          </select>
+        </div>
+        <div class="col-md-12">
+          <label for="internal_cam_12">Select Campaign</label>
+          <input type="hidden" id="internal_cam_view_12" value="{{job.source_internal_campaign_name_12}}">
+          <select class="form-control select2" name="internal_campaign_12" id="internal_cam_12">
+              <option value="" selected disabled>Please Select Campaign</option>
+              {% for i in campaigns %}
+              <option value="{{i.campaign_name}}">{{i.campaign_name}}</option>
+              {% endfor %}
+          </select>
+        </div>
       </div>
     </div>
   </div>
@@ -1179,6 +1557,35 @@
         <label for="sou_social_13">Social</label>
         <input type="radio" class="source_13" name="source_13" onchange="esource_13(this)" id="sou_partner_13" value="Partners (Agency)">
         <label for="sou_partner_13">Partners (Agency)</label>
+        <input type="radio" class="source_13" name="source_13" onchange="esource_13(this)" id="sou_internal_13" value="Internal Movement">
+        <label for="sou_internal_13">Internal Movement</label>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-4 d-none" id="internal_13">
+    <div class="form-group">
+      <div class="row">
+        <div class="col-md-12">
+          <label for="internal_emp_13">Select Employee</label>
+          <input type="hidden" id="internal_emp_view_13" value="{{job.source_internal_emp_name_13}}">
+          <select class="form-control select2" name="internal_emp_id_13" id="internal_emp_13">
+              <option value="" selected disabled>Please Select Employee</option>
+              {% for i in employees %}
+               <option value="{{i.emp_id}}">{{i.emp_name}} ({{i.emp_id}})</option>
+              {% endfor %}
+          </select>
+        </div>
+        <div class="col-md-12">
+          <label for="internal_cam_13">Select Campaign</label>
+          <input type="hidden" id="internal_cam_view_13" value="{{job.source_internal_campaign_name_13}}">
+          <select class="form-control select2" name="internal_campaign_13" id="internal_cam_13">
+              <option value="" selected disabled>Please Select Campaign</option>
+              {% for i in campaigns %}
+              <option value="{{i.campaign_name}}">{{i.campaign_name}}</option>
+              {% endfor %}
+          </select>
+        </div>
       </div>
     </div>
   </div>
@@ -1263,6 +1670,37 @@
         <label for="sou_social_14">Social</label>
         <input type="radio" class="source_14" name="source_14" onchange="esource_14(this)" id="sou_partner_14" value="Partners (Agency)">
         <label for="sou_partner_14">Partners (Agency)</label>
+        <input type="radio" class="source_14" name="source_14" onchange="esource_14(this)" id="sou_internal_14" value="Internal Movement">
+        <label for="sou_internal_14">Internal Movement</label>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-4 d-none" id="internal_14">
+    <div class="form-group">
+      <div class="row">
+        <div class="col-md-12">
+          <label for="internal_emp_14">Select Employee</label>
+          <input type="hidden" id="internal_emp_view_14" value="{{job.source_internal_emp_name_14}}">
+
+          <select class="form-control select2" name="internal_emp_id_14" id="internal_emp_14">
+              <option value="" selected disabled>Please Select Employee</option>
+              {% for i in employees %}
+               <option value="{{i.emp_id}}">{{i.emp_name}} ({{i.emp_id}})</option>
+              {% endfor %}
+          </select>
+        </div>
+        <div class="col-md-12">
+          <label for="internal_cam_14">Select Campaign</label>
+          <input type="hidden" id="internal_cam_view_14" value="{{job.source_internal_campaign_name_14}}">
+
+          <select class="form-control select2" name="internal_campaign_14" id="internal_cam_14">
+              <option value="" selected disabled>Please Select Campaign</option>
+              {% for i in campaigns %}
+              <option value="{{i.campaign_name}}">{{i.campaign_name}}</option>
+              {% endfor %}
+          </select>
+        </div>
       </div>
     </div>
   </div>
@@ -1347,6 +1785,35 @@
         <label for="sou_social_15">Social</label>
         <input type="radio" class="source_15" name="source_15" onchange="esource_15(this)" id="sou_partner_15" value="Partners (Agency)">
         <label for="sou_partner_15">Partners (Agency)</label>
+        <input type="radio" class="source_15" name="source_15" onchange="esource_15(this)" id="sou_internal_15" value="Internal Movement">
+        <label for="sou_internal_15">Internal Movement</label>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-4 d-none" id="internal_15">
+    <div class="form-group">
+      <div class="row">
+        <div class="col-md-12">
+          <label for="internal_emp_15">Select Employee</label>
+          <input type="hidden" id="internal_emp_view_15" value="{{job.source_internal_emp_name_15}}">
+          <select class="form-control select2" name="internal_emp_id_15" id="internal_emp_15">
+              <option value="" selected disabled>Please Select Employee</option>
+              {% for i in employees %}
+               <option value="{{i.emp_id}}">{{i.emp_name}} ({{i.emp_id}})</option>
+              {% endfor %}
+          </select>
+        </div>
+        <div class="col-md-12">
+          <label for="internal_cam_15">Select Campaign</label>
+          <input type="hidden" id="internal_cam_view_15" value="{{job.source_internal_campaign_name_15}}">
+          <select class="form-control select2" name="internal_campaign_15" id="internal_cam_15">
+              <option value="" selected disabled>Please Select Campaign</option>
+              {% for i in campaigns %}
+              <option value="{{i.campaign_name}}">{{i.campaign_name}}</option>
+              {% endfor %}
+          </select>
+        </div>
       </div>
     </div>
   </div>
@@ -1431,6 +1898,35 @@
         <label for="sou_social_16">Social</label>
         <input type="radio" class="source_16" name="source_16" onchange="esource_16(this)" id="sou_partner_16" value="Partners (Agency)">
         <label for="sou_partner_16">Partners (Agency)</label>
+        <input type="radio" class="source_16" name="source_16" onchange="esource_16(this)" id="sou_internal_16" value="Internal Movement">
+        <label for="sou_internal_16">Internal Movement</label>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-4 d-none" id="internal_16">
+    <div class="form-group">
+      <div class="row">
+        <div class="col-md-12">
+          <label for="internal_emp_16">Select Employee</label>
+          <input type="hidden" id="internal_emp_view_16" value="{{job.source_internal_emp_name_16}}">
+          <select class="form-control select2" name="internal_emp_id_16" id="internal_emp_16">
+              <option value="" selected disabled>Please Select Employee</option>
+              {% for i in employees %}
+               <option value="{{i.emp_id}}">{{i.emp_name}} ({{i.emp_id}})</option>
+              {% endfor %}
+          </select>
+        </div>
+        <div class="col-md-12">
+          <label for="internal_cam_16">Select Campaign</label>
+          <input type="hidden" id="internal_cam_view_16" value="{{job.source_internal_campaign_name_16}}">
+          <select class="form-control select2" name="internal_campaign_16" id="internal_cam_16">
+              <option value="" selected disabled>Please Select Campaign</option>
+              {% for i in campaigns %}
+              <option value="{{i.campaign_name}}">{{i.campaign_name}}</option>
+              {% endfor %}
+          </select>
+        </div>
       </div>
     </div>
   </div>
@@ -1515,6 +2011,34 @@
         <label for="sou_social_17">Social</label>
         <input type="radio" class="source_17" name="source_17" onchange="esource_17(this)" id="sou_partner_17" value="Partners (Agency)">
         <label for="sou_partner_17">Partners (Agency)</label>
+        <input type="radio" class="source_17" name="source_17" onchange="esource_17(this)" id="sou_internal_17" value="Internal Movement">
+        <label for="sou_internal_17">Internal Movement</label>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4 d-none" id="internal_17">
+    <div class="form-group">
+      <div class="row">
+        <div class="col-md-12">
+          <label for="internal_emp_17">Select Employee</label>
+          <input type="hidden" id="internal_emp_view_17" value="{{job.source_internal_emp_name_17}}">
+          <select class="form-control select2" name="internal_emp_id_17" id="internal_emp_17">
+              <option value="" selected disabled>Please Select Employee</option>
+              {% for i in employees %}
+               <option value="{{i.emp_id}}">{{i.emp_name}} ({{i.emp_id}})</option>
+              {% endfor %}
+          </select>
+        </div>
+        <div class="col-md-12">
+          <label for="internal_cam_17">Select Campaign</label>
+          <input type="hidden" id="internal_cam_view_17" value="{{job.source_internal_campaign_name_17}}">
+          <select class="form-control select2" name="internal_campaign_17" id="internal_cam_17">
+              <option value="" selected disabled>Please Select Campaign</option>
+              {% for i in campaigns %}
+              <option value="{{i.campaign_name}}">{{i.campaign_name}}</option>
+              {% endfor %}
+          </select>
+        </div>
       </div>
     </div>
   </div>
@@ -1599,6 +2123,35 @@
         <label for="sou_social_18">Social</label>
         <input type="radio" class="source_18" name="source_18" onchange="esource_18(this)" id="sou_partner_18" value="Partners (Agency)">
         <label for="sou_partner_18">Partners (Agency)</label>
+        <input type="radio" class="source_18" name="source_18" onchange="esource_18(this)" id="sou_internal_18" value="Internal Movement">
+        <label for="sou_internal_18">Internal Movement</label>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-4 d-none" id="internal_18">
+    <div class="form-group">
+      <div class="row">
+        <div class="col-md-12">
+          <label for="internal_emp_18">Select Employee</label>
+          <input type="hidden" id="internal_emp_view_18" value="{{job.source_internal_emp_name_18}}">
+          <select class="form-control select2" name="internal_emp_id_18" id="internal_emp_18">
+              <option value="" selected disabled>Please Select Employee</option>
+              {% for i in employees %}
+               <option value="{{i.emp_id}}">{{i.emp_name}} ({{i.emp_id}})</option>
+              {% endfor %}
+          </select>
+        </div>
+        <div class="col-md-12">
+          <label for="internal_cam_18">Select Campaign</label>
+          <input type="hidden" id="internal_cam_view_18" value="{{job.source_internal_campaign_name_18}}">
+          <select class="form-control select2" name="internal_campaign_18" id="internal_cam_18">
+              <option value="" selected disabled>Please Select Campaign</option>
+              {% for i in campaigns %}
+              <option value="{{i.campaign_name}}">{{i.campaign_name}}</option>
+              {% endfor %}
+          </select>
+        </div>
       </div>
     </div>
   </div>
@@ -1683,6 +2236,35 @@
         <label for="sou_social_19">Social</label>
         <input type="radio" class="source_19" name="source_19" onchange="esource_19(this)" id="sou_partner_19" value="Partners (Agency)">
         <label for="sou_partner_19">Partners (Agency)</label>
+        <input type="radio" class="source_19" name="source_19" onchange="esource_19(this)" id="sou_internal_19" value="Internal Movement">
+        <label for="sou_internal_19">Internal Movement</label>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-4 d-none" id="internal_19">
+    <div class="form-group">
+      <div class="row">
+        <div class="col-md-12">
+          <label for="internal_emp_19">Select Employee</label>
+          <input type="hidden" id="internal_emp_view_19" value="{{job.source_internal_emp_name_19}}">
+          <select class="form-control select2" name="internal_emp_id_19" id="internal_emp_19">
+              <option value="" selected disabled>Please Select Employee</option>
+              {% for i in employees %}
+               <option value="{{i.emp_id}}">{{i.emp_name}} ({{i.emp_id}})</option>
+              {% endfor %}
+          </select>
+        </div>
+        <div class="col-md-12">
+          <label for="internal_cam_19">Select Campaign</label>
+          <input type="hidden" id="internal_cam_view_19" value="{{job.source_internal_campaign_name_19}}">
+          <select class="form-control select2" name="internal_campaign_19" id="internal_cam_19">
+              <option value="" selected disabled>Please Select Campaign</option>
+              {% for i in campaigns %}
+              <option value="{{i.campaign_name}}">{{i.campaign_name}}</option>
+              {% endfor %}
+          </select>
+        </div>
       </div>
     </div>
   </div>
@@ -1746,7 +2328,7 @@
 {% endif %}
 
 {% if job.hc_req >= 20 %}
-<div class="row">
+<div class="row" style="border-bottom: 1px solid">
   <div class="col-md-4">
     <div class="form-group">
       <label for="cand_name_20">20. Candidate Name</label>
@@ -1767,6 +2349,35 @@
         <label for="sou_social_20">Social</label>
         <input type="radio" class="source_20" name="source_20" onchange="esource_20(this)" id="sou_partner_20" value="Partners (Agency)">
         <label for="sou_partner_20">Partners (Agency)</label>
+        <input type="radio" class="source_20" name="source_20" onchange="esource_20(this)" id="sou_internal_20" value="Internal Movement">
+        <label for="sou_internal_20">Internal Movement</label>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-4 d-none" id="internal_20">
+    <div class="form-group">
+      <div class="row">
+        <div class="col-md-12">
+          <label for="internal_emp_20">Select Employee</label>
+          <input type="hidden" id="internal_emp_view_20" value="{{job.source_internal_emp_name_20}}">
+          <select class="form-control select2" name="internal_emp_id_20" id="internal_emp_20">
+              <option value="" selected disabled>Please Select Employee</option>
+              {% for i in employees %}
+               <option value="{{i.emp_id}}">{{i.emp_name}} ({{i.emp_id}})</option>
+              {% endfor %}
+          </select>
+        </div>
+        <div class="col-md-12">
+          <label for="internal_cam_20">Select Campaign</label>
+          <input type="hidden" id="internal_cam_view_20" value="{{job.source_internal_campaign_name_20}}">
+          <select class="form-control select2" name="internal_campaign_20" id="internal_cam_20">
+              <option value="" selected disabled>Please Select Campaign</option>
+              {% for i in campaigns %}
+              <option value="{{i.campaign_name}}">{{i.campaign_name}}</option>
+              {% endfor %}
+          </select>
+        </div>
       </div>
     </div>
   </div>
@@ -1884,6 +2495,10 @@
 {% endblock %}
 {% block scripts %}
   <script type="text/javascript">
+
+   $today = new Date();
+  $today = moment($today).format("YYYY-MM-DD");
+  $("#clos_date").attr("min",$today);
     function enableStatus(e){
       var hc = document.getElementById('hc_required').value;
       var status = document.getElementById('req_status');
@@ -1953,8 +2568,28 @@
         document.getElementById('part_select_{{i}}').classList.add("d-none");
         document.getElementById('partner_{{i}}').removeAttribute("required","required");
       }
+      if ( soc_{{i}} == "Internal Movement" ) {
+        document.getElementById('pleasefill_{{i}}').classList.add("d-none");
+        $("#internal_{{i}}").removeClass("d-none");
+        $("#internal_emp_{{i}}").attr("required","");
+        $("#internal_cam_{{i}}").attr("required","");
+      } else {
+        $("#internal_{{i}}").addClass("d-none");
+        $("#internal_emp_{{i}}").removeAttr("required","");
+        $("#internal_cam_{{i}}").removeAttr("required","");
+      }
     }
+    $emp_{{i}} = $('#internal_emp_view_{{i}}').val();
+    $("[name=internal_emp_id_{{i}}]").select2().val($emp_{{i}}).trigger("change");
 
+    $cam_{{i}} = $('#internal_cam_view_{{i}}').val();
+    $("[name=internal_campaign_{{i}}]").select2().val($cam_{{i}}).trigger("change");
+
+
+
+
+    $part_{{i}} = $('#mypartner_{{i}}').val();
+    $("[name=partner_{{i}}]").select2().val($part_{{i}}).trigger("change");
       var sourceva_{{i}} = document.getElementById('mysource_{{i}}').value;
       var sour_{{i}} = document.getElementsByClassName("source_{{i}}");
       for (var j = 0; j < sour_{{i}}.length ; j++) {
@@ -1963,27 +2598,13 @@
         }
       }
 
-      $(document).ready(function() {
-          $soc_{{i}} = $('#mysource_{{i}}').val();
-          if ( $soc_{{i}} == "Employee Referral" ) {
-            $('#pleasefill_{{i}}').removeClass("d-none");
-            $('#emp_name_{{i}}').removeClass("d-none");
-            $('#emp_id_{{i}}').removeClass("d-none");
-          }
-          if ( $soc_{{i}} == "Social" ) {
-            $('#pleasefill_{{i}}').removeClass("d-none");
-            $('#social_{{i}}').removeClass("d-none");
-          }
-          if ( $soc_{{i}} == "Partners (Agency)" ) {
-            $('#pleasefill_{{i}}').removeClass("d-none");
-            $('#part_select_{{i}}').removeClass("d-none");
-          }
-      });
+
+
 
 
 
     $part_{{i}} = $('#mypartner_{{i}}').val();
-    $("[name=partner_{{i}}]").select2().val($part_{{i}}).trigger("change");;
+    $("[name=partner_{{i}}]").select2().val($part_{{i}}).trigger("change");
 
     var socialval_{{i}} = document.getElementById('mysocial_{{i}}').value;
     var soci_{{i}} = document.getElementsByClassName("social_{{i}}");

@@ -15,19 +15,31 @@ class Profile(models.Model):
     emp_rm2_id = models.CharField(max_length=30)
     emp_rm3 = models.CharField(max_length=100)
     emp_rm3_id = models.CharField(max_length=30)
+    emp_email = models.EmailField(null=True,blank=True)
     agent_status = models.CharField(max_length=30,default='Active')
+
 
     def __str__(self):
         return self.emp_name
 
 
+class Campaigns(models.Model):
+    campaign_name = models.CharField(max_length=200)
+    manager = models.CharField(max_length=200)
+    manager_id = models.CharField(max_length=30)
+    def __str__(self):
+        return self.campaign_name
+
+
 class JobRequisition(models.Model):
-    requisition_date = models.DateField()
+    unique_id = models.CharField(max_length=500,null=True,blank=True)
+    requisition_date = models.DateTimeField()
     hc_req = models.IntegerField()
     req_raised_by = models.CharField(max_length=150)
     created_by_manager = models.CharField(max_length=150)
     created_by_manager_id = models.CharField(max_length=30)
     created_by_id = models.CharField(max_length=30)
+    campaign = models.CharField(max_length=200,null=True,blank=True)
     department = models.CharField(max_length=50)
     designation = models.CharField(max_length=50)
     process_type_one = models.CharField(max_length=50)
@@ -62,6 +74,9 @@ class JobRequisition(models.Model):
     candidate_name_1 = models.TextField(null=True,blank=True)
     source_1 = models.CharField(max_length=50,null=True,blank=True)
     source_emp_name_1 = models.CharField(max_length=150,null=True,blank=True)
+    source_internal_emp_name_1 = models.CharField(max_length=150,null=True,blank=True)
+    source_internal_emp_id_1 = models.CharField(max_length=30,null=True,blank=True)
+    source_internal_campaign_name_1 = models.CharField(max_length=200,null=True,blank=True)
     source_emp_id_1 = models.CharField(max_length=20,null=True,blank=True)
     source_social_1 = models.CharField(max_length=100,null=True,blank=True)
     source_partners_1 = models.CharField(max_length=100,null=True,blank=True)
@@ -70,6 +85,9 @@ class JobRequisition(models.Model):
     source_2 = models.CharField(max_length=50,null=True,blank=True)
     source_emp_name_2 = models.CharField(max_length=150,null=True,blank=True)
     source_emp_id_2 = models.CharField(max_length=20,null=True,blank=True)
+    source_internal_emp_name_2 = models.CharField(max_length=150, null=True, blank=True)
+    source_internal_emp_id_2 = models.CharField(max_length=30, null=True, blank=True)
+    source_internal_campaign_name_2 = models.CharField(max_length=200, null=True, blank=True)
     source_social_2 = models.CharField(max_length=100,null=True,blank=True)
     source_partners_2 = models.CharField(max_length=100,null=True,blank=True)
 
@@ -77,6 +95,9 @@ class JobRequisition(models.Model):
     source_3 = models.CharField(max_length=50,null=True,blank=True)
     source_emp_name_3 = models.CharField(max_length=150,null=True,blank=True)
     source_emp_id_3 = models.CharField(max_length=20,null=True,blank=True)
+    source_internal_emp_name_3 = models.CharField(max_length=150, null=True, blank=True)
+    source_internal_emp_id_3 = models.CharField(max_length=30, null=True, blank=True)
+    source_internal_campaign_name_3 = models.CharField(max_length=200, null=True, blank=True)
     source_social_3 = models.CharField(max_length=100,null=True,blank=True)
     source_partners_3 = models.CharField(max_length=100,null=True,blank=True)
 
@@ -84,6 +105,9 @@ class JobRequisition(models.Model):
     source_4 = models.CharField(max_length=50,null=True,blank=True)
     source_emp_name_4 = models.CharField(max_length=150,null=True,blank=True)
     source_emp_id_4 = models.CharField(max_length=20,null=True,blank=True)
+    source_internal_emp_name_4 = models.CharField(max_length=150, null=True, blank=True)
+    source_internal_emp_id_4 = models.CharField(max_length=30, null=True, blank=True)
+    source_internal_campaign_name_4 = models.CharField(max_length=200, null=True, blank=True)
     source_social_4 = models.CharField(max_length=100,null=True,blank=True)
     source_partners_4 = models.CharField(max_length=100,null=True,blank=True)
 
@@ -91,6 +115,9 @@ class JobRequisition(models.Model):
     source_5 = models.CharField(max_length=50,null=True,blank=True)
     source_emp_name_5 = models.CharField(max_length=150,null=True,blank=True)
     source_emp_id_5 = models.CharField(max_length=20,null=True,blank=True)
+    source_internal_emp_name_5 = models.CharField(max_length=150, null=True, blank=True)
+    source_internal_emp_id_5 = models.CharField(max_length=30, null=True, blank=True)
+    source_internal_campaign_name_5 = models.CharField(max_length=200, null=True, blank=True)
     source_social_5 = models.CharField(max_length=100,null=True,blank=True)
     source_partners_5 = models.CharField(max_length=100,null=True,blank=True)
 
@@ -98,6 +125,9 @@ class JobRequisition(models.Model):
     source_6 = models.CharField(max_length=50,null=True,blank=True)
     source_emp_name_6 = models.CharField(max_length=150,null=True,blank=True)
     source_emp_id_6 = models.CharField(max_length=20,null=True,blank=True)
+    source_internal_emp_name_6 = models.CharField(max_length=150, null=True, blank=True)
+    source_internal_emp_id_6 = models.CharField(max_length=30, null=True, blank=True)
+    source_internal_campaign_name_6 = models.CharField(max_length=200, null=True, blank=True)
     source_social_6 = models.CharField(max_length=100,null=True,blank=True)
     source_partners_6 = models.CharField(max_length=100,null=True,blank=True)
 
@@ -105,6 +135,9 @@ class JobRequisition(models.Model):
     source_7 = models.CharField(max_length=50,null=True,blank=True)
     source_emp_name_7 = models.CharField(max_length=150,null=True,blank=True)
     source_emp_id_7 = models.CharField(max_length=20,null=True,blank=True)
+    source_internal_emp_name_7 = models.CharField(max_length=150, null=True, blank=True)
+    source_internal_emp_id_7 = models.CharField(max_length=30, null=True, blank=True)
+    source_internal_campaign_name_7 = models.CharField(max_length=200, null=True, blank=True)
     source_social_7 = models.CharField(max_length=100,null=True,blank=True)
     source_partners_7 = models.CharField(max_length=100,null=True,blank=True)
 
@@ -112,6 +145,9 @@ class JobRequisition(models.Model):
     source_8 = models.CharField(max_length=50,null=True,blank=True)
     source_emp_name_8 = models.CharField(max_length=150,null=True,blank=True)
     source_emp_id_8 = models.CharField(max_length=20,null=True,blank=True)
+    source_internal_emp_name_8 = models.CharField(max_length=150, null=True, blank=True)
+    source_internal_emp_id_8 = models.CharField(max_length=30, null=True, blank=True)
+    source_internal_campaign_name_8 = models.CharField(max_length=200, null=True, blank=True)
     source_social_8 = models.CharField(max_length=100,null=True,blank=True)
     source_partners_8 = models.CharField(max_length=100,null=True,blank=True)
 
@@ -119,6 +155,9 @@ class JobRequisition(models.Model):
     source_9 = models.CharField(max_length=50,null=True,blank=True)
     source_emp_name_9 = models.CharField(max_length=150,null=True,blank=True)
     source_emp_id_9 = models.CharField(max_length=20,null=True,blank=True)
+    source_internal_emp_name_9 = models.CharField(max_length=150, null=True, blank=True)
+    source_internal_emp_id_9 = models.CharField(max_length=30, null=True, blank=True)
+    source_internal_campaign_name_9 = models.CharField(max_length=200, null=True, blank=True)
     source_social_9 = models.CharField(max_length=100,null=True,blank=True)
     source_partners_9 = models.CharField(max_length=100,null=True,blank=True)
 
@@ -126,6 +165,9 @@ class JobRequisition(models.Model):
     source_10 = models.CharField(max_length=50,null=True,blank=True)
     source_emp_name_10 = models.CharField(max_length=150,null=True,blank=True)
     source_emp_id_10 = models.CharField(max_length=20,null=True,blank=True)
+    source_internal_emp_name_10 = models.CharField(max_length=150, null=True, blank=True)
+    source_internal_emp_id_10 = models.CharField(max_length=30, null=True, blank=True)
+    source_internal_campaign_name_10 = models.CharField(max_length=200, null=True, blank=True)
     source_social_10 = models.CharField(max_length=100,null=True,blank=True)
     source_partners_10 = models.CharField(max_length=100,null=True,blank=True)
 
@@ -133,6 +175,9 @@ class JobRequisition(models.Model):
     source_11 = models.CharField(max_length=50,null=True,blank=True)
     source_emp_name_11 = models.CharField(max_length=150,null=True,blank=True)
     source_emp_id_11 = models.CharField(max_length=20,null=True,blank=True)
+    source_internal_emp_name_11 = models.CharField(max_length=150, null=True, blank=True)
+    source_internal_emp_id_11 = models.CharField(max_length=30, null=True, blank=True)
+    source_internal_campaign_name_11 = models.CharField(max_length=200, null=True, blank=True)
     source_social_11 = models.CharField(max_length=100,null=True,blank=True)
     source_partners_11 = models.CharField(max_length=100,null=True,blank=True)
 
@@ -140,6 +185,9 @@ class JobRequisition(models.Model):
     source_12 = models.CharField(max_length=50,null=True,blank=True)
     source_emp_name_12 = models.CharField(max_length=150,null=True,blank=True)
     source_emp_id_12 = models.CharField(max_length=20,null=True,blank=True)
+    source_internal_emp_name_12 = models.CharField(max_length=150, null=True, blank=True)
+    source_internal_emp_id_12 = models.CharField(max_length=30, null=True, blank=True)
+    source_internal_campaign_name_12 = models.CharField(max_length=200, null=True, blank=True)
     source_social_12 = models.CharField(max_length=100,null=True,blank=True)
     source_partners_12 = models.CharField(max_length=100,null=True,blank=True)
 
@@ -147,6 +195,9 @@ class JobRequisition(models.Model):
     source_13 = models.CharField(max_length=50,null=True,blank=True)
     source_emp_name_13 = models.CharField(max_length=150,null=True,blank=True)
     source_emp_id_13 = models.CharField(max_length=20,null=True,blank=True)
+    source_internal_emp_name_13 = models.CharField(max_length=150, null=True, blank=True)
+    source_internal_emp_id_13 = models.CharField(max_length=30, null=True, blank=True)
+    source_internal_campaign_name_13 = models.CharField(max_length=200, null=True, blank=True)
     source_social_13 = models.CharField(max_length=100,null=True,blank=True)
     source_partners_13 = models.CharField(max_length=100,null=True,blank=True)
 
@@ -154,6 +205,9 @@ class JobRequisition(models.Model):
     source_14 = models.CharField(max_length=50,null=True,blank=True)
     source_emp_name_14 = models.CharField(max_length=150,null=True,blank=True)
     source_emp_id_14 = models.CharField(max_length=20,null=True,blank=True)
+    source_internal_emp_name_14 = models.CharField(max_length=150, null=True, blank=True)
+    source_internal_emp_id_14 = models.CharField(max_length=30, null=True, blank=True)
+    source_internal_campaign_name_14 = models.CharField(max_length=200, null=True, blank=True)
     source_social_14 = models.CharField(max_length=100,null=True,blank=True)
     source_partners_14 = models.CharField(max_length=100,null=True,blank=True)
 
@@ -161,6 +215,9 @@ class JobRequisition(models.Model):
     source_15 = models.CharField(max_length=50,null=True,blank=True)
     source_emp_name_15 = models.CharField(max_length=150,null=True,blank=True)
     source_emp_id_15 = models.CharField(max_length=20,null=True,blank=True)
+    source_internal_emp_name_15 = models.CharField(max_length=150, null=True, blank=True)
+    source_internal_emp_id_15 = models.CharField(max_length=30, null=True, blank=True)
+    source_internal_campaign_name_15 = models.CharField(max_length=200, null=True, blank=True)
     source_social_15 = models.CharField(max_length=100,null=True,blank=True)
     source_partners_15 = models.CharField(max_length=100,null=True,blank=True)
 
@@ -168,6 +225,9 @@ class JobRequisition(models.Model):
     source_16 = models.CharField(max_length=50,null=True,blank=True)
     source_emp_name_16 = models.CharField(max_length=150,null=True,blank=True)
     source_emp_id_16 = models.CharField(max_length=20,null=True,blank=True)
+    source_internal_emp_name_16 = models.CharField(max_length=150, null=True, blank=True)
+    source_internal_emp_id_16 = models.CharField(max_length=30, null=True, blank=True)
+    source_internal_campaign_name_16 = models.CharField(max_length=200, null=True, blank=True)
     source_social_16 = models.CharField(max_length=100,null=True,blank=True)
     source_partners_16 = models.CharField(max_length=100,null=True,blank=True)
 
@@ -175,6 +235,9 @@ class JobRequisition(models.Model):
     source_17 = models.CharField(max_length=50,null=True,blank=True)
     source_emp_name_17 = models.CharField(max_length=150,null=True,blank=True)
     source_emp_id_17 = models.CharField(max_length=20,null=True,blank=True)
+    source_internal_emp_name_17 = models.CharField(max_length=150, null=True, blank=True)
+    source_internal_emp_id_17 = models.CharField(max_length=30, null=True, blank=True)
+    source_internal_campaign_name_17 = models.CharField(max_length=200, null=True, blank=True)
     source_social_17 = models.CharField(max_length=100,null=True,blank=True)
     source_partners_17 = models.CharField(max_length=100,null=True,blank=True)
 
@@ -182,6 +245,9 @@ class JobRequisition(models.Model):
     source_18 = models.CharField(max_length=50,null=True,blank=True)
     source_emp_name_18 = models.CharField(max_length=150,null=True,blank=True)
     source_emp_id_18 = models.CharField(max_length=20,null=True,blank=True)
+    source_internal_emp_name_18 = models.CharField(max_length=150, null=True, blank=True)
+    source_internal_emp_id_18 = models.CharField(max_length=30, null=True, blank=True)
+    source_internal_campaign_name_18 = models.CharField(max_length=200, null=True, blank=True)
     source_social_18 = models.CharField(max_length=100,null=True,blank=True)
     source_partners_18 = models.CharField(max_length=100,null=True,blank=True)
 
@@ -189,6 +255,9 @@ class JobRequisition(models.Model):
     source_19 = models.CharField(max_length=50,null=True,blank=True)
     source_emp_name_19 = models.CharField(max_length=150,null=True,blank=True)
     source_emp_id_19 = models.CharField(max_length=20,null=True,blank=True)
+    source_internal_emp_name_19 = models.CharField(max_length=150, null=True, blank=True)
+    source_internal_emp_id_19 = models.CharField(max_length=30, null=True, blank=True)
+    source_internal_campaign_name_19 = models.CharField(max_length=200, null=True, blank=True)
     source_social_19 = models.CharField(max_length=100,null=True,blank=True)
     source_partners_19 = models.CharField(max_length=100,null=True,blank=True)
 
@@ -196,17 +265,21 @@ class JobRequisition(models.Model):
     source_20 = models.CharField(max_length=50,null=True,blank=True)
     source_emp_name_20 = models.CharField(max_length=150,null=True,blank=True)
     source_emp_id_20 = models.CharField(max_length=20,null=True,blank=True)
+    source_internal_emp_name_20 = models.CharField(max_length=150, null=True, blank=True)
+    source_internal_emp_id_20 = models.CharField(max_length=30, null=True, blank=True)
+    source_internal_campaign_name_20 = models.CharField(max_length=200, null=True, blank=True)
     source_social_20 = models.CharField(max_length=100,null=True,blank=True)
     source_partners_20 = models.CharField(max_length=100,null=True,blank=True)
-
+    dead_line = models.DateField(null=True,blank=True)
 
     closed_by = models.CharField(max_length=150,null=True,blank=True)
     closed_by_id = models.CharField(max_length=30,null=True,blank=True)
 
     recruited_people = models.IntegerField(null=True,blank=True)
-    request_status = models.CharField(max_length=20, default="Pending")
+    request_status = models.CharField(max_length=100, default="Pending")
     candidate_remark = models.TextField(null=True,blank=True)
-    status = models.BooleanField(default=False)
+    initial_status = models.BooleanField(default=False)
+    final_status = models.BooleanField(default=False)
 
 
 class Tickets(models.Model):
@@ -227,4 +300,14 @@ class Employee(models.Model):
     emp_rm2_id = models.CharField(max_length=200)
     emp_rm3 = models.CharField(max_length=200)
     emp_rm3_id = models.CharField(max_length=200)
+    emp_process = models.CharField(max_length=200)
+
+
+class AllAgents(models.Model):
+    emp_id = models.CharField(max_length=200)
+    emp_name = models.CharField(max_length=200)
+    emp_desi = models.CharField(max_length=200)
+    emp_rm1 = models.CharField(max_length=200)
+    emp_rm2 = models.CharField(max_length=200)
+    emp_rm3 = models.CharField(max_length=200)
     emp_process = models.CharField(max_length=200)

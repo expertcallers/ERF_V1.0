@@ -52,11 +52,27 @@
                       <div class="col-md-3">
                         <div class="form-group">
                           <label for="manager">Your Manager</label>
-                          <input type="text" id="manager" value="{{request.user.profile.emp_rm1}}" disabled required class="form-control">
+                          <select name="manager" id="manager" required class="form-control select2">
+                            <option value="" selected disabled>Please Select</option>
+                            {% for i in managers %}
+                            <option value="{{i.emp_id}}">{{i.emp_name}}</option>
+                            {% endfor %}
+                          </select>
                         </div>
                       </div>
                     </div>
                     <div class="row">
+                      <div class="col-md-3">
+                        <div class="form-group">
+                          <label for="campaign">Campaign / Process</label>
+                          <select name="campaign" id="campaign" required class="form-control select2">
+                            <option value="" selected disabled>Please Select</option>
+                            {% for i in campaigns %}
+                            <option value="{{i.campaign_name}}">{{i.campaign_name}}</option>
+                            {% endfor %}
+                          </select>
+                        </div>
+                      </div>
                       <div class="col-md-3">
                         <div class="form-group">
                           <label for="department">Department</label>
@@ -634,7 +650,7 @@
                         <div class="form-group">
                           <label for="salary">Salary Range</label>
                           <div style="width:100%; display: inline-flex;">
-                            <input type="number" required name="sal_from" min="1" id="salary" class="form-control" placeholder="From">
+                            <input type="number" required name="sal_from" min="1" id="salary" class="form-control" placeholder="From" onchange="setMax(this)">
                             <input type="number" required name="sal_to" min="1" id="salaryto" class="form-control" placeholder="To">
                           </div>
                         </div>
@@ -727,7 +743,7 @@
                       <div class="col-md-3 d-none" id="week_off_section">
                         <div class="form-group">
                           <label for="num_off">Week Off</label>
-                          <input type="number" onchange="week(this);" min="1" max="6" name="num_off" id="num_off" class="form-control" placeholder="Number of days">
+                          <input type="number" onchange="week(this);" min="1" max="2" name="num_off" id="num_off" class="form-control" placeholder="Number of days">
                           <div id="week_off" style="width:100%; display: inline-flex;" class="mt-2 d-none">
                             <select name="off_from" id="off_from" class="form-control">
                               <option value="" selected disabled >Please Select</option>
@@ -769,6 +785,12 @@
                           <textarea name="replace_reason" id="replace_reason" class="form-control"></textarea>
                         </div>
                       </div>
+                      <div class="col-md-3">
+                        <div class="form-group">
+                          <label for="dead_line">Dead Line</label>
+                          <input type="date" name="dead_line" id="dead_line" class="form-control" required>
+                        </div>
+                      </div>
                       <div class="col-md-12">
                         <hr>
                       </div>
@@ -776,7 +798,7 @@
 
                     <div class="row mt-4">
                       <div class="col-md-12" align="center">
-                        <button type="submit" class="btn btn-success btn-lg" onclick="return confirmm(this);"  >Submit</button>
+                        <button type="submit" class="btn btn-success btn-lg" onclick="return confirmm(this);" id="submit_button">Submit</button>
                       </div>
                     </div>
                   </form>
@@ -791,6 +813,12 @@
 
 {% block scripts %}
   <script>
+  function setMax(e){
+    $("#salaryto").attr("min",e.value);
+  }
+  $today = new Date();
+  $today = moment($today).format("YYYY-MM-DD");
+  $("#dead_line").attr("min",$today);
   function workingDays(e){
     if ( e.value == "Fixed" ){
       $("#working_days_days").removeClass("d-none");

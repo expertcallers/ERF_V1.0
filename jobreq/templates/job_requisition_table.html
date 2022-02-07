@@ -23,22 +23,26 @@
                   <table  id="datatablex" class="table table-striped" style="max-width: 100% !important;">
                     <thead>
                       <tr>
+                        <th>Request ID</th>
                         <th>Requested Date</th>
                         <th>HC</th>
                         <th>Request Raised By</th>
                         <th>Department</th>
                         <th>Designation</th>
+                        <th>Process</th>
                         <th>Request Status</th>
                         <th>Action</th>
                       </tr>
                     </thead>
                     <tfoot>
                       <tr>
+                        <th>Request ID</th>
                         <th>Requested Date</th>
                         <th>HC</th>
                         <th>Request Raised By</th>
                         <th>Department</th>
                         <th>Designation</th>
+                        <th>Process</th>
                         <th>Request Status</th>
                         <th>Action</th>
                       </tr>
@@ -46,19 +50,34 @@
                     <tbody>
                     {% for i in job %}
                       <tr>
+                          <td>{{i.id}}</td>
                           <td>{{i.requisition_date}}</td>
                           <td>{{i.hc_req}}</td>
                           <td>{{i.req_raised_by}}</td>
                           <td>{{i.department}}</td>
                           <td>{{i.designation}}</td>
+                          <td>{{i.campaign}}</td>
                           <td>{{i.request_status}}</td>
                           <td>
                             <div style="display: inline-flex;">
                               <button class="btn btn-success btn-sm" data-toggle="modal" data-target="#view_{{i.id}}">View</button>
-                              {% if desi == "hr" and  i.status == False %}
-                              <a href="/erf/job-requisition-edit/{{i.id}}">
-                                <button class="btn btn-primary btn-sm">Update</button>
-                              </a>
+                              {% if i.initial_status == False %}
+                                  {% if request.user.profile.emp_desi in editaccess %}
+                                  <a href="/erf/job-requisition-edit/{{i.id}}">
+                                    <button class="btn btn-primary btn-sm">Update</button>
+                                  </a>
+                                  {% endif %}
+                              {% endif %}
+                              {% if i.final_status == False and request.user.profile.emp_desi in manager and i.initial_status == True %}
+                                  <button class="btn btn-dark btn-sm" data-toggle="modal" data-target="#approval_{{i.id}}">Approve</button>
+                              {% endif %}
+                              {% if i.final_status == False and i.initial_status == False %}
+                                  <form action="/erf/edit-requisition" method="POST" enctype="multipart/form-data">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="id" value="{{i.id}}">
+                                    <input type="hidden" name="by" value="{{i.created_by_id}}">
+                                    <button class="btn btn-danger btn-sm">Edit</button>
+                                  </form>
                               {% endif %}
                             </div>
                           </td>
@@ -75,7 +94,92 @@
         <!-- /page content -->
 
 
-
+<!-- Start View Pop-Up -->
+    {% for i in job %}
+      <div class="modal fade" id="approval_{{i.id}}" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="Approve">Request ID: {{i.id}}</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <form action="/erf/approval" method="POST" enctype="multipart/form-data">
+              {% csrf_token %}
+              <div class="modal-body">
+                <div class="row">
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label for="app_{{i.id}}req_date">Requested Date</label>
+                      <input type="text" readonly value="{{i.requisition_date}}" id="app_{{i.id}}req_date" required class="form-control">
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label for="app_{{i.id}}req_rais_by">Request Raised By</label>
+                      <input type="text" readonly value="{{i.req_raised_by}}" id="app_{{i.id}}req_rais_by" required class="form-control">
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label for="app_{{i.id}}hc_required">HC Required</label>
+                      <input type="text" readonly value="{{i.hc_req}}" id="app_{{i.id}}hc_required" required class="form-control">
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label for="app_{{i.id}}campaign">Campaign</label>
+                      <input type="text" readonly value="{{i.campaign}}" id="app_{{i.id}}campaign" required class="form-control">
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label for="v_{{i.id}}department">Department</label>
+                      <input type="text" readonly value="{{i.department}}" id="app_{{i.id}}department" required class="form-control">
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label for="v_{{i.id}}designation">Role/Designation</label>
+                      <input type="text" readonly value="{{i.designation}}" id="app_{{i.id}}designation" required class="form-control">
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label for="app_{{i.id}}closedon">Closed on</label>
+                      <input type="text" readonly value="{{i.closure_date}}" id="app_{{i.id}}closedon" required class="form-control">
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label for="app_{{i.id}}closedby">Closed By</label>
+                      <input type="text" readonly value="{{i.closed_by}}" id="app_{{i.id}}closedby" required class="form-control">
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label for="app_{{i.id}}Approval">Approval</label>
+                      <select id="app_{{i.id}}Approval" name="response" required class="form-control">
+                        <option value="" selected disabled>Please Select</option>
+                        <option value="Approve">Approve</option>
+                        <option value="Reject">Reject</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button type="submit" class="btn btn-success">Submit</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              </div>
+              <input type="hidden" name="id" value="{{i.id}}">
+            </form>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+    <!-- End View Pop-Up -->
 
     <!-- Start View Pop-Up -->
     {% for i in job %}
@@ -120,6 +224,12 @@
                             </div>
                           </div>
                           <div class="row">
+                            <div class="col-md-3">
+                              <div class="form-group">
+                                <label for="v_{{i.id}}campaign">Campaign</label>
+                                <input type="text" readonly value="{{i.campaign}}" id="v_{{i.id}}campaign" required class="form-control">
+                              </div>
+                            </div>
                             <div class="col-md-3">
                               <div class="form-group">
                                 <label for="v_{{i.id}}department">Department</label>
@@ -228,6 +338,12 @@
                               </div>
                             </div>
                             {% endif %}
+                            <div class="col-md-3">
+                              <div class="form-group">
+                                <label for="v_{{i.id}}dead_line">Dead Line</label>
+                                <input type="text" readonly value="{{i.dead_line}}" id="v_{{i.id}}dead_line" class="form-control">
+                              </div>
+                            </div>
                             <div class="col-md-12">
                               <hr>
                             </div>
@@ -245,6 +361,13 @@
                               <div class="form-group">
                                 <label for="v_{{i.id}}source_1">Source</label>
                                 <input type="text" readonly value="{{i.source_1}}" id="v_{{i.id}}source_1" class="form-control">
+                              </div>
+                            </div>
+                            <div class="col-md-3 d-none" id="v_{{i.id}}internal_1">
+                              <div class="form-group">
+                                <label for="v_{{i.id}}internal_emp_name_1">Employee Name and ID</label>
+                                <input type="text" readonly value="{{i.source_internal_emp_name_1}}" id="v_{{i.id}}internal_emp_name_1" class="form-control">
+                                <input type="text" readonly value="{{i.source_internal_emp_id_1}}" id="v_{{i.id}}internal_emp_id_1" class="form-control">
                               </div>
                             </div>
                             <div class="col-md-3 d-none" id="v_{{i.id}}emp_val_1">
@@ -286,6 +409,13 @@
                                 <input type="text" readonly value="{{i.source_2}}" id="v_{{i.id}}source_2" class="form-control">
                               </div>
                             </div>
+                            <div class="col-md-3 d-none" id="v_{{i.id}}internal_2">
+                              <div class="form-group">
+                                <label for="v_{{i.id}}internal_emp_name_2">Employee Name and ID</label>
+                                <input type="text" readonly value="{{i.source_internal_emp_name_2}}" id="v_{{i.id}}internal_emp_name_2" class="form-control">
+                                <input type="text" readonly value="{{i.source_internal_emp_id_2}}" id="v_{{i.id}}internal_emp_id_2" class="form-control">
+                              </div>
+                            </div>
                             <div class="col-md-3 d-none" id="v_{{i.id}}emp_val_2">
                               <div class="form-group">
                                 <label for="v_{{i.id}}emp_name_2">Employee Referral</label>
@@ -322,6 +452,14 @@
                               <div class="form-group">
                                 <label for="v_{{i.id}}source_3">Source</label>
                                 <input type="text" readonly value="{{i.source_3}}" id="v_{{i.id}}source_3" class="form-control">
+                              </div>
+                            </div>
+
+                            <div class="col-md-3 d-none" id="v_{{i.id}}internal_3">
+                              <div class="form-group">
+                                <label for="v_{{i.id}}internal_emp_name_3">Employee Name and ID</label>
+                                <input type="text" readonly value="{{i.source_internal_emp_name_3}}" id="v_{{i.id}}internal_emp_name_3" class="form-control">
+                                <input type="text" readonly value="{{i.source_internal_emp_id_3}}" id="v_{{i.id}}internal_emp_id_3" class="form-control">
                               </div>
                             </div>
                             <div class="col-md-3 d-none" id="v_{{i.id}}emp_val_3">
@@ -363,6 +501,14 @@
                                 <input type="text" readonly value="{{i.source_4}}" id="v_{{i.id}}source_4" class="form-control">
                               </div>
                             </div>
+
+                            <div class="col-md-3 d-none" id="v_{{i.id}}internal_4">
+                              <div class="form-group">
+                                <label for="v_{{i.id}}internal_emp_name_4">Employee Name and ID</label>
+                                <input type="text" readonly value="{{i.source_internal_emp_name_4}}" id="v_{{i.id}}internal_emp_name_4" class="form-control">
+                                <input type="text" readonly value="{{i.source_internal_emp_id_4}}" id="v_{{i.id}}internal_emp_id_4" class="form-control">
+                              </div>
+                            </div>
                             <div class="col-md-3 d-none" id="v_{{i.id}}emp_val_4">
                               <div class="form-group">
                                 <label for="v_{{i.id}}emp_name_4">Employee Referral</label>
@@ -400,6 +546,13 @@
                               <div class="form-group">
                                 <label for="v_{{i.id}}source_5">Source</label>
                                 <input type="text" readonly value="{{i.source_5}}" id="v_{{i.id}}source_5" class="form-control">
+                              </div>
+                            </div>
+                            <div class="col-md-3 d-none" id="v_{{i.id}}internal_5">
+                              <div class="form-group">
+                                <label for="v_{{i.id}}internal_emp_name_5">Employee Name and ID</label>
+                                <input type="text" readonly value="{{i.source_internal_emp_name_5}}" id="v_{{i.id}}internal_emp_name_5" class="form-control">
+                                <input type="text" readonly value="{{i.source_internal_emp_id_5}}" id="v_{{i.id}}internal_emp_id_5" class="form-control">
                               </div>
                             </div>
                             <div class="col-md-3 d-none" id="v_{{i.id}}emp_val_5">
@@ -441,6 +594,13 @@
                                 <input type="text" readonly value="{{i.source_6}}" id="v_{{i.id}}source_6" class="form-control">
                               </div>
                             </div>
+                            <div class="col-md-3 d-none" id="v_{{i.id}}internal_6">
+                              <div class="form-group">
+                                <label for="v_{{i.id}}internal_emp_name_6">Employee Name and ID</label>
+                                <input type="text" readonly value="{{i.source_internal_emp_name_6}}" id="v_{{i.id}}internal_emp_name_6" class="form-control">
+                                <input type="text" readonly value="{{i.source_internal_emp_id_6}}" id="v_{{i.id}}internal_emp_id_6" class="form-control">
+                              </div>
+                            </div>
                             <div class="col-md-3 d-none" id="v_{{i.id}}emp_val_6">
                               <div class="form-group">
                                 <label for="v_{{i.id}}emp_name_6">Employee Referral</label>
@@ -478,6 +638,13 @@
                               <div class="form-group">
                                 <label for="v_{{i.id}}source_7">Source</label>
                                 <input type="text" readonly value="{{i.source_7}}" id="v_{{i.id}}source_7" class="form-control">
+                              </div>
+                            </div>
+                            <div class="col-md-3 d-none" id="v_{{i.id}}internal_7">
+                              <div class="form-group">
+                                <label for="v_{{i.id}}internal_emp_name_7">Employee Name and ID</label>
+                                <input type="text" readonly value="{{i.source_internal_emp_name_7}}" id="v_{{i.id}}internal_emp_name_7" class="form-control">
+                                <input type="text" readonly value="{{i.source_internal_emp_id_7}}" id="v_{{i.id}}internal_emp_id_7" class="form-control">
                               </div>
                             </div>
                             <div class="col-md-3 d-none" id="v_{{i.id}}emp_val_7">
@@ -519,6 +686,13 @@
                                 <input type="text" readonly value="{{i.source_8}}" id="v_{{i.id}}source_8" class="form-control">
                               </div>
                             </div>
+                            <div class="col-md-3 d-none" id="v_{{i.id}}internal_8">
+                              <div class="form-group">
+                                <label for="v_{{i.id}}internal_emp_name_8">Employee Name and ID</label>
+                                <input type="text" readonly value="{{i.source_internal_emp_name_8}}" id="v_{{i.id}}internal_emp_name_8" class="form-control">
+                                <input type="text" readonly value="{{i.source_internal_emp_id_8}}" id="v_{{i.id}}internal_emp_id_8" class="form-control">
+                              </div>
+                            </div>
                             <div class="col-md-3 d-none" id="v_{{i.id}}emp_val_8">
                               <div class="form-group">
                                 <label for="v_{{i.id}}emp_name_8">Employee Referral</label>
@@ -556,6 +730,13 @@
                               <div class="form-group">
                                 <label for="v_{{i.id}}source_9">Source</label>
                                 <input type="text" readonly value="{{i.source_9}}" id="v_{{i.id}}source_9" class="form-control">
+                              </div>
+                            </div>
+                            <div class="col-md-3 d-none" id="v_{{i.id}}internal_9">
+                              <div class="form-group">
+                                <label for="v_{{i.id}}internal_emp_name_9">Employee Name and ID</label>
+                                <input type="text" readonly value="{{i.source_internal_emp_name_9}}" id="v_{{i.id}}internal_emp_name_9" class="form-control">
+                                <input type="text" readonly value="{{i.source_internal_emp_id_9}}" id="v_{{i.id}}internal_emp_id_9" class="form-control">
                               </div>
                             </div>
                             <div class="col-md-3 d-none" id="v_{{i.id}}emp_val_9">
@@ -597,6 +778,13 @@
                                 <input type="text" readonly value="{{i.source_10}}" id="v_{{i.id}}source_10" class="form-control">
                               </div>
                             </div>
+                            <div class="col-md-3 d-none" id="v_{{i.id}}internal_10">
+                              <div class="form-group">
+                                <label for="v_{{i.id}}internal_emp_name_10">Employee Name and ID</label>
+                                <input type="text" readonly value="{{i.source_internal_emp_name_10}}" id="v_{{i.id}}internal_emp_name_10" class="form-control">
+                                <input type="text" readonly value="{{i.source_internal_emp_id_10}}" id="v_{{i.id}}internal_emp_id_10" class="form-control">
+                              </div>
+                            </div>
                             <div class="col-md-3 d-none" id="v_{{i.id}}emp_val_10">
                               <div class="form-group">
                                 <label for="v_{{i.id}}emp_name_10">Employee Referral</label>
@@ -634,6 +822,13 @@
                               <div class="form-group">
                                 <label for="v_{{i.id}}source_11">Source</label>
                                 <input type="text" readonly value="{{i.source_11}}" id="v_{{i.id}}source_11" class="form-control">
+                              </div>
+                            </div>
+                            <div class="col-md-3 d-none" id="v_{{i.id}}internal_11">
+                              <div class="form-group">
+                                <label for="v_{{i.id}}internal_emp_name_11">Employee Name and ID</label>
+                                <input type="text" readonly value="{{i.source_internal_emp_name_11}}" id="v_{{i.id}}internal_emp_name_11" class="form-control">
+                                <input type="text" readonly value="{{i.source_internal_emp_id_11}}" id="v_{{i.id}}internal_emp_id_11" class="form-control">
                               </div>
                             </div>
                             <div class="col-md-3 d-none" id="v_{{i.id}}emp_val_11">
@@ -675,6 +870,13 @@
                                 <input type="text" readonly value="{{i.source_12}}" id="v_{{i.id}}source_12" class="form-control">
                               </div>
                             </div>
+                            <div class="col-md-3 d-none" id="v_{{i.id}}internal_12">
+                              <div class="form-group">
+                                <label for="v_{{i.id}}internal_emp_name_12">Employee Name and ID</label>
+                                <input type="text" readonly value="{{i.source_internal_emp_name_12}}" id="v_{{i.id}}internal_emp_name_12" class="form-control">
+                                <input type="text" readonly value="{{i.source_internal_emp_id_12}}" id="v_{{i.id}}internal_emp_id_12" class="form-control">
+                              </div>
+                            </div>
                             <div class="col-md-3 d-none" id="v_{{i.id}}emp_val_12">
                               <div class="form-group">
                                 <label for="v_{{i.id}}emp_name_12">Employee Referral</label>
@@ -712,6 +914,13 @@
                               <div class="form-group">
                                 <label for="v_{{i.id}}source_13">Source</label>
                                 <input type="text" readonly value="{{i.source_13}}" id="v_{{i.id}}source_13" class="form-control">
+                              </div>
+                            </div>
+                            <div class="col-md-3 d-none" id="v_{{i.id}}internal_13">
+                              <div class="form-group">
+                                <label for="v_{{i.id}}internal_emp_name_13">Employee Name and ID</label>
+                                <input type="text" readonly value="{{i.source_internal_emp_name_13}}" id="v_{{i.id}}internal_emp_name_13" class="form-control">
+                                <input type="text" readonly value="{{i.source_internal_emp_id_13}}" id="v_{{i.id}}internal_emp_id_13" class="form-control">
                               </div>
                             </div>
                             <div class="col-md-3 d-none" id="v_{{i.id}}emp_val_13">
@@ -753,6 +962,13 @@
                                 <input type="text" readonly value="{{i.source_14}}" id="v_{{i.id}}source_14" class="form-control">
                               </div>
                             </div>
+                            <div class="col-md-3 d-none" id="v_{{i.id}}internal_14">
+                              <div class="form-group">
+                                <label for="v_{{i.id}}internal_emp_name_14">Employee Name and ID</label>
+                                <input type="text" readonly value="{{i.source_internal_emp_name_14}}" id="v_{{i.id}}internal_emp_name_14" class="form-control">
+                                <input type="text" readonly value="{{i.source_internal_emp_id_14}}" id="v_{{i.id}}internal_emp_id_14" class="form-control">
+                              </div>
+                            </div>
                             <div class="col-md-3 d-none" id="v_{{i.id}}emp_val_14">
                               <div class="form-group">
                                 <label for="v_{{i.id}}emp_name_14">Employee Referral</label>
@@ -790,6 +1006,13 @@
                               <div class="form-group">
                                 <label for="v_{{i.id}}source_15">Source</label>
                                 <input type="text" readonly value="{{i.source_15}}" id="v_{{i.id}}source_15" class="form-control">
+                              </div>
+                            </div>
+                            <div class="col-md-3 d-none" id="v_{{i.id}}internal_15">
+                              <div class="form-group">
+                                <label for="v_{{i.id}}internal_emp_name_15">Employee Name and ID</label>
+                                <input type="text" readonly value="{{i.source_internal_emp_name_15}}" id="v_{{i.id}}internal_emp_name_15" class="form-control">
+                                <input type="text" readonly value="{{i.source_internal_emp_id_15}}" id="v_{{i.id}}internal_emp_id_15" class="form-control">
                               </div>
                             </div>
                             <div class="col-md-3 d-none" id="v_{{i.id}}emp_val_15">
@@ -831,6 +1054,13 @@
                                 <input type="text" readonly value="{{i.source_16}}" id="v_{{i.id}}source_16" class="form-control">
                               </div>
                             </div>
+                            <div class="col-md-3 d-none" id="v_{{i.id}}internal_16">
+                              <div class="form-group">
+                                <label for="v_{{i.id}}internal_emp_name_16">Employee Name and ID</label>
+                                <input type="text" readonly value="{{i.source_internal_emp_name_16}}" id="v_{{i.id}}internal_emp_name_16" class="form-control">
+                                <input type="text" readonly value="{{i.source_internal_emp_id_16}}" id="v_{{i.id}}internal_emp_id_16" class="form-control">
+                              </div>
+                            </div>
                             <div class="col-md-3 d-none" id="v_{{i.id}}emp_val_16">
                               <div class="form-group">
                                 <label for="v_{{i.id}}emp_name_16">Employee Referral</label>
@@ -868,6 +1098,13 @@
                               <div class="form-group">
                                 <label for="v_{{i.id}}source_17">Source</label>
                                 <input type="text" readonly value="{{i.source_17}}" id="v_{{i.id}}source_17" class="form-control">
+                              </div>
+                            </div>
+                            <div class="col-md-3 d-none" id="v_{{i.id}}internal_17">
+                              <div class="form-group">
+                                <label for="v_{{i.id}}internal_emp_name_17">Employee Name and ID</label>
+                                <input type="text" readonly value="{{i.source_internal_emp_name_17}}" id="v_{{i.id}}internal_emp_name_17" class="form-control">
+                                <input type="text" readonly value="{{i.source_internal_emp_id_17}}" id="v_{{i.id}}internal_emp_id_17" class="form-control">
                               </div>
                             </div>
                             <div class="col-md-3 d-none" id="v_{{i.id}}emp_val_17">
@@ -909,6 +1146,13 @@
                                 <input type="text" readonly value="{{i.source_18}}" id="v_{{i.id}}source_18" class="form-control">
                               </div>
                             </div>
+                            <div class="col-md-3 d-none" id="v_{{i.id}}internal_18">
+                              <div class="form-group">
+                                <label for="v_{{i.id}}internal_emp_name_18">Employee Name and ID</label>
+                                <input type="text" readonly value="{{i.source_internal_emp_name_18}}" id="v_{{i.id}}internal_emp_name_18" class="form-control">
+                                <input type="text" readonly value="{{i.source_internal_emp_id_18}}" id="v_{{i.id}}internal_emp_id_18" class="form-control">
+                              </div>
+                            </div>
                             <div class="col-md-3 d-none" id="v_{{i.id}}emp_val_18">
                               <div class="form-group">
                                 <label for="v_{{i.id}}emp_name_18">Employee Referral</label>
@@ -948,6 +1192,13 @@
                                 <input type="text" readonly value="{{i.source_19}}" id="v_{{i.id}}source_19" class="form-control">
                               </div>
                             </div>
+                            <div class="col-md-3 d-none" id="v_{{i.id}}internal_19">
+                              <div class="form-group">
+                                <label for="v_{{i.id}}internal_emp_name_19">Employee Name and ID</label>
+                                <input type="text" readonly value="{{i.source_internal_emp_name_19}}" id="v_{{i.id}}internal_emp_name_19" class="form-control">
+                                <input type="text" readonly value="{{i.source_internal_emp_id_19}}" id="v_{{i.id}}internal_emp_id_19" class="form-control">
+                              </div>
+                            </div>
                             <div class="col-md-3 d-none" id="v_{{i.id}}emp_val_19">
                               <div class="form-group">
                                 <label for="v_{{i.id}}emp_name_19">Employee Referral</label>
@@ -985,6 +1236,13 @@
                               <div class="form-group">
                                 <label for="v_{{i.id}}source_20">Source</label>
                                 <input type="text" readonly value="{{i.source_20}}" id="v_{{i.id}}source_20" class="form-control">
+                              </div>
+                            </div>
+                            <div class="col-md-3 d-none" id="v_{{i.id}}internal_20">
+                              <div class="form-group">
+                                <label for="v_{{i.id}}internal_emp_name_20">Employee Name and ID</label>
+                                <input type="text" readonly value="{{i.source_internal_emp_name_20}}" id="v_{{i.id}}internal_emp_name_20" class="form-control">
+                                <input type="text" readonly value="{{i.source_internal_emp_id_20}}" id="v_{{i.id}}internal_emp_id_20" class="form-control">
                               </div>
                             </div>
                             <div class="col-md-3 d-none" id="v_{{i.id}}emp_val_20">
@@ -1148,6 +1406,9 @@
               var soc_{{j}} = document.getElementById('v_{{i.id}}source_{{j}}').value;
               if (soc_{{j}} == "Employee Referral") {
                 document.getElementById('v_{{i.id}}emp_val_{{j}}').classList.remove("d-none");
+              }
+              if (soc_{{j}} == "Internal Movement") {
+                document.getElementById('v_{{i.id}}internal_{{j}}').classList.remove("d-none");
               }
               if ( soc_{{j}} == "Social") {
                 document.getElementById('v_{{i.id}}social_val_{{j}}').classList.remove("d-none");
