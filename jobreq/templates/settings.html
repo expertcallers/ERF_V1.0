@@ -27,6 +27,32 @@
                 </div>
               </div>
             </div>
+            <div class="col-md-6">
+              <div class="card">
+                <div class="card-header">
+                  <h2>Change Email</h2>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <label for="current_email">Your Current Email ID</label>
+                            <input type="text" readonly id="current_email" class="form-control" value="{{request.user.profile.emp_email}}">
+                        </div>
+                        <form action="/erf/edit-email" method="POST" enctype="multipart/form-data" style="width:100%;">
+                            {% csrf_token %}
+                            <div class="col-md-12 form-group mt-3">
+                                <label for="new_email">Enter the new Email ID</label>
+                                <input type="email" id="new_email" name="new_email" class="form-control">
+                            </div>
+                            <div class="col-md-12 form-group mt-3">
+                                <button class="form-control btn btn-primary">Save Change</button>
+                            </div>
+                            <input type="hidden" name="emp_id" value="{{request.user.profile.emp_id}}">
+                        </form>
+                    </div>
+                </div>
+              </div>
+            </div>
           </div>
 
 

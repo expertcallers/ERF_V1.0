@@ -34,6 +34,7 @@ def Login(request):
         if user is not None:
             # user_login
             login(request, user)
+            email = Profile.objects.get(emp_id=username).emp_email
             system = socket.gethostname()
             IPAddr = socket.gethostbyname(system)
             date_time = datetime.datetime.now()
@@ -48,19 +49,65 @@ def Login(request):
             e.save()
             designation = request.user.profile.emp_desi
 
-            if designation in am_mgr_list:
-                return redirect("/erf/manager-dashboard")
-            elif designation in hr_list:
-                return redirect("/erf/hr-dashboard")
+            if email is not None:
+                if designation in am_mgr_list:
+                    return redirect("/erf/manager-dashboard")
+                elif designation in hr_list:
+                    return redirect("/erf/hr-dashboard")
+                else:
+                    messages.info(request, 'Not authorised to view this page !')
+                    return redirect("/erf/")
             else:
-                messages.info(request, 'Not authorised to view this page !')
-                return redirect("/erf/")
+                return redirect("/erf/add-email")
 
         else:
             messages.info(request, 'Invalid user !')
             return redirect("/erf/")
     else:
         pass
+
+
+@login_required
+def AddEmail(request):
+    designation = request.user.profile.emp_desi
+    if request.method == "POST":
+        emp_id = request.POST["emp_id"]
+        email = request.POST["email"]
+        e = Profile.objects.get(emp_id=emp_id)
+        e.emp_email = email
+        e.save()
+        messages.info(request, "Email Added Successfully !")
+        if designation in am_mgr_list:
+            return redirect("/erf/manager-dashboard")
+        elif designation in hr_list:
+            return redirect("/erf/hr-dashboard")
+        else:
+            messages.info(request, 'Not authorised to view this page !')
+            return redirect("/erf/")
+    else:
+        messages.info(request, 'Please add your Email ID')
+        return render(request, "add-email.html")
+
+@login_required
+def EditEmail(request):
+    designation = request.user.profile.emp_desi
+    if request.method == "POST":
+        emp_id = request.POST["emp_id"]
+        email = request.POST["new_email"]
+        e = Profile.objects.get(emp_id=emp_id)
+        e.emp_email = email
+        e.save()
+        messages.info(request, "Email Changed Successfully !")
+        if designation in am_mgr_list:
+            return redirect("/erf/manager-dashboard")
+        elif designation in hr_list:
+            return redirect("/erf/hr-dashboard")
+        else:
+            messages.info(request, 'Not authorised to view this page !')
+            return redirect("/erf/")
+    else:
+        messages.info(request, "Invalid Request. You have been logged out :)")
+        return redirect("/erf/")
 
 @login_required
 def dashboardRedirects(request):
@@ -217,9 +264,9 @@ def job_requisition(request):
             email_template = get_template(html_path).render(data)
             to = [request.user.profile.emp_email,"aparna.ks@expertcallers.com"]
             email_msg = EmailMessage(subject,
-                                     email_template, 'testm2063@gmail.com',
+                                     email_template, 'erf@expertcallers.com',
                                      to,
-                                     reply_to=['qms@expertcallers.com'])
+                                     reply_to=['erf@expertcallers.com'])
             email_msg.content_subtype = 'html'
             email_msg.send(fail_silently=False)
             if request.user.profile.emp_desi in am_mgr_list:
@@ -523,9 +570,9 @@ def job_requisition_manager_edit(request):
         email_template = get_template(html_path).render(data)
         to = [request.user.profile.emp_email, "aparna.ks@expertcallers.com"]
         email_msg = EmailMessage(subject,
-                                 email_template, 'testm2063@gmail.com',
+                                 email_template, 'erf@expertcallers.com',
                                  to,
-                                 reply_to=['qms@expertcallers.com'])
+                                 reply_to=['erf@expertcallers.com'])
         email_msg.content_subtype = 'html'
         email_msg.send(fail_silently=False)
         designation = request.user.profile.emp_desi
@@ -1014,9 +1061,9 @@ def jobRequisitionEditUpdate(request):
             creater_email = Profile.objects.get(emp_id=creater_id).emp_email
             to = [request.user.profile.emp_email, "aparna.ks@expertcallers.com",creater_email]
             email_msg = EmailMessage(subject,
-                                     email_template, 'testm2063@gmail.com',
+                                     email_template, 'erf@expertcallers.com',
                                      to,
-                                     reply_to=['qms@expertcallers.com'])
+                                     reply_to=['erf@expertcallers.com'])
             email_msg.content_subtype = 'html'
             email_msg.send(fail_silently=False)
 
@@ -1128,9 +1175,9 @@ def approval(request):
             creater_email = Profile.objects.get(emp_id=creater_id).emp_email
             to = [request.user.profile.emp_email, "aparna.ks@expertcallers.com", creater_email]
             email_msg = EmailMessage(subject,
-                                     email_template, 'testm2063@gmail.com',
+                                     email_template, 'erf@expertcallers.com',
                                      to,
-                                     reply_to=['qms@expertcallers.com'])
+                                     reply_to=['erf@expertcallers.com'])
             email_msg.content_subtype = 'html'
             email_msg.send(fail_silently=False)
             if request.user.profile.emp_desi in hr_list:
