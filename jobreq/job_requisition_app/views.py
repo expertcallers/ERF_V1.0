@@ -5,12 +5,10 @@ import pytz
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.decorators import login_required
-from django.core.mail import send_mail, EmailMultiAlternatives, EmailMessage
+from django.core.mail import EmailMessage
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.template.loader import get_template
-from django.template import context
-
 from .models import *
 
 # Create your views here.
@@ -64,6 +62,7 @@ def Login(request):
     else:
         pass
 
+@login_required
 def dashboardRedirects(request):
     designation = request.user.profile.emp_desi
     if designation in am_mgr_list:
@@ -1075,6 +1074,7 @@ def createUserandProfile(request):
             usr.save()
             print('created'+ i.emp_name)
 
+@login_required
 def approval(request):
     if request.method == "POST":
         id = request.POST["id"]

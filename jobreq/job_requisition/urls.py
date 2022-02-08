@@ -20,6 +20,6 @@ from django.conf.urls.static import static
 
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path('erf/admin/', admin.site.urls),
     path("erf/",include("job_requisition_app.urls"))
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
