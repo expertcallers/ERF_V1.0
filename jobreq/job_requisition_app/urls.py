@@ -18,5 +18,4 @@ urlpatterns = [
     path('edit-requisition', EditRequest),
     path('createuser',createUserandProfile),
     path('approval', approval),
-    path('test', testFun),
 ]

@@ -1143,22 +1143,3 @@ def approval(request):
     else:
         messages.info(request, "Invalid Request. You have been logged out :)")
         return redirect("/erf/")
-
-def testFun(request):
-
-    hostname = socket.gethostname()
-    IPAddr = socket.gethostbyname(hostname)
-    print("Your Computer Name is:" + hostname)
-    print("Your Computer IP Address is:" + IPAddr)
-    # subject = "Created Job Requisition"
-    # html_path = 'email.html'
-    # data = {'id': "47"}
-    # email_template = get_template(html_path).render(data)
-    # to = ["testm2063@gmail.com"]
-    # email_msg = EmailMessage(subject,
-    #                          email_template, 'testm2063@gmail.com',
-    #                          to,
-    #                          reply_to=['qms@expertcallers.com'])
-    # email_msg.content_subtype = 'html'
-    # email_msg.send(fail_silently=False)
-    return render(request,"email.html")
