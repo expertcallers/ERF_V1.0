@@ -311,3 +311,10 @@ class AllAgents(models.Model):
     emp_rm2 = models.CharField(max_length=200)
     emp_rm3 = models.CharField(max_length=200)
     emp_process = models.CharField(max_length=200)
+
+class LoginHistory(models.Model):
+    emp_id = models.CharField(max_length=30)
+    emp_name = models.CharField(max_length=200)
+    ip = models.GenericIPAddressField()
+    system = models.CharField(max_length=200)
+    date_time = models.DateTimeField()

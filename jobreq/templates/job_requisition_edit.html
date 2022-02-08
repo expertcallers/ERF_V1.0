@@ -45,6 +45,12 @@
                     <div class="row">
                       <div class="col-md-3">
                         <div class="form-group">
+                          <label for="campaign">Campaign / Process</label>
+                          <input type="text" readonly value="{{job.campaign}}" id="campaign" required class="form-control">
+                        </div>
+                      </div>
+                      <div class="col-md-3">
+                        <div class="form-group">
                           <label for="department">Department</label>
                           <input type="text" readonly value="{{job.department}}" id="department" required class="form-control">
                         </div>
@@ -143,6 +149,14 @@
                           <input type="text" readonly value="{{job.requisition_type}}" id="req_type" class="form-control">
                         </div>
                       </div>
+                      {% if job.reason_for_replace %}
+                      <div class="col-md-3">
+                        <div class="form-group">
+                          <label for="reason_replace">Reason for Replacement / Buffer</label>
+                          <textarea readonly id="reason_replace" class="form-control">{{job.reason_for_replace}}</textarea>
+                        </div>
+                      </div>
+                      {% endif %}
                       <div class="col-md-12">
                         <hr>
                       </div>
@@ -2521,6 +2535,7 @@
     }
 
   {% for i in number %}
+    {% if  job.hc_req >= i  %}
     function makeReq_{{i}}(e) {
       if (e.value != ""){
         $("[name=source_{{i}}]").attr("required","required")
@@ -2585,9 +2600,6 @@
     $cam_{{i}} = $('#internal_cam_view_{{i}}').val();
     $("[name=internal_campaign_{{i}}]").select2().val($cam_{{i}}).trigger("change");
 
-
-
-
     $part_{{i}} = $('#mypartner_{{i}}').val();
     $("[name=partner_{{i}}]").select2().val($part_{{i}}).trigger("change");
       var sourceva_{{i}} = document.getElementById('mysource_{{i}}').value;
@@ -2597,11 +2609,6 @@
           sour_{{i}}[j].setAttribute("checked","checked");
         }
       }
-
-
-
-
-
 
     $part_{{i}} = $('#mypartner_{{i}}').val();
     $("[name=partner_{{i}}]").select2().val($part_{{i}}).trigger("change");
@@ -2613,6 +2620,7 @@
         soci_{{i}}[j].setAttribute("checked","checked");
       }
     }
+    {% endif %}
   {% endfor %}
     </script>
 
@@ -2641,6 +2649,7 @@
       } else {
         document.getElementById('other_quali').classList.add("d-none");
       }
+      {% if job.week_no_days %}
       var e = document.getElementById('num_off');
       var week_off = document.getElementById('week_off');
       if (e.value > 1) {
@@ -2648,6 +2657,7 @@
       } else {
         week_off.classList.add("d-none");
       }
+      {% endif %}
       var shift_time = document.getElementById('shift_time');
       var f = document.getElementById('shift');
       if (f.value == "Rotational - Timing") {

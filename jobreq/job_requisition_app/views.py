@@ -1,6 +1,6 @@
 import datetime
 from datetime import date
-
+import socket
 import pytz
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
@@ -16,7 +16,7 @@ from .models import *
 # Create your views here.
 number = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]
 # Designation List
-hr_list = ['HR','HR Manager','Manager ER','HR Lead','Sr Recruiter','MIS Executive HR','Lead HRBP','Employee Relations Specialist','Payroll Specialist','Recruiter','HR Generalist']
+hr_list = ['HR','HR Manager','Manager ER','HR Lead','Sr Recruiter','MIS Executive HR','Lead HRBP','Employee Relations Specialist','Payroll Specialist','Recruiter','HR Generalist','Associate Director']
 am_mgr_list = ['Assistant Manager','Learning and Development Head','Quality Head','Operations Manager','Service Delivery Manager','Command Centre Head','Manager']
 edit_list = ['Assistant Manager','Learning and Development Head','Quality Head','Operations Manager',
              'Service Delivery Manager','Command Centre Head','Manager','HR','HR Manager','Manager ER','HR Lead',
@@ -36,6 +36,18 @@ def Login(request):
         if user is not None:
             # user_login
             login(request, user)
+            system = socket.gethostname()
+            IPAddr = socket.gethostbyname(system)
+            date_time = datetime.datetime.now()
+            emp_id = request.user.profile.emp_id
+            emp_name = request.user.profile.emp_name
+            e = LoginHistory()
+            e.emp_id = emp_id
+            e.emp_name = emp_name
+            e.date_time = date_time
+            e.ip = IPAddr
+            e.system = system
+            e.save()
             designation = request.user.profile.emp_desi
 
             if designation in am_mgr_list:
@@ -140,9 +152,8 @@ def job_requisition(request):
         campaign = request.POST["campaign"]
         unique_id = today+hc_req+created_by_id+department+designation+dead_line
         try:
-            obj = JobRequisition.objects.get(unique_id=unique_id)
-            if obj:
-                messages.info(request, "Request added please wait!")
+            JobRequisition.objects.get(unique_id=unique_id)
+            messages.info(request, "Request added please wait!")
             if request.user.profile.emp_desi in am_mgr_list:
                 return redirect("/erf/manager-dashboard")
             elif request.user.profile.emp_desi in hr_list:
@@ -271,7 +282,8 @@ def jobRequisitionSelf(request,type):
         if request.method == "POST":
             status = request.POST["status"]
             start = request.POST["start_date"]
-            end = request.POST["end_date"]
+            end = datetime.datetime.strptime(request.POST["end_date"], "%Y-%m-%d")
+            end = end + datetime.timedelta(days=1)
             if status == "all":
                 job = JobRequisition.objects.filter(created_by_id=user,requisition_date__range=[start, end])
             elif status == "open":
@@ -309,7 +321,8 @@ def jobRequisitionAll(request,type):
             manager = request.POST["manager"]
             status = request.POST["status"]
             start = request.POST["start_date"]
-            end = request.POST["end_date"]
+            end = datetime.datetime.strptime(request.POST["end_date"], "%Y-%m-%d")
+            end = end + datetime.timedelta(days=1)
             if manager == "all" and status == "all":
                 job = JobRequisition.objects.filter(requisition_date__range=[start, end])
             elif manager == "all" and status == "open":
@@ -662,6 +675,7 @@ def jobRequisitionEditUpdate(request):
         partner_20 = request.POST.get("partner_20")
 
 
+
         source_internal_emp_id_1 = request.POST.get("internal_emp_id_1")
         source_internal_campaign_name_1 = request.POST.get("internal_campaign_1")
         source_internal_emp_id_2 = request.POST.get("internal_emp_id_2")
@@ -743,270 +757,283 @@ def jobRequisitionEditUpdate(request):
         if source_internal_emp_id_20:
             source_internal_emp_name_20 = AllAgents.objects.get(emp_id=source_internal_emp_id_20).emp_name
 
-
+        today = str(datetime.date.today())
         recruited_people = request.POST["rec_peo"]
         request_status = request.POST.get("req_status")
         if request_status == "Completed":
             request_status = "Waiting For Manager Approval"
+            unique = today+request.user.profile.emp_id+request_status+comments
         else:
             request_status = "Pending"
+            unique = today+request.user.profile.emp_id+request_status+comments
 
-        e = JobRequisition.objects.get(id=id)
+        try:
+            JobRequisition.objects.get(id=id,unique_id=unique)
+            messages.info(request, "Requisition Updated Successfully !!")
+            if request.user.profile.emp_desi in hr_list:
+                return redirect("/erf/hr-dashboard")
+            elif request.user.profile.emp_desi in am_mgr_list:
+                return redirect("/erf/manager-dashboard")
+            else:
+                messages.info(request, "Invalid Request. You have been logged out :)")
+                return redirect("/erf/")
+        except JobRequisition.DoesNotExist:
+            e = JobRequisition.objects.get(id=id)
+            e.unique_id = unique
+            if request_status == "Waiting For Manager Approval":
+                e.initial_status = True
+                e.closed_by = request.user.profile.emp_name
+                e.closed_by_id = request.user.profile.emp_id
 
-        if request_status == "Waiting For Manager Approval":
-            e.initial_status = True
-            e.closed_by = request.user.profile.emp_name
-            e.closed_by_id = request.user.profile.emp_id
+            if closure_date:
+                e.closure_date = closure_date
 
-        if closure_date:
-            e.closure_date = closure_date
+            if candidate_name_1:
+                e.candidate_name_1 = candidate_name_1
+                e.source_1 = source_1
+                e.source_emp_name_1 = referral_emp_name_1
+                e.source_emp_id_1 = referral_emp_id_1
+                if source_internal_emp_id_1:
+                    e.source_internal_emp_name_1 = source_internal_emp_name_1
+                e.source_internal_emp_id_1 = source_internal_emp_id_1
+                e.source_internal_campaign_name_1 = source_internal_campaign_name_1
+                e.source_social_1 = social_1
+                e.source_partners_1 = partner_1
+            if candidate_name_2:
+                e.candidate_name_2 = candidate_name_2
+                e.source_2 = source_2
+                e.source_emp_name_2 = referral_emp_name_2
+                e.source_emp_id_2 = referral_emp_id_2
+                if source_internal_emp_id_2:
+                    e.source_internal_emp_name_2 = source_internal_emp_name_2
+                e.source_internal_emp_id_2 = source_internal_emp_id_2
+                e.source_internal_campaign_name_2 = source_internal_campaign_name_2
+                e.source_social_2 = social_2
+                e.source_partners_2 = partner_2
+            if candidate_name_3:
+                e.candidate_name_3 = candidate_name_3
+                e.source_3 = source_3
+                e.source_emp_name_3 = referral_emp_name_3
+                e.source_emp_id_3 = referral_emp_id_3
+                if source_internal_emp_id_3:
+                    e.source_internal_emp_name_3 = source_internal_emp_name_3
+                e.source_internal_emp_id_3 = source_internal_emp_id_3
+                e.source_internal_campaign_name_3 = source_internal_campaign_name_3
+                e.source_social_3 = social_3
+                e.source_partners_3 = partner_3
+            if candidate_name_4:
+                e.candidate_name_4 = candidate_name_4
+                e.source_4 = source_4
+                e.source_emp_name_4 = referral_emp_name_4
+                e.source_emp_id_4 = referral_emp_id_4
+                if source_internal_emp_id_4:
+                    e.source_internal_emp_name_4 = source_internal_emp_name_4
+                e.source_internal_emp_id_4 = source_internal_emp_id_4
+                e.source_internal_campaign_name_4 = source_internal_campaign_name_4
+                e.source_social_4 = social_4
+                e.source_partners_4 = partner_4
+            if candidate_name_5:
+                e.candidate_name_5 = candidate_name_5
+                e.source_5 = source_5
+                e.source_emp_name_5 = referral_emp_name_5
+                e.source_emp_id_5 = referral_emp_id_5
+                if source_internal_emp_id_5:
+                    e.source_internal_emp_name_5 = source_internal_emp_name_5
+                e.source_internal_emp_id_5 = source_internal_emp_id_5
+                e.source_internal_campaign_name_5 = source_internal_campaign_name_5
+                e.source_social_5 = social_5
+                e.source_partners_5 = partner_5
+            if candidate_name_6:
+                e.candidate_name_6 = candidate_name_6
+                e.source_6 = source_6
+                e.source_emp_name_6 = referral_emp_name_6
+                e.source_emp_id_6 = referral_emp_id_6
+                e.source_internal_emp_name_6 = source_internal_emp_name_6
+                e.source_internal_emp_id_6 = source_internal_emp_id_6
+                e.source_internal_campaign_name_6 = source_internal_campaign_name_6
+                e.source_social_6 = social_6
+                e.source_partners_6 = partner_6
+            if candidate_name_7:
+                e.candidate_name_7 = candidate_name_7
+                e.source_7 = source_7
+                e.source_emp_name_7 = referral_emp_name_7
+                e.source_emp_id_7 = referral_emp_id_7
+                e.source_internal_emp_name_7 = source_internal_emp_name_7
+                e.source_internal_emp_id_7 = source_internal_emp_id_7
+                e.source_internal_campaign_name_7 = source_internal_campaign_name_7
+                e.source_social_7 = social_7
+                e.source_partners_7 = partner_7
+            if candidate_name_8:
+                e.candidate_name_8 = candidate_name_8
+                e.source_8 = source_8
+                e.source_emp_name_8 = referral_emp_name_8
+                e.source_emp_id_8 = referral_emp_id_8
+                e.source_internal_emp_name_8 = source_internal_emp_name_8
+                e.source_internal_emp_id_8 = source_internal_emp_id_8
+                e.source_internal_campaign_name_8 = source_internal_campaign_name_8
+                e.source_social_8 = social_8
+                e.source_partners_8 = partner_8
+            if candidate_name_9:
+                e.candidate_name_9 = candidate_name_9
+                e.source_9 = source_9
+                e.source_emp_name_9 = referral_emp_name_9
+                e.source_emp_id_9 = referral_emp_id_9
+                e.source_internal_emp_name_9 = source_internal_emp_name_9
+                e.source_internal_emp_id_9 = source_internal_emp_id_9
+                e.source_internal_campaign_name_9 = source_internal_campaign_name_9
+                e.source_social_9 = social_9
+                e.source_partners_9 = partner_9
+            if candidate_name_10:
+                e.candidate_name_10 = candidate_name_10
+                e.source_10 = source_10
+                e.source_emp_name_10 = referral_emp_name_10
+                e.source_emp_id_10 = referral_emp_id_10
+                e.source_internal_emp_name_10 = source_internal_emp_name_10
+                e.source_internal_emp_id_10 = source_internal_emp_id_10
+                e.source_internal_campaign_name_10 = source_internal_campaign_name_10
+                e.source_social_10 = social_10
+                e.source_partners_10 = partner_10
+            if candidate_name_11:
+                e.candidate_name_11 = candidate_name_11
+                e.source_11 = source_11
+                e.source_emp_name_11 = referral_emp_name_11
+                e.source_emp_id_11 = referral_emp_id_11
+                e.source_internal_emp_name_11 = source_internal_emp_name_11
+                e.source_internal_emp_id_11 = source_internal_emp_id_11
+                e.source_internal_campaign_name_11 = source_internal_campaign_name_11
+                e.source_social_11 = social_11
+                e.source_partners_11 = partner_11
+            if candidate_name_12:
+                e.candidate_name_12 = candidate_name_12
+                e.source_12 = source_12
+                e.source_emp_name_12 = referral_emp_name_12
+                e.source_emp_id_12 = referral_emp_id_12
+                e.source_internal_emp_name_12 = source_internal_emp_name_12
+                e.source_internal_emp_id_12 = source_internal_emp_id_12
+                e.source_internal_campaign_name_12 = source_internal_campaign_name_12
+                e.source_social_12 = social_12
+                e.source_partners_12 = partner_12
+            if candidate_name_13:
+                e.candidate_name_13 = candidate_name_13
+                e.source_13 = source_13
+                e.source_emp_name_13 = referral_emp_name_13
+                e.source_emp_id_13 = referral_emp_id_13
+                e.source_internal_emp_name_13 = source_internal_emp_name_13
+                e.source_internal_emp_id_13 = source_internal_emp_id_13
+                e.source_internal_campaign_name_13 = source_internal_campaign_name_13
+                e.source_social_13 = social_13
+                e.source_partners_13 = partner_13
+            if candidate_name_14:
+                e.candidate_name_14 = candidate_name_14
+                e.source_14 = source_14
+                e.source_emp_name_14 = referral_emp_name_14
+                e.source_emp_id_14 = referral_emp_id_14
+                e.source_internal_emp_name_14 = source_internal_emp_name_14
+                e.source_internal_emp_id_14 = source_internal_emp_id_14
+                e.source_internal_campaign_name_14 = source_internal_campaign_name_14
+                e.source_social_14 = social_14
+                e.source_partners_14 = partner_14
+            if candidate_name_15:
+                e.candidate_name_15 = candidate_name_15
+                e.source_15 = source_15
+                e.source_emp_name_15 = referral_emp_name_15
+                e.source_emp_id_15 = referral_emp_id_15
+                e.source_internal_emp_name_15 = source_internal_emp_name_15
+                e.source_internal_emp_id_15 = source_internal_emp_id_15
+                e.source_internal_campaign_name_15 = source_internal_campaign_name_15
+                e.source_social_15 = social_15
+                e.source_partners_15 = partner_15
+            if candidate_name_16:
+                e.candidate_name_16 = candidate_name_16
+                e.source_16 = source_16
+                e.source_emp_name_16 = referral_emp_name_16
+                e.source_emp_id_16 = referral_emp_id_16
+                e.source_internal_emp_name_16 = source_internal_emp_name_16
+                e.source_internal_emp_id_16 = source_internal_emp_id_16
+                e.source_internal_campaign_name_16 = source_internal_campaign_name_16
+                e.source_social_16 = social_16
+                e.source_partners_16 = partner_16
+            if candidate_name_17:
+                e.candidate_name_17 = candidate_name_17
+                e.source_17 = source_17
+                e.source_emp_name_17 = referral_emp_name_17
+                e.source_emp_id_17 = referral_emp_id_17
+                e.source_internal_emp_name_17 = source_internal_emp_name_17
+                e.source_internal_emp_id_17 = source_internal_emp_id_17
+                e.source_internal_campaign_name_17 = source_internal_campaign_name_17
+                e.source_social_17 = social_17
+                e.source_partners_17 = partner_17
+            if candidate_name_18:
+                e.candidate_name_18 = candidate_name_18
+                e.source_18 = source_18
+                e.source_emp_name_18 = referral_emp_name_18
+                e.source_emp_id_18 = referral_emp_id_18
+                e.source_internal_emp_name_18 = source_internal_emp_name_18
+                e.source_internal_emp_id_18 = source_internal_emp_id_18
+                e.source_internal_campaign_name_18 = source_internal_campaign_name_18
+                e.source_social_18 = social_18
+                e.source_partners_18 = partner_18
+            if candidate_name_19:
+                e.candidate_name_19 = candidate_name_19
+                e.source_19 = source_19
+                e.source_emp_name_19 = referral_emp_name_19
+                e.source_emp_id_19 = referral_emp_id_19
+                e.source_internal_emp_name_19 = source_internal_emp_name_19
+                e.source_internal_emp_id_19 = source_internal_emp_id_19
+                e.source_internal_campaign_name_19 = source_internal_campaign_name_19
+                e.source_social_19 = social_19
+                e.source_partners_19 = partner_19
+            if candidate_name_20:
+                e.candidate_name_20 = candidate_name_20
+                e.source_20 = source_20
+                e.source_emp_name_20 = referral_emp_name_20
+                e.source_emp_id_20 = referral_emp_id_20
+                e.source_internal_emp_name_20 = source_internal_emp_name_20
+                e.source_internal_emp_id_20 = source_internal_emp_id_20
+                e.source_internal_campaign_name_20 = source_internal_campaign_name_20
+                e.source_social_20 = social_20
+                e.source_partners_20 = partner_20
 
-        if candidate_name_1:
-            e.candidate_name_1 = candidate_name_1
-            e.source_1 = source_1
-            e.source_emp_name_1 = referral_emp_name_1
-            e.source_emp_id_1 = referral_emp_id_1
-            if source_internal_emp_id_1:
-                e.source_internal_emp_name_1 = source_internal_emp_name_1
-            e.source_internal_emp_id_1 = source_internal_emp_id_1
-            e.source_internal_campaign_name_1 = source_internal_campaign_name_1
-            e.source_social_1 = social_1
-            e.source_partners_1 = partner_1
-        if candidate_name_2:
-            e.candidate_name_2 = candidate_name_2
-            e.source_2 = source_2
-            e.source_emp_name_2 = referral_emp_name_2
-            e.source_emp_id_2 = referral_emp_id_2
-            if source_internal_emp_id_2:
-                e.source_internal_emp_name_2 = source_internal_emp_name_2
-            e.source_internal_emp_id_2 = source_internal_emp_id_2
-            e.source_internal_campaign_name_2 = source_internal_campaign_name_2
-            e.source_social_2 = social_2
-            e.source_partners_2 = partner_2
-        if candidate_name_3:
-            e.candidate_name_3 = candidate_name_3
-            e.source_3 = source_3
-            e.source_emp_name_3 = referral_emp_name_3
-            e.source_emp_id_3 = referral_emp_id_3
-            if source_internal_emp_id_3:
-                e.source_internal_emp_name_3 = source_internal_emp_name_3
-            e.source_internal_emp_id_3 = source_internal_emp_id_3
-            e.source_internal_campaign_name_3 = source_internal_campaign_name_3
-            e.source_social_3 = social_3
-            e.source_partners_3 = partner_3
-        if candidate_name_4:
-            e.candidate_name_4 = candidate_name_4
-            e.source_4 = source_4
-            e.source_emp_name_4 = referral_emp_name_4
-            e.source_emp_id_4 = referral_emp_id_4
-            if source_internal_emp_id_4:
-                e.source_internal_emp_name_4 = source_internal_emp_name_4
-            e.source_internal_emp_id_4 = source_internal_emp_id_4
-            e.source_internal_campaign_name_4 = source_internal_campaign_name_4
-            e.source_social_4 = social_4
-            e.source_partners_4 = partner_4
-        if candidate_name_5:
-            e.candidate_name_5 = candidate_name_5
-            e.source_5 = source_5
-            e.source_emp_name_5 = referral_emp_name_5
-            e.source_emp_id_5 = referral_emp_id_5
-            if source_internal_emp_id_5:
-                e.source_internal_emp_name_5 = source_internal_emp_name_5
-            e.source_internal_emp_id_5 = source_internal_emp_id_5
-            e.source_internal_campaign_name_5 = source_internal_campaign_name_5
-            e.source_social_5 = social_5
-            e.source_partners_5 = partner_5
-        if candidate_name_6:
-            e.candidate_name_6 = candidate_name_6
-            e.source_6 = source_6
-            e.source_emp_name_6 = referral_emp_name_6
-            e.source_emp_id_6 = referral_emp_id_6
-            e.source_internal_emp_name_6 = source_internal_emp_name_6
-            e.source_internal_emp_id_6 = source_internal_emp_id_6
-            e.source_internal_campaign_name_6 = source_internal_campaign_name_6
-            e.source_social_6 = social_6
-            e.source_partners_6 = partner_6
-        if candidate_name_7:
-            e.candidate_name_7 = candidate_name_7
-            e.source_7 = source_7
-            e.source_emp_name_7 = referral_emp_name_7
-            e.source_emp_id_7 = referral_emp_id_7
-            e.source_internal_emp_name_7 = source_internal_emp_name_7
-            e.source_internal_emp_id_7 = source_internal_emp_id_7
-            e.source_internal_campaign_name_7 = source_internal_campaign_name_7
-            e.source_social_7 = social_7
-            e.source_partners_7 = partner_7
-        if candidate_name_8:
-            e.candidate_name_8 = candidate_name_8
-            e.source_8 = source_8
-            e.source_emp_name_8 = referral_emp_name_8
-            e.source_emp_id_8 = referral_emp_id_8
-            e.source_internal_emp_name_8 = source_internal_emp_name_8
-            e.source_internal_emp_id_8 = source_internal_emp_id_8
-            e.source_internal_campaign_name_8 = source_internal_campaign_name_8
-            e.source_social_8 = social_8
-            e.source_partners_8 = partner_8
-        if candidate_name_9:
-            e.candidate_name_9 = candidate_name_9
-            e.source_9 = source_9
-            e.source_emp_name_9 = referral_emp_name_9
-            e.source_emp_id_9 = referral_emp_id_9
-            e.source_internal_emp_name_9 = source_internal_emp_name_9
-            e.source_internal_emp_id_9 = source_internal_emp_id_9
-            e.source_internal_campaign_name_9 = source_internal_campaign_name_9
-            e.source_social_9 = social_9
-            e.source_partners_9 = partner_9
-        if candidate_name_10:
-            e.candidate_name_10 = candidate_name_10
-            e.source_10 = source_10
-            e.source_emp_name_10 = referral_emp_name_10
-            e.source_emp_id_10 = referral_emp_id_10
-            e.source_internal_emp_name_10 = source_internal_emp_name_10
-            e.source_internal_emp_id_10 = source_internal_emp_id_10
-            e.source_internal_campaign_name_10 = source_internal_campaign_name_10
-            e.source_social_10 = social_10
-            e.source_partners_10 = partner_10
-        if candidate_name_11:
-            e.candidate_name_11 = candidate_name_11
-            e.source_11 = source_11
-            e.source_emp_name_11 = referral_emp_name_11
-            e.source_emp_id_11 = referral_emp_id_11
-            e.source_internal_emp_name_11 = source_internal_emp_name_11
-            e.source_internal_emp_id_11 = source_internal_emp_id_11
-            e.source_internal_campaign_name_11 = source_internal_campaign_name_11
-            e.source_social_11 = social_11
-            e.source_partners_11 = partner_11
-        if candidate_name_12:
-            e.candidate_name_12 = candidate_name_12
-            e.source_12 = source_12
-            e.source_emp_name_12 = referral_emp_name_12
-            e.source_emp_id_12 = referral_emp_id_12
-            e.source_internal_emp_name_12 = source_internal_emp_name_12
-            e.source_internal_emp_id_12 = source_internal_emp_id_12
-            e.source_internal_campaign_name_12 = source_internal_campaign_name_12
-            e.source_social_12 = social_12
-            e.source_partners_12 = partner_12
-        if candidate_name_13:
-            e.candidate_name_13 = candidate_name_13
-            e.source_13 = source_13
-            e.source_emp_name_13 = referral_emp_name_13
-            e.source_emp_id_13 = referral_emp_id_13
-            e.source_internal_emp_name_13 = source_internal_emp_name_13
-            e.source_internal_emp_id_13 = source_internal_emp_id_13
-            e.source_internal_campaign_name_13 = source_internal_campaign_name_13
-            e.source_social_13 = social_13
-            e.source_partners_13 = partner_13
-        if candidate_name_14:
-            e.candidate_name_14 = candidate_name_14
-            e.source_14 = source_14
-            e.source_emp_name_14 = referral_emp_name_14
-            e.source_emp_id_14 = referral_emp_id_14
-            e.source_internal_emp_name_14 = source_internal_emp_name_14
-            e.source_internal_emp_id_14 = source_internal_emp_id_14
-            e.source_internal_campaign_name_14 = source_internal_campaign_name_14
-            e.source_social_14 = social_14
-            e.source_partners_14 = partner_14
-        if candidate_name_15:
-            e.candidate_name_15 = candidate_name_15
-            e.source_15 = source_15
-            e.source_emp_name_15 = referral_emp_name_15
-            e.source_emp_id_15 = referral_emp_id_15
-            e.source_internal_emp_name_15 = source_internal_emp_name_15
-            e.source_internal_emp_id_15 = source_internal_emp_id_15
-            e.source_internal_campaign_name_15 = source_internal_campaign_name_15
-            e.source_social_15 = social_15
-            e.source_partners_15 = partner_15
-        if candidate_name_16:
-            e.candidate_name_16 = candidate_name_16
-            e.source_16 = source_16
-            e.source_emp_name_16 = referral_emp_name_16
-            e.source_emp_id_16 = referral_emp_id_16
-            e.source_internal_emp_name_16 = source_internal_emp_name_16
-            e.source_internal_emp_id_16 = source_internal_emp_id_16
-            e.source_internal_campaign_name_16 = source_internal_campaign_name_16
-            e.source_social_16 = social_16
-            e.source_partners_16 = partner_16
-        if candidate_name_17:
-            e.candidate_name_17 = candidate_name_17
-            e.source_17 = source_17
-            e.source_emp_name_17 = referral_emp_name_17
-            e.source_emp_id_17 = referral_emp_id_17
-            e.source_internal_emp_name_17 = source_internal_emp_name_17
-            e.source_internal_emp_id_17 = source_internal_emp_id_17
-            e.source_internal_campaign_name_17 = source_internal_campaign_name_17
-            e.source_social_17 = social_17
-            e.source_partners_17 = partner_17
-        if candidate_name_18:
-            e.candidate_name_18 = candidate_name_18
-            e.source_18 = source_18
-            e.source_emp_name_18 = referral_emp_name_18
-            e.source_emp_id_18 = referral_emp_id_18
-            e.source_internal_emp_name_18 = source_internal_emp_name_18
-            e.source_internal_emp_id_18 = source_internal_emp_id_18
-            e.source_internal_campaign_name_18 = source_internal_campaign_name_18
-            e.source_social_18 = social_18
-            e.source_partners_18 = partner_18
-        if candidate_name_19:
-            e.candidate_name_19 = candidate_name_19
-            e.source_19 = source_19
-            e.source_emp_name_19 = referral_emp_name_19
-            e.source_emp_id_19 = referral_emp_id_19
-            e.source_internal_emp_name_19 = source_internal_emp_name_19
-            e.source_internal_emp_id_19 = source_internal_emp_id_19
-            e.source_internal_campaign_name_19 = source_internal_campaign_name_19
-            e.source_social_19 = social_19
-            e.source_partners_19 = partner_19
-        if candidate_name_20:
-            e.candidate_name_20 = candidate_name_20
-            e.source_20 = source_20
-            e.source_emp_name_20 = referral_emp_name_20
-            e.source_emp_id_20 = referral_emp_id_20
-            e.source_internal_emp_name_20 = source_internal_emp_name_20
-            e.source_internal_emp_id_20 = source_internal_emp_id_20
-            e.source_internal_campaign_name_20 = source_internal_campaign_name_20
-            e.source_social_20 = social_20
-            e.source_partners_20 = partner_20
+            e.recruited_people = recruited_people
+            e.request_status = request_status
+            e.candidate_remark = candidate_remark
+            e.save()
+            a = Tickets.objects.get(job_requisition_id=id)
+            now_datetime = datetime.datetime.now().strftime('%b %d,%Y %H:%M:%S')
+            edited_name = request.user.profile.emp_name
+            edited_id = request.user.profile.emp_id
+            edited_by = str([now_datetime, edited_name, edited_id, comments])
+            previous = a.edited_by
+            adding = previous+",\n"+edited_by
+            a.edited_by = adding
+            a.save()
+            messages.info(request, "Requisition Updated Successfully !!")
 
-        e.recruited_people = recruited_people
-        e.request_status = request_status
-        e.candidate_remark = candidate_remark
-        e.save()
-        a = Tickets.objects.get(job_requisition_id=id)
-        now_datetime = datetime.datetime.now().strftime('%b %d,%Y %H:%M:%S')
-        edited_name = request.user.profile.emp_name
-        edited_id = request.user.profile.emp_id
-        edited_by = str([now_datetime, edited_name, edited_id, comments])
-        previous = a.edited_by
-        adding = previous+",\n"+edited_by
-        a.edited_by = adding
-        a.save()
-        messages.info(request, "Requisition Updated Successfully !!")
+            action = "Updated"
+            subject = action + " Job Requisition " + str(e.id)
+            html_path = 'email.html'
+            data = {'id': e.id, "created_date": e.requisition_date, "hc": e.hc_req, "department": e.department,
+                    "position": e.designation,
+                    "deadline": e.dead_line, "campaign": e.campaign, "user": request.user.profile.emp_name,
+                    "action": action,"status":e.request_status}
+            email_template = get_template(html_path).render(data)
+            creater_id = e.created_by_id
+            creater_email = Profile.objects.get(emp_id=creater_id).emp_email
+            to = [request.user.profile.emp_email, "aparna.ks@expertcallers.com",creater_email]
+            email_msg = EmailMessage(subject,
+                                     email_template, 'testm2063@gmail.com',
+                                     to,
+                                     reply_to=['qms@expertcallers.com'])
+            email_msg.content_subtype = 'html'
+            email_msg.send(fail_silently=False)
 
-        action = "Updated"
-        subject = action + " Job Requisition " + str(e.id)
-        html_path = 'email.html'
-        data = {'id': e.id, "created_date": e.requisition_date, "hc": e.hc_req, "department": e.department,
-                "position": e.designation,
-                "deadline": e.dead_line, "campaign": e.campaign, "user": request.user.profile.emp_name,
-                "action": action,"status":e.request_status}
-        email_template = get_template(html_path).render(data)
-        creater_id = e.created_by_id
-        creater_email = Profile.objects.get(emp_id=creater_id).emp_email
-        to = [request.user.profile.emp_email, "aparna.ks@expertcallers.com",creater_email]
-        email_msg = EmailMessage(subject,
-                                 email_template, 'testm2063@gmail.com',
-                                 to,
-                                 reply_to=['qms@expertcallers.com'])
-        email_msg.content_subtype = 'html'
-        email_msg.send(fail_silently=False)
-
-        if request.user.profile.emp_desi in hr_list:
-            return redirect("/erf/hr-dashboard")
-        elif request.user.profile.emp_desi in am_mgr_list:
-            return redirect("/erf/manager-dashboard")
-        else:
-            messages.info(request, "Invalid Request. You have been logged out :)")
-            return redirect("/erf/")
+            if request.user.profile.emp_desi in hr_list:
+                return redirect("/erf/hr-dashboard")
+            elif request.user.profile.emp_desi in am_mgr_list:
+                return redirect("/erf/manager-dashboard")
+            else:
+                messages.info(request, "Invalid Request. You have been logged out :)")
+                return redirect("/erf/")
     else:
         messages.info(request, "Invalid Request. You have been logged out :)")
         return redirect("/erf/")
@@ -1058,66 +1085,86 @@ def approval(request):
     if request.method == "POST":
         id = request.POST["id"]
         response = request.POST["response"]
-        e = JobRequisition.objects.get(id=id)
-        a = Tickets.objects.get(job_requisition_id=id)
         if response == "Approve":
-            e.final_status = True
-            e.request_status = "Approved and Complete"
-            comment = "Approved and Complete"
-            action = "Approved"
+            request_status = "Approved and Complete"
         if response == "Reject":
-            e.initial_status = False
-            e.request_status = "Rejected by Manager"
-            comment = "Rejected by Manager"
-            action = "Rejected"
-        e.save()
-        now_datetime = datetime.datetime.now().strftime('%b %d,%Y %H:%M:%S')
-        edited_name = request.user.profile.emp_name
-        edited_id = request.user.profile.emp_id
-        edited_by = str([now_datetime, edited_name, edited_id, comment])
-        previous = a.edited_by
-        adding = previous + ",\n" + edited_by
-        a.edited_by = adding
-        a.save()
-        messages.info(request,"Changes have been made successfully!")
+            request_status = "Rejected by Manager"
+        try:
+            JobRequisition.objects.get(id=id,request_status=request_status)
+            messages.info(request, "Changes have been done please refresh the page!")
+            if request.user.profile.emp_desi in hr_list:
+                return redirect("/erf/hr-dashboard")
+            elif request.user.profile.emp_desi in am_mgr_list:
+                return redirect("/erf/manager-dashboard")
+            else:
+                messages.info(request, "Invalid Request. You have been logged out :)")
+                return redirect("/erf/")
+        except JobRequisition.DoesNotExist:
+            e = JobRequisition.objects.get(id=id)
+            a = Tickets.objects.get(job_requisition_id=id)
+            if response == "Approve":
+                e.final_status = True
+                e.request_status = request_status
+                comment = "Approved and Complete"
+                action = "Approved"
+            if response == "Reject":
+                e.initial_status = False
+                e.request_status = request_status
+                comment = "Rejected by Manager"
+                action = "Rejected"
+            e.save()
+            now_datetime = datetime.datetime.now().strftime('%b %d,%Y %H:%M:%S')
+            edited_name = request.user.profile.emp_name
+            edited_id = request.user.profile.emp_id
+            edited_by = str([now_datetime, edited_name, edited_id, comment])
+            previous = a.edited_by
+            adding = previous + ",\n" + edited_by
+            a.edited_by = adding
+            a.save()
+            messages.info(request,"Changes have been made successfully!")
 
-        subject = action + " Job Requisition " + str(e.id)
-        html_path = 'email.html'
-        data = {'id': e.id, "created_date": e.requisition_date, "hc": e.hc_req, "department": e.department,
-                "position": e.designation,
-                "deadline": e.dead_line, "campaign": e.campaign, "user": request.user.profile.emp_name,
-                "action": action, "status": e.request_status}
-        email_template = get_template(html_path).render(data)
-        creater_id = e.created_by_id
-        creater_email = Profile.objects.get(emp_id=creater_id).emp_email
-        to = [request.user.profile.emp_email, "aparna.ks@expertcallers.com", creater_email]
-        email_msg = EmailMessage(subject,
-                                 email_template, 'testm2063@gmail.com',
-                                 to,
-                                 reply_to=['qms@expertcallers.com'])
-        email_msg.content_subtype = 'html'
-        email_msg.send(fail_silently=False)
-        if request.user.profile.emp_desi in hr_list:
-            return redirect("/erf/hr-dashboard")
-        elif request.user.profile.emp_desi in am_mgr_list:
-            return redirect("/erf/manager-dashboard")
-        else:
-            messages.info(request, "Invalid Request. You have been logged out :)")
-            return redirect("/erf/")
+            subject = action + " Job Requisition " + str(e.id)
+            html_path = 'email.html'
+            data = {'id': e.id, "created_date": e.requisition_date, "hc": e.hc_req, "department": e.department,
+                    "position": e.designation,
+                    "deadline": e.dead_line, "campaign": e.campaign, "user": request.user.profile.emp_name,
+                    "action": action, "status": e.request_status}
+            email_template = get_template(html_path).render(data)
+            creater_id = e.created_by_id
+            creater_email = Profile.objects.get(emp_id=creater_id).emp_email
+            to = [request.user.profile.emp_email, "aparna.ks@expertcallers.com", creater_email]
+            email_msg = EmailMessage(subject,
+                                     email_template, 'testm2063@gmail.com',
+                                     to,
+                                     reply_to=['qms@expertcallers.com'])
+            email_msg.content_subtype = 'html'
+            email_msg.send(fail_silently=False)
+            if request.user.profile.emp_desi in hr_list:
+                return redirect("/erf/hr-dashboard")
+            elif request.user.profile.emp_desi in am_mgr_list:
+                return redirect("/erf/manager-dashboard")
+            else:
+                messages.info(request, "Invalid Request. You have been logged out :)")
+                return redirect("/erf/")
     else:
         messages.info(request, "Invalid Request. You have been logged out :)")
         return redirect("/erf/")
 
 def testFun(request):
-    subject = "Created Job Requisition"
-    html_path = 'email.html'
-    data = {'id': "47"}
-    email_template = get_template(html_path).render(data)
-    to = ["testm2063@gmail.com"]
-    email_msg = EmailMessage(subject,
-                             email_template, 'testm2063@gmail.com',
-                             to,
-                             reply_to=['qms@expertcallers.com'])
-    email_msg.content_subtype = 'html'
-    email_msg.send(fail_silently=False)
+
+    hostname = socket.gethostname()
+    IPAddr = socket.gethostbyname(hostname)
+    print("Your Computer Name is:" + hostname)
+    print("Your Computer IP Address is:" + IPAddr)
+    # subject = "Created Job Requisition"
+    # html_path = 'email.html'
+    # data = {'id': "47"}
+    # email_template = get_template(html_path).render(data)
+    # to = ["testm2063@gmail.com"]
+    # email_msg = EmailMessage(subject,
+    #                          email_template, 'testm2063@gmail.com',
+    #                          to,
+    #                          reply_to=['qms@expertcallers.com'])
+    # email_msg.content_subtype = 'html'
+    # email_msg.send(fail_silently=False)
     return render(request,"email.html")
