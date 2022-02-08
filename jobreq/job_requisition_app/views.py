@@ -438,7 +438,6 @@ def EditRequest(request):
 def job_requisition_manager_edit(request):
     user = request.user.profile
     if request.method == "POST":
-        requisition_date = datetime.datetime.now(pytz.timezone('Asia/Kolkata'))
         hc_req = request.POST["hc_required"]
         req_raised_by = request.POST["req_rais_by"]
         created_by_id = request.user.profile.emp_id
@@ -475,7 +474,6 @@ def job_requisition_manager_edit(request):
         e.campaign = campaign
         e.dead_line = dead_line
         e.type_of_working = type_of_working
-        e.requisition_date =requisition_date
         e.hc_req = hc_req
         e.req_raised_by = req_raised_by
         e.created_by_manager = manager
@@ -508,10 +506,6 @@ def job_requisition_manager_edit(request):
         e.save()
 
         a = Tickets.objects.get(job_requisition_id=id)
-        a.job_requisition_id = e.id
-        a.created_by = req_raised_by
-        a.created_by_id = created_by_id
-        a.created_date = requisition_date
         now_datetime = datetime.datetime.now().strftime('%b %d,%Y %H:%M:%S')
         edited_by = str([now_datetime, request.user.profile.emp_name, request.user.profile.emp_id, "Edited the request"])
         previous = a.edited_by

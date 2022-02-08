@@ -2460,7 +2460,7 @@
                       <div class="col-md-3">
                         <div class="form-group">
                           <label for="rec_peo">No of people recruited</label>
-                          <input type="number" onchange="enableStatus(this);" required name="rec_peo" min="1" max="{{job.hc_req}}" id="rec_peo" class="form-control" value="{{job.recruited_people}}">
+                          <input type="number" onchange="enableStatus(this);" required name="rec_peo" min="1" max="{{job.hc_req}}" id="rec_peo" class="form-control" value="{% if job.recruited_people %}{{job.recruited_people}}{% endif %}">
                         </div>
                       </div>
                       <div class="col-md-3">
