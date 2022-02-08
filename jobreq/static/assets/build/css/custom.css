@@ -5070,7 +5070,7 @@ ul.notifications {
    box-shadow: 1px 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
   min-height: 215px;
 }
-#widgetCardIcon {
+.widgetCardIcon {
   background: #1ABB9C!important;
   font-size: 50px;
   line-height: 115px;
