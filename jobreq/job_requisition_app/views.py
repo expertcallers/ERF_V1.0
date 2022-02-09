@@ -24,8 +24,6 @@ mgr_list = ['Learning and Development Head','Quality Head','Operations Manager',
 
 def index(request):
     logout(request)
-
-    print(datetime.datetime.now(pytz.timezone('Asia/Kolkata')))
     return render(request, "index.html")
 
 def Login(request):
@@ -417,7 +415,6 @@ def jobRequisitionAll(request,type):
                 end = datetime.datetime.strptime(end, "%Y-%m-%d")
             else:
                 end = datetime.datetime.strptime(tomorrow, "%Y-%m-%d")
-            print(end)
             end = end + datetime.timedelta(days=1)
             if start:
                 if designation:
