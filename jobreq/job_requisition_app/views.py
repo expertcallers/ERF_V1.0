@@ -268,7 +268,8 @@ def job_requisition(request):
             data = {'id': e.id,"created_date":requisition_date,"hc":hc_req,"department":department,"position":designation,
                     "deadline":dead_line,"campaign":campaign,"user":user.emp_name,"action":action,"status":"Pending"}
             email_template = get_template(html_path).render(data)
-            to = [request.user.profile.emp_email,"aparna.ks@expertcallers.com"]
+            manager_email = Profile.objects.get(emp_id=manager_id).emp_email
+            to = [request.user.profile.emp_email,"aparna.ks@expertcallers.com",manager_email]
             email_msg = EmailMessage(subject,
                                      email_template, 'erf@expertcallers.com',
                                      to,
@@ -615,7 +616,8 @@ def job_requisition_manager_edit(request):
                     "deadline": e.dead_line, "campaign": e.campaign, "user": request.user.profile.emp_name,
                     "action": action,"status":e.request_status}
             email_template = get_template(html_path).render(data)
-            to = [request.user.profile.emp_email, "aparna.ks@expertcallers.com"]
+            manager_email = Profile.objects.get(emp_id=manager_id).emp_email
+            to = [request.user.profile.emp_email, "aparna.ks@expertcallers.com",manager_email]
             email_msg = EmailMessage(subject,
                                      email_template, 'erf@expertcallers.com',
                                      to,
@@ -1107,7 +1109,9 @@ def jobRequisitionEditUpdate(request):
             email_template = get_template(html_path).render(data)
             creater_id = e.created_by_id
             creater_email = Profile.objects.get(emp_id=creater_id).emp_email
-            to = [request.user.profile.emp_email, "aparna.ks@expertcallers.com",creater_email]
+            manager_id = e.created_by_manager_id
+            manager_email = Profile.objects.get(emp_id=manager_id).emp_email
+            to = [request.user.profile.emp_email, "aparna.ks@expertcallers.com",creater_email,manager_email]
             email_msg = EmailMessage(subject,
                                      email_template, 'erf@expertcallers.com',
                                      to,
