@@ -8,11 +8,11 @@
           <div class="page-title">
             <div class="title_left">
               {% if type == "open" %}
-              <h3>Open Job Requisition</h3>
+              <h3>Open Job Requisitions</h3>
               {% elif type == "closed" %}
-              <h3>Completed Job Requisition</h3>
+              <h3>Completed Job Requisitions</h3>
               {% elif type == "all" %}
-              <h3>All Job Requisition</h3>
+              <h3>All Job Requisitions</h3>
               {% elif type == "dead-line" %}
               <h3>Requisitions Crossed Dead Line</h3>
               {% elif type == "waiting" %}
@@ -193,7 +193,7 @@
         <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
           <div class="modal-content">
             <div class="modal-header">
-              <h5 class="modal-title" id="exampleModalLongTitle">Add New Designation</h5>
+              <h5 class="modal-title" id="exampleModalLongTitle">View Job Requisition {{i.id}}</h5>
               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
               </button>
