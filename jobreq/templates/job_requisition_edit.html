@@ -163,7 +163,7 @@
 
 
 {% if job.hc_req >= 1 %}
-<div class="row" style="border-bottom: 1px solid">
+<div class="row" style="border-bottom: 1px solid;">
   <div class="col-md-4">
     <div class="form-group">
       <label for="cand_name_1">01. Candidate Name</label>
@@ -275,7 +275,7 @@
 {% endif %}
 
 {% if job.hc_req >= 2 %}
-<div class="row" style="border-bottom: 1px solid">
+<div class="row" style="border-bottom: 1px solid;">
   <div class="col-md-4">
     <div class="form-group">
       <label for="cand_name_2">02. Candidate Name</label>
@@ -390,7 +390,7 @@
 {% endif %}
 
 {% if job.hc_req >= 3 %}
-<div class="row" style="border-bottom: 1px solid">
+<div class="row" style="border-bottom: 1px solid;">
   <div class="col-md-4">
     <div class="form-group">
       <label for="cand_name_3">03. Candidate Name</label>
@@ -507,7 +507,7 @@
 {% endif %}
 
 {% if job.hc_req >= 4 %}
-<div class="row" style="border-bottom: 1px solid">
+<div class="row" style="border-bottom: 1px solid;">
   <div class="col-md-4">
     <div class="form-group">
       <label for="cand_name_4">04. Candidate Name</label>
@@ -623,7 +623,7 @@
 {% endif %}
 
 {% if job.hc_req >= 5 %}
-<div class="row" style="border-bottom: 1px solid">
+<div class="row" style="border-bottom: 1px solid;">
   <div class="col-md-4">
     <div class="form-group">
       <label for="cand_name_5">05. Candidate Name</label>
@@ -739,7 +739,7 @@
 {% endif %}
 
 {% if job.hc_req >= 6 %}
-<div class="row">
+<div class="row" style="border-bottom: 1px solid;">
   <div class="col-md-4">
     <div class="form-group">
       <label for="cand_name_6">06. Candidate Name</label>
@@ -855,7 +855,7 @@
 {% endif %}
 
 {% if job.hc_req >= 7 %}
-<div class="row">
+<div class="row" style="border-bottom: 1px solid;">
   <div class="col-md-4">
     <div class="form-group">
       <label for="cand_name_7">07. Candidate Name</label>
@@ -2546,7 +2546,6 @@
       document.getElementById('part_select_{{i}}').classList.remove("d-none");
     }
     if ( $soc_{{i}} == "Internal Movement" ) {
-      document.getElementById('pleasefill_{{i}}').classList.remove("d-none");
       $("#internal_{{i}}").removeClass("d-none");
     }
     function makeReq_{{i}}(e) {

@@ -938,7 +938,8 @@ def jobRequisitionEditUpdate(request):
                 e.source_6 = source_6
                 e.source_emp_name_6 = referral_emp_name_6
                 e.source_emp_id_6 = referral_emp_id_6
-                e.source_internal_emp_name_6 = source_internal_emp_name_6
+                if source_internal_emp_id_6:
+                    e.source_internal_emp_name_6 = source_internal_emp_name_6
                 e.source_internal_emp_id_6 = source_internal_emp_id_6
                 e.source_internal_campaign_name_6 = source_internal_campaign_name_6
                 e.source_social_6 = social_6
@@ -948,7 +949,8 @@ def jobRequisitionEditUpdate(request):
                 e.source_7 = source_7
                 e.source_emp_name_7 = referral_emp_name_7
                 e.source_emp_id_7 = referral_emp_id_7
-                e.source_internal_emp_name_7 = source_internal_emp_name_7
+                if source_internal_emp_id_7:
+                    e.source_internal_emp_name_7 = source_internal_emp_name_7
                 e.source_internal_emp_id_7 = source_internal_emp_id_7
                 e.source_internal_campaign_name_7 = source_internal_campaign_name_7
                 e.source_social_7 = social_7
@@ -958,7 +960,8 @@ def jobRequisitionEditUpdate(request):
                 e.source_8 = source_8
                 e.source_emp_name_8 = referral_emp_name_8
                 e.source_emp_id_8 = referral_emp_id_8
-                e.source_internal_emp_name_8 = source_internal_emp_name_8
+                if source_internal_emp_id_8:
+                    e.source_internal_emp_name_8 = source_internal_emp_name_8
                 e.source_internal_emp_id_8 = source_internal_emp_id_8
                 e.source_internal_campaign_name_8 = source_internal_campaign_name_8
                 e.source_social_8 = social_8
@@ -968,7 +971,8 @@ def jobRequisitionEditUpdate(request):
                 e.source_9 = source_9
                 e.source_emp_name_9 = referral_emp_name_9
                 e.source_emp_id_9 = referral_emp_id_9
-                e.source_internal_emp_name_9 = source_internal_emp_name_9
+                if source_internal_emp_id_9:
+                    e.source_internal_emp_name_9 = source_internal_emp_name_9
                 e.source_internal_emp_id_9 = source_internal_emp_id_9
                 e.source_internal_campaign_name_9 = source_internal_campaign_name_9
                 e.source_social_9 = social_9
@@ -978,7 +982,8 @@ def jobRequisitionEditUpdate(request):
                 e.source_10 = source_10
                 e.source_emp_name_10 = referral_emp_name_10
                 e.source_emp_id_10 = referral_emp_id_10
-                e.source_internal_emp_name_10 = source_internal_emp_name_10
+                if source_internal_emp_id_10:
+                    e.source_internal_emp_name_10 = source_internal_emp_name_10
                 e.source_internal_emp_id_10 = source_internal_emp_id_10
                 e.source_internal_campaign_name_10 = source_internal_campaign_name_10
                 e.source_social_10 = social_10
@@ -988,7 +993,8 @@ def jobRequisitionEditUpdate(request):
                 e.source_11 = source_11
                 e.source_emp_name_11 = referral_emp_name_11
                 e.source_emp_id_11 = referral_emp_id_11
-                e.source_internal_emp_name_11 = source_internal_emp_name_11
+                if source_internal_emp_id_11:
+                    e.source_internal_emp_name_11 = source_internal_emp_name_11
                 e.source_internal_emp_id_11 = source_internal_emp_id_11
                 e.source_internal_campaign_name_11 = source_internal_campaign_name_11
                 e.source_social_11 = social_11
@@ -998,7 +1004,8 @@ def jobRequisitionEditUpdate(request):
                 e.source_12 = source_12
                 e.source_emp_name_12 = referral_emp_name_12
                 e.source_emp_id_12 = referral_emp_id_12
-                e.source_internal_emp_name_12 = source_internal_emp_name_12
+                if source_internal_emp_id_12:
+                    e.source_internal_emp_name_12 = source_internal_emp_name_12
                 e.source_internal_emp_id_12 = source_internal_emp_id_12
                 e.source_internal_campaign_name_12 = source_internal_campaign_name_12
                 e.source_social_12 = social_12
@@ -1008,7 +1015,8 @@ def jobRequisitionEditUpdate(request):
                 e.source_13 = source_13
                 e.source_emp_name_13 = referral_emp_name_13
                 e.source_emp_id_13 = referral_emp_id_13
-                e.source_internal_emp_name_13 = source_internal_emp_name_13
+                if source_internal_emp_id_13:
+                    e.source_internal_emp_name_13 = source_internal_emp_name_13
                 e.source_internal_emp_id_13 = source_internal_emp_id_13
                 e.source_internal_campaign_name_13 = source_internal_campaign_name_13
                 e.source_social_13 = social_13
@@ -1018,7 +1026,8 @@ def jobRequisitionEditUpdate(request):
                 e.source_14 = source_14
                 e.source_emp_name_14 = referral_emp_name_14
                 e.source_emp_id_14 = referral_emp_id_14
-                e.source_internal_emp_name_14 = source_internal_emp_name_14
+                if source_internal_emp_id_14:
+                    e.source_internal_emp_name_14 = source_internal_emp_name_14
                 e.source_internal_emp_id_14 = source_internal_emp_id_14
                 e.source_internal_campaign_name_14 = source_internal_campaign_name_14
                 e.source_social_14 = social_14
@@ -1028,7 +1037,8 @@ def jobRequisitionEditUpdate(request):
                 e.source_15 = source_15
                 e.source_emp_name_15 = referral_emp_name_15
                 e.source_emp_id_15 = referral_emp_id_15
-                e.source_internal_emp_name_15 = source_internal_emp_name_15
+                if source_internal_emp_id_15:
+                    e.source_internal_emp_name_15 = source_internal_emp_name_15
                 e.source_internal_emp_id_15 = source_internal_emp_id_15
                 e.source_internal_campaign_name_15 = source_internal_campaign_name_15
                 e.source_social_15 = social_15
@@ -1038,7 +1048,8 @@ def jobRequisitionEditUpdate(request):
                 e.source_16 = source_16
                 e.source_emp_name_16 = referral_emp_name_16
                 e.source_emp_id_16 = referral_emp_id_16
-                e.source_internal_emp_name_16 = source_internal_emp_name_16
+                if source_internal_emp_id_16:
+                    e.source_internal_emp_name_16 = source_internal_emp_name_16
                 e.source_internal_emp_id_16 = source_internal_emp_id_16
                 e.source_internal_campaign_name_16 = source_internal_campaign_name_16
                 e.source_social_16 = social_16
@@ -1048,7 +1059,8 @@ def jobRequisitionEditUpdate(request):
                 e.source_17 = source_17
                 e.source_emp_name_17 = referral_emp_name_17
                 e.source_emp_id_17 = referral_emp_id_17
-                e.source_internal_emp_name_17 = source_internal_emp_name_17
+                if source_internal_emp_id_17:
+                    e.source_internal_emp_name_17 = source_internal_emp_name_17
                 e.source_internal_emp_id_17 = source_internal_emp_id_17
                 e.source_internal_campaign_name_17 = source_internal_campaign_name_17
                 e.source_social_17 = social_17
@@ -1058,7 +1070,8 @@ def jobRequisitionEditUpdate(request):
                 e.source_18 = source_18
                 e.source_emp_name_18 = referral_emp_name_18
                 e.source_emp_id_18 = referral_emp_id_18
-                e.source_internal_emp_name_18 = source_internal_emp_name_18
+                if source_internal_emp_id_18:
+                    e.source_internal_emp_name_18 = source_internal_emp_name_18
                 e.source_internal_emp_id_18 = source_internal_emp_id_18
                 e.source_internal_campaign_name_18 = source_internal_campaign_name_18
                 e.source_social_18 = social_18
@@ -1068,7 +1081,8 @@ def jobRequisitionEditUpdate(request):
                 e.source_19 = source_19
                 e.source_emp_name_19 = referral_emp_name_19
                 e.source_emp_id_19 = referral_emp_id_19
-                e.source_internal_emp_name_19 = source_internal_emp_name_19
+                if source_internal_emp_id_19:
+                    e.source_internal_emp_name_19 = source_internal_emp_name_19
                 e.source_internal_emp_id_19 = source_internal_emp_id_19
                 e.source_internal_campaign_name_19 = source_internal_campaign_name_19
                 e.source_social_19 = social_19
@@ -1078,7 +1092,8 @@ def jobRequisitionEditUpdate(request):
                 e.source_20 = source_20
                 e.source_emp_name_20 = referral_emp_name_20
                 e.source_emp_id_20 = referral_emp_id_20
-                e.source_internal_emp_name_20 = source_internal_emp_name_20
+                if source_internal_emp_id_20:
+                    e.source_internal_emp_name_20 = source_internal_emp_name_20
                 e.source_internal_emp_id_20 = source_internal_emp_id_20
                 e.source_internal_campaign_name_20 = source_internal_campaign_name_20
                 e.source_social_20 = social_20
