@@ -1279,12 +1279,14 @@
 
 
                           <div class="row">
+                            {% if i.closure_date %}
                             <div class="col-md-3">
                               <div class="form-group">
                                 <label for="v_{{i.id}}clos_date">Closure Date</label>
                                 <input type="text" readonly value="{{i.closure_date}}" id="v_{{i.id}}clos_date" class="form-control">
                               </div>
                             </div>
+                            {% endif %}
                             {% if i.recruited_people %}
                             <div class="col-md-3" id="v_{{i.id}}rec_popmain">
                               <div class="form-group">
