@@ -77,7 +77,7 @@
                               {% if i.final_status == False and request.user.profile.emp_desi in manager and i.initial_status == True %}
                                   <button class="btn btn-dark btn-sm" data-toggle="modal" data-target="#approval_{{i.id}}">Approve</button>
                               {% endif %}
-                              {% if i.final_status == False and i.initial_status == False %}
+                              {% if i.final_status == False and i.initial_status == False and request.user.profile.emp_id == i.created_by_id %}
                                   <form action="/erf/edit-requisition" method="POST" enctype="multipart/form-data">
                                     {% csrf_token %}
                                     <input type="hidden" name="id" value="{{i.id}}">
