@@ -24,6 +24,8 @@ mgr_list = ['Learning and Development Head','Quality Head','Operations Manager',
 
 def index(request):
     logout(request)
+
+    print(datetime.datetime.now(pytz.timezone('Asia/Kolkata')))
     return render(request, "index.html")
 
 def Login(request):
@@ -172,7 +174,7 @@ def HRDashboard(request):
 def job_requisition(request):
     user = request.user.profile
     if request.method == "POST":
-        requisition_date = datetime.datetime.now()
+        requisition_date = datetime.datetime.now(pytz.timezone('Asia/Kolkata'))
         hc_req = request.POST["hc_required"]
         req_raised_by = request.POST["req_rais_by"]
         created_by_id = request.user.profile.emp_id
@@ -334,7 +336,12 @@ def jobRequisitionSelf(request,type):
         if request.method == "POST":
             status = request.POST["status"]
             start = request.POST["start_date"]
-            end = datetime.datetime.strptime(request.POST["end_date"], "%Y-%m-%d")
+            tomorrow = str(datetime.date.today() + datetime.timedelta(days=1))
+            end = request.POST.get("end_date")
+            if end:
+                end = datetime.datetime.strptime(end, "%Y-%m-%d")
+            else:
+                end = datetime.datetime.strptime(tomorrow, "%Y-%m-%d")
             end = end + datetime.timedelta(days=1)
             if status == "all":
                 job = JobRequisition.objects.filter(created_by_id=user,requisition_date__range=[start, end])
@@ -373,7 +380,12 @@ def jobRequisitionAll(request,type):
             manager = request.POST["manager"]
             status = request.POST["status"]
             start = request.POST["start_date"]
-            end = datetime.datetime.strptime(request.POST["end_date"], "%Y-%m-%d")
+            tomorrow = str(datetime.date.today() + datetime.timedelta(days=1))
+            end = request.POST.get("end_date")
+            if end:
+                end = datetime.datetime.strptime(end, "%Y-%m-%d")
+            else:
+                end = datetime.datetime.strptime(tomorrow, "%Y-%m-%d")
             end = end + datetime.timedelta(days=1)
             if manager == "all" and status == "all":
                 job = JobRequisition.objects.filter(requisition_date__range=[start, end])
@@ -399,7 +411,13 @@ def jobRequisitionAll(request,type):
             department = request.POST["department"]
             designation = request.POST.get("designation")
             start = request.POST.get("start_date")
-            end = datetime.datetime.strptime(request.POST["end_date"], "%Y-%m-%d")
+            tomorrow = str(datetime.date.today() + datetime.timedelta(days=1))
+            end = request.POST.get("end_date")
+            if end:
+                end = datetime.datetime.strptime(end, "%Y-%m-%d")
+            else:
+                end = datetime.datetime.strptime(tomorrow, "%Y-%m-%d")
+            print(end)
             end = end + datetime.timedelta(days=1)
             if start:
                 if designation:

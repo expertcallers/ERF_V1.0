@@ -56,7 +56,7 @@
   <body class="nav-md">
     <div class="container body">
       <div class="main_container">
-        <div class="col-md-3 left_col">
+        <div class="col-md-3 left_col menu_fixed">
           <div class="left_col scroll-view">
             <div class="navbar nav_title clearfix" style="border: 0; background-color: #fff;">
               <div class="site_title">
@@ -128,6 +128,9 @@
                   <div class="dropdown-menu dropdown-usermenu pull-right" aria-labelledby="navbarDropdown">
                     <a class="dropdown-item"  href="/erf/"><i class="fa fa-sign-out pull-right"></i> Log Out</a>
                   </div>
+                </li>
+                <li style="margin-top:5px !important;">
+                  Your Email: {{request.user.profile.emp_email}}
                 </li>
               </ul>
             </nav>
