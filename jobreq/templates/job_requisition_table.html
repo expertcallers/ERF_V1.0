@@ -13,6 +13,12 @@
               <h3>Completed Job Requisition</h3>
               {% elif type == "all" %}
               <h3>All Job Requisition</h3>
+              {% elif type == "dead-line" %}
+              <h3>Requisitions Crossed Dead Line</h3>
+              {% elif type == "waiting" %}
+              <h3>Requisitions Waiting for Manager's Approval</h3>
+              {% else %}
+              <h3>Job Requisitions</h3>
               {% endif %}
             </div>
           </div>
