@@ -12,19 +12,24 @@ from django.template.loader import get_template
 from .models import *
 
 # Create your views here.
-number = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]
+number = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
 # Designation List
-hr_list = ['HR','HR Manager','Manager ER','HR Lead','Sr Recruiter','MIS Executive HR','Lead HRBP','Employee Relations Specialist','Payroll Specialist','Recruiter','HR Generalist','Associate Director']
-am_mgr_list = ['Assistant Manager','Learning and Development Head','Quality Head','Operations Manager','Service Delivery Manager','Command Centre Head','Manager']
-edit_list = ['Assistant Manager','Learning and Development Head','Quality Head','Operations Manager',
-             'Service Delivery Manager','Command Centre Head','Manager','HR','HR Manager','Manager ER','HR Lead',
-             'Sr Recruiter','MIS Executive HR','Lead HRBP','Employee Relations Specialist','Payroll Specialist',
-             'Recruiter','HR Generalist']
-mgr_list = ['Learning and Development Head','Quality Head','Operations Manager','Service Delivery Manager','Command Centre Head','Manager']
+hr_list = ['HR', 'HR Manager', 'Manager ER', 'HR Lead', 'Sr Recruiter', 'MIS Executive HR', 'Lead HRBP',
+           'Employee Relations Specialist', 'Payroll Specialist', 'Recruiter', 'HR Generalist', 'Associate Director']
+am_mgr_list = ['Assistant Manager', 'Learning and Development Head', 'Quality Head', 'Operations Manager',
+               'Service Delivery Manager', 'Command Centre Head', 'Manager']
+edit_list = ['Assistant Manager', 'Learning and Development Head', 'Quality Head', 'Operations Manager',
+             'Service Delivery Manager', 'Command Centre Head', 'Manager', 'HR', 'HR Manager', 'Manager ER', 'HR Lead',
+             'Sr Recruiter', 'MIS Executive HR', 'Lead HRBP', 'Employee Relations Specialist', 'Payroll Specialist',
+             'Recruiter', 'HR Generalist']
+mgr_list = ['Learning and Development Head', 'Quality Head', 'Operations Manager', 'Service Delivery Manager',
+            'Command Centre Head', 'Manager']
+management_list = ['Associate Director']
 
 def index(request):
     logout(request)
     return render(request, "index.html")
+
 
 def Login(request):
     if request.method == "POST":
@@ -88,6 +93,7 @@ def AddEmail(request):
         messages.info(request, 'Please add your Email ID')
         return render(request, "add-email.html")
 
+
 @login_required
 def EditEmail(request):
     designation = request.user.profile.emp_desi
@@ -109,6 +115,7 @@ def EditEmail(request):
         messages.info(request, "Invalid Request. You have been logged out :)")
         return redirect("/erf/")
 
+
 @login_required
 def dashboardRedirects(request):
     designation = request.user.profile.emp_desi
@@ -127,22 +134,25 @@ def ManagerDashboard(request):
     emp_id = request.user.profile.emp_id
     if designation in am_mgr_list:
         all = JobRequisition.objects.filter(created_by_id=emp_id).count()
-        open = JobRequisition.objects.filter(created_by_id=emp_id,final_status=False).count()
-        closed = JobRequisition.objects.filter(created_by_id=emp_id,final_status=True).count()
-        dead_line = JobRequisition.objects.filter(created_by_id=emp_id,final_status=False)
+        open = JobRequisition.objects.filter(created_by_id=emp_id, final_status=False).count()
+        closed = JobRequisition.objects.filter(created_by_id=emp_id, final_status=True).count()
+        dead_line = JobRequisition.objects.filter(created_by_id=emp_id, final_status=False)
         today = datetime.date.today()
         dead_line_count_list = []
         for i in dead_line:
             if i.dead_line < today:
                 dead_line_count_list.append(i.id)
         dead_line_count = len(dead_line_count_list)
-        approval = JobRequisition.objects.filter(created_by_manager_id=emp_id,initial_status=True,final_status=False).count()
+        approval = JobRequisition.objects.filter(created_by_manager_id=emp_id, initial_status=True,
+                                                 final_status=False).count()
 
-        data = {"all":all,"open":open,"closed":closed,"dead_line":dead_line_count,"approval":approval,"manager":mgr_list}
-        return render(request, "manager_dashboard.html",data)
+        data = {"all": all, "open": open, "closed": closed, "dead_line": dead_line_count, "approval": approval,
+                "manager": mgr_list}
+        return render(request, "manager_dashboard.html", data)
     else:
         messages.info(request, "Invalid Request. You have been logged out :)")
         return redirect("/erf/")
+
 
 @login_required
 def HRDashboard(request):
@@ -154,7 +164,7 @@ def HRDashboard(request):
         open = JobRequisition.objects.filter(initial_status=False).count()
         closed = JobRequisition.objects.filter(final_status=True).count()
         added = JobRequisition.objects.filter(created_by_id=usr).count()
-        waiting = JobRequisition.objects.filter(initial_status=True,final_status=False).count()
+        waiting = JobRequisition.objects.filter(initial_status=True, final_status=False).count()
         dead_line = JobRequisition.objects.filter(final_status=False)
         today = datetime.date.today()
         dead_line_count_list = []
@@ -162,11 +172,13 @@ def HRDashboard(request):
             if i.dead_line < today:
                 dead_line_count_list.append(i.id)
         dead_line_count = len(dead_line_count_list)
-        data ={"all":all,"open":open,"closed":closed,"added":added,"manager":manager,"waiting":waiting,"dead_line":dead_line_count}
-        return render(request, "hr_dashboard.html",data)
+        data = {"all": all, "open": open, "closed": closed, "added": added, "manager": manager, "waiting": waiting,
+                "dead_line": dead_line_count,"management":management_list}
+        return render(request, "hr_dashboard.html", data)
     else:
         messages.info(request, "Invalid Request. You have been logged out :)")
         return redirect("/erf/")
+
 
 @login_required
 def job_requisition(request):
@@ -180,13 +192,13 @@ def job_requisition(request):
         designation = request.POST["designation"]
         process_typ_one = request.POST["pro_type_1"]
         process_typ_two = request.POST["pro_type_2"]
-        process_typ_three =request.POST["pro_type_3"]
-        salary_rang_frm =request.POST["sal_from"]
+        process_typ_three = request.POST["pro_type_3"]
+        salary_rang_frm = request.POST["sal_from"]
         salary_rang_to = request.POST["sal_to"]
-        qualification =request.POST["quali"]
+        qualification = request.POST["quali"]
         other_quali = request.POST["other_quali"]
         skills_set = request.POST["skills"]
-        languages =request.POST.getlist("lang")
+        languages = request.POST.getlist("lang")
         shift_timing = request.POST["shift"]
         shift_timing_frm = request.POST["shift_from"]
         shift_timing_to = request.POST["shift_to"]
@@ -236,22 +248,21 @@ def job_requisition(request):
             e.other_quali = other_quali
             e.skills_set = skills_set
             e.languages = languages
-            e.shift_timing =shift_timing
+            e.shift_timing = shift_timing
             e.shift_timing_frm = shift_timing_frm
             e.shift_timing_to = shift_timing_to
             e.working_from = working_from
             e.working_to = working_to
             if week_no_days:
-                e.week_no_days =week_no_days
+                e.week_no_days = week_no_days
             if week_from:
                 e.week_from = week_from
             if week_to:
                 e.week_to = week_to
             e.requisition_type = requisition_typ
             e.reason_for_replace = replace_reason
-            e.created_by_id=created_by_id
+            e.created_by_id = created_by_id
             e.save()
-
 
             a = Tickets()
             a.job_requisition_id = e.id
@@ -259,17 +270,19 @@ def job_requisition(request):
             a.created_by_id = created_by_id
             a.created_date = requisition_date
             now_datetime = datetime.datetime.now().strftime('%b %d,%Y %H:%M:%S')
-            a.edited_by = [now_datetime,req_raised_by,created_by_id,"Created"]
+            a.edited_by = [now_datetime, req_raised_by, created_by_id, "Created"]
             a.save()
             messages.info(request, "Job Requisition Added Successfully !!")
             action = "Created"
-            subject = action+" Job Requisition "+str(e.id)
+            subject = action + " Job Requisition " + str(e.id)
             html_path = 'email.html'
-            data = {'id': e.id,"created_date":requisition_date,"hc":hc_req,"department":department,"position":designation,
-                    "deadline":dead_line,"campaign":campaign,"user":user.emp_name,"action":action,"status":"Pending"}
+            data = {'id': e.id, "created_date": requisition_date, "hc": hc_req, "department": department,
+                    "position": designation,
+                    "deadline": dead_line, "campaign": campaign, "user": user.emp_name, "action": action,
+                    "status": "Pending"}
             email_template = get_template(html_path).render(data)
             manager_email = Profile.objects.get(emp_id=manager_id).emp_email
-            to = [request.user.profile.emp_email,"aparna.ks@expertcallers.com",manager_email]
+            to = [request.user.profile.emp_email, "aparna.ks@expertcallers.com", manager_email]
             email_msg = EmailMessage(subject,
                                      email_template, 'erf@expertcallers.com',
                                      to,
@@ -288,48 +301,49 @@ def job_requisition(request):
         managers = Profile.objects.filter(emp_desi__in=mgr_list)
         today = date.today()
         campaigns = Campaigns.objects.all()
-        data = {"today":today,"managers":managers,"campaigns":campaigns}
-        return render(request, "job_requisition.html",data)
+        data = {"today": today, "managers": managers, "campaigns": campaigns}
+        return render(request, "job_requisition.html", data)
+
 
 @login_required
 def jobRequisitionOpen(request):
     designation = request.user.profile.emp_desi
     if designation in hr_list:
         job = JobRequisition.objects.filter(initial_status=False)
-        data = {"job":job,"number":number,"type":"open",'desi':'hr',"editaccess":edit_list}
+        data = {"job": job, "number": number, "type": "open", 'desi': 'hr', "editaccess": edit_list}
         return render(request, "job_requisition_table.html", data)
     else:
-        messages.info(request,"Invalid Request. You have been logged out :)")
+        messages.info(request, "Invalid Request. You have been logged out :)")
         return redirect("/erf/")
 
 
 @login_required
-def jobRequisitionSelf(request,type):
+def jobRequisitionSelf(request, type):
     user = request.user.profile.emp_id
     if type == "all":
         job = JobRequisition.objects.filter(created_by_id=user)
-        data = {"job":job,"type":type,"number":number,"editaccess":edit_list}
+        data = {"job": job, "type": type, "number": number, "editaccess": edit_list}
         return render(request, "job_requisition_table.html", data)
     elif type == "open":
-        job = JobRequisition.objects.filter(created_by_id=user,final_status=False)
-        data = {"job": job,"type":type,"number":number,"editaccess":edit_list}
+        job = JobRequisition.objects.filter(created_by_id=user, final_status=False)
+        data = {"job": job, "type": type, "number": number, "editaccess": edit_list}
         return render(request, "job_requisition_table.html", data)
     elif type == "closed":
-        job = JobRequisition.objects.filter(created_by_id=user,final_status=True)
-        data = {"job": job,"type":type,"number":number,"editaccess":edit_list}
+        job = JobRequisition.objects.filter(created_by_id=user, final_status=True)
+        data = {"job": job, "type": type, "number": number, "editaccess": edit_list}
         return render(request, "job_requisition_table.html", data)
     elif type == "dead-line":
         today = datetime.date.today()
-        job = JobRequisition.objects.filter(created_by_id=user,final_status=False)
+        job = JobRequisition.objects.filter(created_by_id=user, final_status=False)
         job_list = []
         for i in job:
             if i.dead_line < today:
                 job_list.append(i)
-        data = {"job": job_list,"type":type,"number":number,"editaccess":edit_list}
+        data = {"job": job_list, "type": type, "number": number, "editaccess": edit_list}
         return render(request, "job_requisition_table.html", data)
     elif type == "approval":
-        job = JobRequisition.objects.filter(created_by_manager_id=user, initial_status=True,final_status=False)
-        data = {"job": job,"type":type,"number":number,"editaccess":edit_list, "manager":mgr_list}
+        job = JobRequisition.objects.filter(created_by_manager_id=user, initial_status=True, final_status=False)
+        data = {"job": job, "type": type, "number": number, "editaccess": edit_list, "manager": mgr_list}
         return render(request, "job_requisition_table.html", data)
     elif type == "range":
         if request.method == "POST":
@@ -343,14 +357,16 @@ def jobRequisitionSelf(request,type):
                 end = datetime.datetime.strptime(tomorrow, "%Y-%m-%d")
             end = end + datetime.timedelta(days=1)
             if status == "all":
-                job = JobRequisition.objects.filter(created_by_id=user,requisition_date__range=[start, end])
+                job = JobRequisition.objects.filter(created_by_id=user, requisition_date__range=[start, end])
             elif status == "open":
-                job = JobRequisition.objects.filter(created_by_id=user,final_status=False,requisition_date__range=[start, end])
+                job = JobRequisition.objects.filter(created_by_id=user, final_status=False,
+                                                    requisition_date__range=[start, end])
             elif status == "closed":
-                job = JobRequisition.objects.filter(created_by_id=user,final_status=True,requisition_date__range=[start, end])
+                job = JobRequisition.objects.filter(created_by_id=user, final_status=True,
+                                                    requisition_date__range=[start, end])
             else:
                 pass
-            data = {"job":job,"type":type,"number":number,"editaccess":edit_list}
+            data = {"job": job, "type": type, "number": number, "editaccess": edit_list}
             return render(request, "job_requisition_table.html", data)
         else:
             messages.info(request, "Invalid Request. You have been logged out :)")
@@ -361,17 +377,17 @@ def jobRequisitionSelf(request,type):
 
 
 @login_required
-def jobRequisitionAll(request,type):
+def jobRequisitionAll(request, type):
     if type == "all":
         job = JobRequisition.objects.all()
-        data = {"job":job,"type":type,"number":number,"editaccess":edit_list}
+        data = {"job": job, "type": type, "number": number, "editaccess": edit_list}
         return render(request, "job_requisition_table.html", data)
     if type == "closed":
         job = JobRequisition.objects.filter(final_status=True)
-        data = {"job":job,"type":type,"number":number,"editaccess":edit_list}
+        data = {"job": job, "type": type, "number": number, "editaccess": edit_list}
         return render(request, "job_requisition_table.html", data)
     elif type == "waiting":
-        job = JobRequisition.objects.filter(initial_status=True,final_status=False)
+        job = JobRequisition.objects.filter(initial_status=True, final_status=False)
         data = {"job": job, "type": type, "number": number, "editaccess": edit_list}
         return render(request, "job_requisition_table.html", data)
     elif type == "range":
@@ -393,14 +409,16 @@ def jobRequisitionAll(request,type):
             elif manager == "all" and status == "closed":
                 job = JobRequisition.objects.filter(final_status=True, requisition_date__range=[start, end])
             elif manager != "all" and status == "all":
-                job = JobRequisition.objects.filter(created_by_id=manager,requisition_date__range=[start, end])
+                job = JobRequisition.objects.filter(created_by_id=manager, requisition_date__range=[start, end])
             elif manager != "all" and status == "open":
-                job = JobRequisition.objects.filter(created_by_id=manager,final_status=False,requisition_date__range=[start, end])
+                job = JobRequisition.objects.filter(created_by_id=manager, final_status=False,
+                                                    requisition_date__range=[start, end])
             elif manager != "all" and status == "closed":
-                job = JobRequisition.objects.filter(created_by_id=manager,final_status=True,requisition_date__range=[start, end])
+                job = JobRequisition.objects.filter(created_by_id=manager, final_status=True,
+                                                    requisition_date__range=[start, end])
             else:
                 pass
-            data = {"job":job,"type":type,"number":number,"editaccess":edit_list}
+            data = {"job": job, "type": type, "number": number, "editaccess": edit_list}
             return render(request, "job_requisition_table.html", data)
         else:
             messages.info(request, "Invalid Request. You have been logged out :)")
@@ -429,7 +447,7 @@ def jobRequisitionAll(request,type):
                 else:
                     job = JobRequisition.objects.filter(department=department)
 
-            data = {"job": job, "type": type, "number": number,"editaccess":edit_list}
+            data = {"job": job, "type": type, "number": number, "editaccess": edit_list}
             return render(request, "job_requisition_table.html", data)
         else:
             messages.info(request, "Invalid Request. You have been logged out :)")
@@ -442,7 +460,7 @@ def jobRequisitionAll(request,type):
         for i in job:
             if i.dead_line < today:
                 job_list.append(i)
-        data = {"job": job_list,"type":type,"number":number,"editaccess":edit_list}
+        data = {"job": job_list, "type": type, "number": number, "editaccess": edit_list}
         return render(request, "job_requisition_table.html", data)
 
     else:
@@ -451,7 +469,7 @@ def jobRequisitionAll(request,type):
 
 
 @login_required
-def jobRequisitionEditView(request,id):
+def jobRequisitionEditView(request, id):
     designation = request.user.profile.emp_desi
     if designation in edit_list:
         try:
@@ -459,7 +477,7 @@ def jobRequisitionEditView(request,id):
             today = date.today()
             campaigns = Campaigns.objects.all()
             employees = AllAgents.objects.all()
-            data = {"today": today,"job":job,"number":number,"employees":employees,"campaigns":campaigns}
+            data = {"today": today, "job": job, "number": number, "employees": employees, "campaigns": campaigns}
             return render(request, "job_requisition_edit.html", data)
         except JobRequisition.DoesNotExist:
             messages.info(request, "Invalid Request!!")
@@ -490,7 +508,7 @@ def EditRequest(request):
                 managers = Profile.objects.filter(emp_desi__in=mgr_list)
                 today = date.today()
                 campaigns = Campaigns.objects.all()
-                data = {"today": today, "managers": managers,"job": job,"campaigns":campaigns}
+                data = {"today": today, "managers": managers, "job": job, "campaigns": campaigns}
                 return render(request, "edit_job_requisition.html", data)
             else:
                 messages.info(request, "You are not authorize to edit this :)")
@@ -502,7 +520,7 @@ def EditRequest(request):
                     messages.info(request, "Invalid Request!! You have been logged out :)")
                     return redirect("/erf/")
         else:
-            messages.info(request,"Can not Edit Now. Time limit has been exceeded :)")
+            messages.info(request, "Can not Edit Now. Time limit has been exceeded :)")
             if designation in hr_list:
                 return redirect("/erf/hr-dashboard")
             elif designation in am_mgr_list:
@@ -525,13 +543,13 @@ def job_requisition_manager_edit(request):
         designation = request.POST["designation"]
         process_typ_one = request.POST["pro_type_1"]
         process_typ_two = request.POST["pro_type_2"]
-        process_typ_three =request.POST["pro_type_3"]
-        salary_rang_frm =request.POST["sal_from"]
+        process_typ_three = request.POST["pro_type_3"]
+        salary_rang_frm = request.POST["sal_from"]
         salary_rang_to = request.POST["sal_to"]
-        qualification =request.POST["quali"]
+        qualification = request.POST["quali"]
         other_quali = request.POST["other_quali"]
         skills_set = request.POST["skills"]
-        languages =request.POST.getlist("lang")
+        languages = request.POST.getlist("lang")
         shift_timing = request.POST["shift"]
         shift_timing_frm = request.POST["shift_from"]
         shift_timing_to = request.POST["shift_to"]
@@ -552,8 +570,8 @@ def job_requisition_manager_edit(request):
         csrf = request.POST["csrfmiddlewaretoken"]
 
         try:
-            JobRequisition.objects.get(id=id,unique_id=csrf)
-            messages.info(request,"Request already added. Please refresh the page!!")
+            JobRequisition.objects.get(id=id, unique_id=csrf)
+            messages.info(request, "Request already added. Please refresh the page!!")
             if request.user.profile.emp_desi in hr_list:
                 return redirect("/erf/hr-dashboard")
             elif request.user.profile.emp_desi in am_mgr_list:
@@ -583,27 +601,28 @@ def job_requisition_manager_edit(request):
             e.other_quali = other_quali
             e.skills_set = skills_set
             e.languages = languages
-            e.shift_timing =shift_timing
+            e.shift_timing = shift_timing
             e.shift_timing_frm = shift_timing_frm
             e.shift_timing_to = shift_timing_to
             e.working_from = working_from
             e.working_to = working_to
             if week_no_days:
-                e.week_no_days =week_no_days
+                e.week_no_days = week_no_days
             if week_from:
                 e.week_from = week_from
             if week_to:
                 e.week_to = week_to
             e.requisition_type = requisition_typ
             e.reason_for_replace = replace_reason
-            e.created_by_id=created_by_id
+            e.created_by_id = created_by_id
             e.save()
 
             a = Tickets.objects.get(job_requisition_id=id)
             now_datetime = datetime.datetime.now().strftime('%b %d,%Y %H:%M:%S')
-            edited_by = str([now_datetime, request.user.profile.emp_name, request.user.profile.emp_id, "Edited the request"])
+            edited_by = str(
+                [now_datetime, request.user.profile.emp_name, request.user.profile.emp_id, "Edited the request"])
             previous = a.edited_by
-            adding = previous+",\n"+edited_by
+            adding = previous + ",\n" + edited_by
             a.edited_by = adding
             a.save()
             messages.info(request, "Requisition Updated Successfully !!")
@@ -614,10 +633,10 @@ def job_requisition_manager_edit(request):
             data = {'id': e.id, "created_date": e.requisition_date, "hc": e.hc_req, "department": e.department,
                     "position": e.designation,
                     "deadline": e.dead_line, "campaign": e.campaign, "user": request.user.profile.emp_name,
-                    "action": action,"status":e.request_status}
+                    "action": action, "status": e.request_status}
             email_template = get_template(html_path).render(data)
             manager_email = Profile.objects.get(emp_id=manager_id).emp_email
-            to = [request.user.profile.emp_email, "aparna.ks@expertcallers.com",manager_email]
+            to = [request.user.profile.emp_email, "aparna.ks@expertcallers.com", manager_email]
             email_msg = EmailMessage(subject,
                                      email_template, 'erf@expertcallers.com',
                                      to,
@@ -632,7 +651,6 @@ def job_requisition_manager_edit(request):
     else:
         messages.info(request, "Invalid Request. You have been logged out :)")
         return redirect("/erf/")
-
 
 
 @login_required
@@ -693,7 +711,7 @@ def jobRequisitionEditUpdate(request):
         candidate_name_9 = request.POST.get("cand_name_9")
         source_9 = request.POST.get("source_9")
         referral_emp_name_9 = request.POST.get("emp_name_9")
-        referral_emp_id_9= request.POST.get("emp_id_9")
+        referral_emp_id_9 = request.POST.get("emp_id_9")
         social_9 = request.POST.get("social_9")
         partner_9 = request.POST.get("partner_9")
         candidate_name_10 = request.POST.get("cand_name_10")
@@ -762,8 +780,6 @@ def jobRequisitionEditUpdate(request):
         referral_emp_id_20 = request.POST.get("emp_id_20")
         social_20 = request.POST.get("social_20")
         partner_20 = request.POST.get("partner_20")
-
-
 
         source_internal_emp_id_1 = request.POST.get("internal_emp_id_1")
         source_internal_campaign_name_1 = request.POST.get("internal_campaign_1")
@@ -858,7 +874,7 @@ def jobRequisitionEditUpdate(request):
             unique = csrf
 
         try:
-            JobRequisition.objects.get(id=id,unique_id=unique)
+            JobRequisition.objects.get(id=id, unique_id=unique)
             messages.info(request, "Requisition Updated Successfully !!")
             if request.user.profile.emp_desi in hr_list:
                 return redirect("/erf/hr-dashboard")
@@ -1109,7 +1125,7 @@ def jobRequisitionEditUpdate(request):
             edited_id = request.user.profile.emp_id
             edited_by = str([now_datetime, edited_name, edited_id, comments])
             previous = a.edited_by
-            adding = previous+",\n"+edited_by
+            adding = previous + ",\n" + edited_by
             a.edited_by = adding
             a.save()
             messages.info(request, "Requisition Updated Successfully !!")
@@ -1120,13 +1136,13 @@ def jobRequisitionEditUpdate(request):
             data = {'id': e.id, "created_date": e.requisition_date, "hc": e.hc_req, "department": e.department,
                     "position": e.designation,
                     "deadline": e.dead_line, "campaign": e.campaign, "user": request.user.profile.emp_name,
-                    "action": action,"status":e.request_status}
+                    "action": action, "status": e.request_status}
             email_template = get_template(html_path).render(data)
             creater_id = e.created_by_id
             creater_email = Profile.objects.get(emp_id=creater_id).emp_email
             manager_id = e.created_by_manager_id
             manager_email = Profile.objects.get(emp_id=manager_id).emp_email
-            to = [request.user.profile.emp_email, "aparna.ks@expertcallers.com",creater_email,manager_email]
+            to = [request.user.profile.emp_email, "aparna.ks@expertcallers.com", creater_email, manager_email]
             email_msg = EmailMessage(subject,
                                      email_template, 'erf@expertcallers.com',
                                      to,
@@ -1144,6 +1160,7 @@ def jobRequisitionEditUpdate(request):
     else:
         messages.info(request, "Invalid Request. You have been logged out :)")
         return redirect("/erf/")
+
 
 @login_required
 def change_password(request):
@@ -1167,7 +1184,6 @@ def change_password(request):
     return render(request, 'settings.html', {'form': form})
 
 
-
 # create User
 def createUserandProfile(request):
     emp = Employee.objects.all()
@@ -1179,14 +1195,16 @@ def createUserandProfile(request):
             usr = User.objects.create_user(username=i.emp_id, password=str(i.emp_id))
 
             profile = Profile.objects.create(
-                emp_id = i.emp_id,emp_name = i.emp_name, emp_desi = i.emp_desi,
-                emp_rm1 = i.emp_rm1, emp_rm1_id = i.emp_rm1_id,emp_rm2 = i.emp_rm2, emp_rm2_id = i.emp_rm2_id,emp_rm3 = i.emp_rm3,
+                emp_id=i.emp_id, emp_name=i.emp_name, emp_desi=i.emp_desi,
+                emp_rm1=i.emp_rm1, emp_rm1_id=i.emp_rm1_id, emp_rm2=i.emp_rm2, emp_rm2_id=i.emp_rm2_id,
+                emp_rm3=i.emp_rm3,
                 emp_rm3_id=i.emp_rm3_id,
-                emp_process = i.emp_process, user_id = usr.id
-                                          )
+                emp_process=i.emp_process, user_id=usr.id
+            )
             profile.save()
             usr.save()
-            print('created'+ i.emp_name)
+            print('created' + i.emp_name)
+
 
 @login_required
 def approval(request):
@@ -1198,7 +1216,7 @@ def approval(request):
         if response == "Reject":
             request_status = "Rejected by Manager"
         try:
-            JobRequisition.objects.get(id=id,request_status=request_status)
+            JobRequisition.objects.get(id=id, request_status=request_status)
             messages.info(request, "Changes have been done please refresh the page!")
             if request.user.profile.emp_desi in hr_list:
                 return redirect("/erf/hr-dashboard")
@@ -1229,7 +1247,7 @@ def approval(request):
             adding = previous + ",\n" + edited_by
             a.edited_by = adding
             a.save()
-            messages.info(request,"Changes have been made successfully!")
+            messages.info(request, "Changes have been made successfully!")
 
             subject = action + " Job Requisition " + str(e.id)
             html_path = 'email.html'
@@ -1254,6 +1272,74 @@ def approval(request):
             else:
                 messages.info(request, "Invalid Request. You have been logged out :)")
                 return redirect("/erf/")
+    else:
+        messages.info(request, "Invalid Request. You have been logged out :)")
+        return redirect("/erf/")
+
+@login_required
+def ExportReport(request, type):
+    if type == "status":
+        if request.method == "POST":
+            manager = request.POST["manager"]
+            status = request.POST["status"]
+            start = request.POST["start_date"]
+            tomorrow = str(datetime.date.today() + datetime.timedelta(days=1))
+            end = request.POST.get("end_date")
+            if end:
+                end = datetime.datetime.strptime(end, "%Y-%m-%d")
+            else:
+                end = datetime.datetime.strptime(tomorrow, "%Y-%m-%d")
+            end = end + datetime.timedelta(days=1)
+            if manager == "all" and status == "all":
+                job = JobRequisition.objects.filter(requisition_date__range=[start, end])
+            elif manager == "all" and status == "open":
+                job = JobRequisition.objects.filter(final_status=False, requisition_date__range=[start, end])
+            elif manager == "all" and status == "closed":
+                job = JobRequisition.objects.filter(final_status=True, requisition_date__range=[start, end])
+            elif manager != "all" and status == "all":
+                job = JobRequisition.objects.filter(created_by_id=manager, requisition_date__range=[start, end])
+            elif manager != "all" and status == "open":
+                job = JobRequisition.objects.filter(created_by_id=manager, final_status=False,
+                                                    requisition_date__range=[start, end])
+            elif manager != "all" and status == "closed":
+                job = JobRequisition.objects.filter(created_by_id=manager, final_status=True,
+                                                    requisition_date__range=[start, end])
+            else:
+                pass
+            data = {"job": job, "type": type, "number": number, "editaccess": edit_list}
+            return render(request, "export_table.html", data)
+        else:
+            messages.info(request, "Invalid Request. You have been logged out :)")
+            return redirect("/erf/")
+    elif type == "designation":
+        if request.method == "POST":
+            department = request.POST["department"]
+            designation = request.POST.get("designation")
+            start = request.POST.get("start_date")
+            tomorrow = str(datetime.date.today() + datetime.timedelta(days=1))
+            end = request.POST.get("end_date")
+            if end:
+                end = datetime.datetime.strptime(end, "%Y-%m-%d")
+            else:
+                end = datetime.datetime.strptime(tomorrow, "%Y-%m-%d")
+            end = end + datetime.timedelta(days=1)
+            if start:
+                if designation:
+                    job = JobRequisition.objects.filter(department=department, designation=designation,
+                                                        requisition_date__range=[start, end])
+                else:
+                    job = JobRequisition.objects.filter(department=department, requisition_date__range=[start, end])
+            else:
+                if designation:
+                    job = JobRequisition.objects.filter(department=department, designation=designation)
+                else:
+                    job = JobRequisition.objects.filter(department=department)
+
+            data = {"job": job, "type": type, "number": number, "editaccess": edit_list}
+            return render(request, "export_table.html", data)
+        else:
+            messages.info(request, "Invalid Request. You have been logged out :)")
+            return redirect("/erf/")
     else:
         messages.info(request, "Invalid Request. You have been logged out :)")
         return redirect("/erf/")

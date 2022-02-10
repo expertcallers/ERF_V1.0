@@ -360,6 +360,256 @@
             </div>
           </div>
           </div>
+          {% if request.user.profile.emp_desi in management %}
+          <div class="row mt-3">
+            <div class="col-md-4">
+              <div class="card">
+                <div class="card-header">
+                  <h5>Export Reports</h5>
+                </div>
+                <div class="card-body">
+                  <div class="row">
+                    <form action="/erf/export/status" method="POST" enctype="multipart/form-data">
+                      {% csrf_token %}
+                      <div class="col-md-12">
+                        <div class="row">
+                          <div class="col-md-6">
+                            <div class="form-group">
+                              <label for="export_manager">Created by</label>
+                              <select required class="form-control select2" name="manager" id="export_manager">
+                                <option value="" selected disabled>Please Select</option>
+                                <option value="all">All</option>
+                                {% for i in manager %}
+                                <option value="{{i.emp_id}}">{{i.emp_name}}</option>
+                                {% endfor %}
+                              </select>
+                            </div>
+                          </div>
+                          <div class="col-md-6">
+                            <div class="form-group">
+                              <label for="export_report_status">Status</label>
+                              <select required class="form-control select2" name="status" id="export_report_status">
+                                <option value="" selected disabled>Please Select</option>
+                                <option value="all">All</option>
+                                <option value="open">Open Status</option>
+                                <option value="closed">Completed Status</option>
+                              </select>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-md-12">
+                        <div class="row">
+                          <div class="col-md-6">
+                            <div class="form-group">
+                              <label for="export_cam_start">Start Date</label>
+                              <input type="date" onchange="export_cam_end_datefn()" name="start_date" required id="export_cam_start" class="form-control start">
+                            </div>
+                          </div>
+                          <div class="col-md-6">
+                            <div class="form-group">
+                              <label for="export_cam_end">End Date</label>
+                              <input type="date"  name="end_date" id="export_cam_end" required class="form-control end">
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-md-12">
+                        <button class="btn btn-success form-control">Submit</button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+            <div class="card">
+              <div class="card-header">
+                <h5>Export Reports by designation</h5>
+              </div>
+              <div class="card-body">
+                <div class="row">
+                  <form action="/erf/export/designation" method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="col-md-12">
+                      <div class="row">
+                        <div class="col-md-6">
+                          <div class="form-group">
+                            <label for="export_department">Department</label>
+                            <select required class="form-control select2" onchange="exportgetDesig(this);" name="department" id="export_department">
+                              <option value="" selected disabled>Please Select</option>
+                              <option value="Operations">Operations</option>
+                              <option value="Quality">Quality</option>
+                              <option value="Command Center">Command Center</option>
+                              <option value="Service Excellence">Service Excellence</option>
+                              <option value="Human Resource">Human Resource</option>
+                              <option value="IT">IT</option>
+                              <option value="Admin">Admin</option>
+                              <option value="L&D">L&D</option>
+                              <option value="Sales & Marketing">Sales & Marketing</option>
+                            </select>
+                          </div>
+                        </div>
+                        <div class="col-md-6">
+                          <div class="form-group">
+                            <label for="designation">Designation</label>
+                            <div id="export_dep_hr" class="d-none">
+                              <select name="designation" class="form-control select2 " style="display:none !important;">
+                                <option value="" selected disabled>Please Select</option>
+                                <option value="Junior Recruiter">Junior Recruiter</option>
+                                <option value="Recruiter">Recruiter</option>
+                                <option value="Senior Recruiter">Senior Recruiter</option>
+                                <option value="HR Executive">HR Executive</option>
+                                <option value="Talent Acquisition Specialist/Recruitment Lead">Talent Acquisition Specialist/Recruitment Lead</option>
+                                <option value="Talent Acquisition/Recruitment Manager">Talent Acquisition/Recruitment Manager</option>
+                                <option value="Assistant Manager - Recruitment">Assistant Manager - Recruitment</option>
+                                <option value="HRBP">HRBP</option>
+                                <option value="HRBP Lead">HRBP Lead</option>
+                                <option value="Assistant Manager - HRBP">Assistant Manager - HRBP</option>
+                                <option value="Manager - HRBP">Manager - HRBP</option>
+                                <option value="Employee Relations Specialist">Employee Relations Specialist</option>
+                                <option value="Assistant Manager - Employee Relations">Assistant Manager - Employee Relations</option>
+                                <option value="Manager - Employee Relations">Manager - Employee Relations</option>
+                                <option value="Generalist">Generalist</option>
+                                <option value="Onboarding Specialist">Onboarding Specialist</option>
+                                <option value="Content Writer">Content Writer</option>
+                                <option value="Human Resource Manager">Human Resource Manager</option>
+                                <option value="Head - Human Resources">Head - Human Resources</option>
+                              </select>
+                            </div>
+                            <div id="export_dep_default" class="">
+                              <select id="export_designation" class="form-control select2">
+                                <option value="" selected disabled>Please Select Department 1st</option>
+                              </select>
+                            </div>
+                            <div id="export_dep_operations" class="d-none">
+                              <select name="designation" class="form-control select2" id="export_dep_operations_select">
+                                <option value="" selected disabled>Please Select</option>
+                                <option value="CRO-Client Relationship Officer">CRO-Client Relationship Officer</option>
+                                <option value="Patrolling Officer">Patrolling Officer</option>
+                                <option value="SME-Subject Matter Expert">SME-Subject Matter Expert</option>
+                                <option value="Assistant Team Leader">Assistant Team Leader</option>
+                                <option value="Team Leader">Team Leader</option>
+                                <option value="Assistant Manager">Assistant Manager</option>
+                                <option value="Manager">Manager</option>
+                                <option value="Senior Manager">Senior Manager</option>
+                              </select>
+                            </div>
+                            <div id="export_dep_quality" class="d-none">
+                              <select name="designation" class="form-control select2" id="export_dep_quality_select">
+                                <option value="" selected disabled>Please Select</option>
+                                <option value="Quality Analyst">Quality Analyst</option>
+                                <option value="Team Leader">Team Leader</option>
+                                <option value="Assistant Manager">Assistant Manager</option>
+                                <option value="Manager">Manager</option>
+                                <option value="Senior Manger">Senior Manger</option>
+                                <option value="Head">Head</option>
+                              </select>
+                            </div>
+                            <div id="export_dep_command_center" class="d-none">
+                              <select name="designation" class="form-control select2" id="export_dep_command_center_select">
+                                <option value="" selected disabled>Please Select</option>
+                                <option value="MIS Executive">MIS Executive</option>
+                                <option value="Data Analyst">Data Analyst</option>
+                                <option value="PowerBI Developer">PowerBI Developer</option>
+                                <option value="Web Developer">Web Developer</option>
+                                <option value="Python Developer">Python Developer</option>
+                                <option value="Team Leader">Team Leader</option>
+                                <option value="Assistant Manager">Assistant Manager</option>
+                                <option value="Manager">Manager</option>
+                                <option value="MIS Manager">MIS Manager</option>
+                                <option value="Head">Head</option>
+                              </select>
+                            </div>
+                            <div id="export_dep_sevice_excellence" class="d-none">
+                              <select name="designation" class="form-control select2" id="export_dep_sevice_excellence_select">
+                                <option value="" selected disabled>Please Select</option>
+                                <option value="Client Service Coordinator">Client Service Coordinator</option>
+                                <option value="MIS Executive">MIS Executive</option>
+                                <option value="Business Analyst">Business Analyst</option>
+                                <option value="Data Analyst">Data Analyst</option>
+                                <option value="Team Leader">Team Leader</option>
+                                <option value="Assistant Manager">Assistant Manager</option>
+                                <option value="Manager">Manager</option>
+                                <option value="Head">Head</option>
+                              </select>
+                            </div>
+                            <div id="export_dep_it" class="d-none">
+                              <select name="designation" class="form-control select2" id="export_dep_it_select">
+                                <option value="" selected disabled>Please Select</option>
+                                <option value="System Admin - L1">System Admin - L1</option>
+                                <option value="System Admin - L2">System Admin - L2</option>
+                                <option value="Team Leader">Team Leader</option>
+                                <option value="Assistant Manager">Assistant Manager</option>
+                                <option value="Manager">Manager</option>
+                              </select>
+                            </div>
+                            <div id="export_dep_admin" class="d-none">
+                              <select name="designation" class="form-control select2" id="export_dep_admin_select">
+                                <option value="" selected disabled>Please Select</option>
+                                <option value="Office Boy">Office Boy</option>
+                                <option value="Office Admin">Office Admin</option>
+                                <option value="Admin Executive">Admin Executive</option>
+                                <option value="Facility Lead">Facility Lead</option>
+                                <option value="Assistant Manager">Assistant Manager</option>
+                                <option value="Manager">Manager</option>
+                                <option value="Head">Head</option>
+                              </select>
+                            </div>
+                            <div id="export_dep_ld" class="d-none">
+                              <select name="designation" class="form-control select2" id="export_dep_ld_select">
+                                <option value="" selected disabled>Please Select</option>
+                                <option value="Softskills Trainer">Softskills Trainer</option>
+                                <option value="Process Trainer - Sales">Process Trainer - Sales</option>
+                                <option value="Process Trainer - Customer Service">Process Trainer - Customer Service</option>
+                                <option value="FLE Trainer">FLE Trainer</option>
+                                <option value="Technical Trainer">Technical Trainer</option>
+                                <option value="Language Trainer">Language Trainer</option>
+                                <option value="Team Leader">Team Leader</option>
+                                <option value="Assistant Manager">Assistant Manager</option>
+                                <option value="Manager">Manager</option>
+                                <option value="Head">Head</option>
+                              </select>
+                            </div>
+                            <div id="export_dep_sales" class="d-none">
+                              <select name="designation" class="form-control select2" id="export_dep_sales_select">
+                                <option value="" selected disabled>Please Select</option>
+                                <option value="Content Developer">Content Developer</option>
+                                <option value="Business Development Executive">Business Development Executive</option>
+                                <option value="Business Development Manager">Business Development Manager</option>
+                                <option value="Head">Head</option>
+                              </select>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-12">
+                      <div class="row">
+                        <div class="col-md-6">
+                          <div class="form-group">
+                            <label for="export_cam_start_des">Start Date</label>
+                            <input type="date" onchange="export_cam_end_des_datefn()" name="start_date" id="export_cam_start_des" class="form-control start">
+                          </div>
+                        </div>
+                        <div class="col-md-6">
+                          <div class="form-group">
+                            <label for="export_cam_end_des">End Date</label>
+                            <input type="date"  name="end_date" id="export_cam_end_des" class="form-control end">
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-12">
+                      <button class="btn btn-success form-control">Submit</button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+          </div>
+          {% endif %}
 
         </div>
         <!-- /page content -->
@@ -501,6 +751,136 @@
     }
   }
 
+  function exportgetDesig(e){
+    $("#export_dep_default").addClass("d-none")
+    if (e.value == "Operations" ){
+      $("#export_dep_operations").removeClass("d-none")
+      $("#export_dep_operations_select").removeAttr("disabled","")
+      $("#export_dep_quality_select").attr("disabled","")
+      $("#export_dep_command_center_select").attr("disabled","")
+      $("#export_dep_sevice_excellence_select").attr("disabled","")
+      $("#export_dep_hr_select").attr("disabled","")
+      $("#export_dep_it_select").attr("disabled","")
+      $("#export_dep_admin_select").attr("disabled","")
+      $("#export_dep_ld_select").attr("disabled","")
+      $("#export_dep_sales_select").attr("disabled","")
+    } else {
+      $("#export_dep_operations").addClass("d-none")
+    }
+    if (e.value == "Quality" ){
+      $("#export_dep_quality").removeClass("d-none")
+      $("#export_dep_operations_select").attr("disabled","")
+      $("#export_dep_quality_select").removeAttr("disabled","")
+      $("#export_dep_command_center_select").attr("disabled","")
+      $("#export_dep_sevice_excellence_select").attr("disabled","")
+      $("#export_dep_hr_select").attr("disabled","")
+      $("#export_dep_it_select").attr("disabled","")
+      $("#export_dep_admin_select").attr("disabled","")
+      $("#export_dep_ld_select").attr("disabled","")
+      $("#export_dep_sales_select").attr("disabled","")
+    } else {
+      $("#export_dep_quality").addClass("d-none")
+    }
+    if (e.value == "Command Center" ){
+      $("#export_dep_command_center").removeClass("d-none")
+      $("#export_dep_operations_select").attr("disabled","")
+      $("#export_dep_quality_select").attr("disabled","")
+      $("#export_dep_command_center_select").removeAttr("disabled","")
+      $("#export_dep_sevice_excellence_select").attr("disabled","")
+      $("#export_dep_hr_select").attr("disabled","")
+      $("#export_dep_it_select").attr("disabled","")
+      $("#export_dep_admin_select").attr("disabled","")
+      $("#export_dep_ld_select").attr("disabled","")
+      $("#export_dep_sales_select").attr("disabled","")
+    } else {
+      $("#export_dep_command_center").addClass("d-none")
+    }
+    if (e.value == "Service Excellence" ){
+      $("#export_dep_sevice_excellence").removeClass("d-none")
+      $("#export_dep_operations_select").attr("disabled","")
+      $("#export_dep_quality_select").attr("disabled","")
+      $("#export_dep_command_center_select").attr("disabled","")
+      $("#export_dep_sevice_excellence_select").removeAttr("disabled","")
+      $("#export_dep_hr_select").attr("disabled","")
+      $("#export_dep_it_select").attr("disabled","")
+      $("#export_dep_admin_select").attr("disabled","")
+      $("#export_dep_ld_select").attr("disabled","")
+      $("#export_dep_sales_select").attr("disabled","")
+    } else {
+      $("#export_dep_sevice_excellence").addClass("d-none")
+    }
+    if (e.value == "Human Resource" ){
+      $("export_dep_hr").removeClass("d-none")
+      $("export_dep_operations_select").attr("disabled","")
+      $("export_dep_quality_select").attr("disabled","")
+      $("export_dep_command_center_select").attr("disabled","")
+      $("export_dep_sevice_excellence_select").attr("disabled","")
+      $("export_dep_hr_select").removeAttr("disabled","")
+      $("export_dep_it_select").attr("disabled","")
+      $("export_dep_admin_select").attr("disabled","")
+      $("export_dep_ld_select").attr("disabled","")
+      $("export_dep_sales_select").attr("disabled","")
+    } else {
+      $("export_dep_hr").addClass("d-none")
+    }
+    if (e.value == "IT" ){
+      $("export_dep_it").removeClass("d-none")
+      $("export_dep_operations_select").attr("disabled","")
+      $("export_dep_quality_select").attr("disabled","")
+      $("export_dep_command_center_select").attr("disabled","")
+      $("export_dep_sevice_excellence_select").attr("disabled","")
+      $("export_dep_hr_select").attr("disabled","")
+      $("export_dep_it_select").removeAttr("disabled","")
+      $("export_dep_admin_select").attr("disabled","")
+      $("export_dep_ld_select").attr("disabled","")
+      $("export_dep_sales_select").attr("disabled","")
+    } else {
+      $("export_dep_it").addClass("d-none")
+    }
+    if (e.value == "Admin" ){
+      $("#export_dep_admin").removeClass("d-none")
+      $("#export_dep_operations_select").attr("disabled","")
+      $("#export_dep_quality_select").attr("disabled","")
+      $("#export_dep_command_center_select").attr("disabled","")
+      $("#export_dep_sevice_excellence_select").attr("disabled","")
+      $("#export_dep_hr_select").attr("disabled","")
+      $("#export_dep_it_select").attr("disabled","")
+      $("#export_dep_admin_select").removeAttr("disabled","")
+      $("#export_dep_ld_select").attr("disabled","")
+      $("#export_dep_sales_select").attr("disabled","")
+    } else {
+      $("#export_dep_admin").addClass("d-none")
+    }
+    if (e.value == "L&D" ){
+      $("#export_dep_ld").removeClass("d-none")
+      $("#export_dep_operations_select").attr("disabled","")
+      $("#export_dep_quality_select").attr("disabled","")
+      $("#export_dep_command_center_select").attr("disabled","")
+      $("#export_dep_sevice_excellence_select").attr("disabled","")
+      $("#export_dep_hr_select").attr("disabled","")
+      $("#export_dep_it_select").attr("disabled","")
+      $("#export_dep_admin_select").attr("disabled","")
+      $("#export_dep_ld_select").removeAttr("disabled","")
+      $("#export_dep_sales_select").attr("disabled","")
+    } else {
+      $("#export_dep_ld").addClass("d-none")
+    }
+    if (e.value == "Sales & Marketing" ){
+      $("#export_dep_sales").removeClass("d-none")
+      $("#export_dep_operations_select").attr("disabled","")
+      $("#export_dep_quality_select").attr("disabled","")
+      $("#export_dep_command_center_select").attr("disabled","")
+      $("#export_dep_sevice_excellence_select").attr("disabled","")
+      $("#export_dep_hr_select").attr("disabled","")
+      $("#export_dep_it_select").attr("disabled","")
+      $("#export_dep_admin_select").attr("disabled","")
+      $("#export_dep_ld_select").attr("disabled","")
+      $("#export_dep_sales_select").removeAttr("disabled","")
+    } else {
+      $("#export_dep_sales").addClass("d-none")
+    }
+  }
+
 
   $today = new Date();
   $today = moment($today).format("YYYY-MM-DD");
@@ -546,6 +926,51 @@
     $start_des = $("#start_des").val()
     $end_des.attr("min",$start_des)
     $end_des.attr("required","required")
+  }
+
+
+
+  $export_cam_start = $("#export_cam_start");
+  $export_cam_end = $("#export_cam_end");
+  $export_cam_start.attr("max",$today)
+  $export_cam_end.attr("max",$today)
+  function export_cam_end_datefn(){
+    $export_cam_start = $("#export_cam_start").val()
+    $export_cam_end.attr("min",$export_cam_start)
+    $export_cam_end.attr("required","required")
+  }
+
+
+  $export_start = $("#export_start");
+  $export_end = $("#export_end");
+  $export_start.attr("max",$today)
+  $export_end.attr("max",$today)
+  function export_end_datefn(){
+    $export_start = $("#export_start").val()
+    $export_end.attr("min",$export_start)
+    $export_end.attr("required","required")
+  }
+
+
+  $export_cam_start_des = $("#export_cam_start_des");
+  $export_cam_end_des = $("#export_cam_end_des");
+  $export_cam_start_des.attr("max",$today)
+  $export_cam_end_des.attr("max",$today)
+  function export_cam_end_des_datefn(){
+    $export_cam_start_des = $("#export_cam_start_des").val()
+    $export_cam_end_des.attr("min",$export_cam_start_des)
+    $export_cam_end_des.attr("required","required")
+  }
+
+
+  $export_start_des = $("#export_start_des");
+  $export_end_des = $("#export_end_des");
+  $export_start_des.attr("max",$today)
+  $export_end_des.attr("max",$today)
+  function export_end_date_desfn(){
+    $export_start_des = $("#export_start_des").val()
+    $export_end_des.attr("min",$export_start_des)
+    $export_end_des.attr("required","required")
   }
 
 

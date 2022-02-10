@@ -3,7 +3,7 @@ from .models import *
 # Register your models here
 
 class ProfileSearch(admin.ModelAdmin):
-    search_fields = ('emp_name','emp_id')
+    search_fields = ('emp_name','emp_id',"emp_desi")
     list_display = ('emp_name','emp_id', 'emp_desi','emp_process',"emp_rm1","emp_rm2","emp_rm3")
 class JobSearch(admin.ModelAdmin):
     search_fields = ('req_raised_by','created_by_id')

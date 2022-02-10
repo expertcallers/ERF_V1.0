@@ -20,4 +20,5 @@ urlpatterns = [
     path('approval', approval),
     path('add-email', AddEmail),
     path('edit-email', EditEmail),
+    path('export/<str:type>', ExportReport),
 ]
