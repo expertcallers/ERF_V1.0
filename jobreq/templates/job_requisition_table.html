@@ -86,7 +86,7 @@
                                   </form>
                               {% endif %}
                               {% if i.final_status == False and i.initial_status == False and request.user.profile.emp_id == i.created_by_id %}
-                                  <button class="btn btn-danger btn-sm" data-toggle="modal" data-target="#delete_{{i.id}}">Approve</button>
+                                  <button class="btn btn-danger btn-sm" data-toggle="modal" data-target="#delete_{{i.id}}">Delete</button>
                               {% endif %}
                             </div>
                           </td>
@@ -113,7 +113,7 @@
                 <span aria-hidden="true">&times;</span>
               </button>
             </div>
-            <form action="/erf/approval" method="POST" enctype="multipart/form-data">
+            <form action="" method="POST" enctype="multipart/form-data">
               {% csrf_token %}
               <div class="modal-body">
                 <div class="row">
@@ -153,22 +153,10 @@
                       <input type="text" readonly value="{{i.designation}}" id="delete_{{i.id}}designation" required class="form-control">
                     </div>
                   </div>
-                  <div class="col-md-4">
-                    <div class="form-group">
-                      <label for="delete_{{i.id}}closedon">Closed on</label>
-                      <input type="text" readonly value="{{i.closure_date}}" id="delete_{{i.id}}closedon" required class="form-control">
-                    </div>
-                  </div>
-                  <div class="col-md-4">
-                    <div class="form-group">
-                      <label for="delete_{{i.id}}closedby">Closed By</label>
-                      <input type="text" readonly value="{{i.closed_by}}" id="delete_{{i.id}}closedby" required class="form-control">
-                    </div>
-                  </div>
-                  <div class="col-md-4">
+                  <div class="col-md-6">
                     <div class="form-group">
                       <label for="delete_{{i.id}}Reason">Reason For Deleting</label>
-                      <textarea id="delete_{{i.id}}Reason" name="reason" class="from-control"></textarea>
+                      <textarea id="delete_{{i.id}}Reason" required name="reason" class="form-control"></textarea>
                     </div>
                   </div>
                 </div>
