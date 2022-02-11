@@ -80,6 +80,7 @@ class JobRequisition(models.Model):
     source_emp_id_1 = models.CharField(max_length=20,null=True,blank=True)
     source_social_1 = models.CharField(max_length=100,null=True,blank=True)
     source_partners_1 = models.CharField(max_length=100,null=True,blank=True)
+    interviewer1 = models.CharField(max_length=100,null=True,blank=True)
 
     candidate_name_2 = models.TextField(null=True,blank=True)
     source_2 = models.CharField(max_length=50,null=True,blank=True)
@@ -90,6 +91,8 @@ class JobRequisition(models.Model):
     source_internal_campaign_name_2 = models.CharField(max_length=200, null=True, blank=True)
     source_social_2 = models.CharField(max_length=100,null=True,blank=True)
     source_partners_2 = models.CharField(max_length=100,null=True,blank=True)
+    interviewer_2 = models.CharField(max_length=100,null=True,blank=True)
+
 
     candidate_name_3 = models.TextField(null=True,blank=True)
     source_3 = models.CharField(max_length=50,null=True,blank=True)
@@ -100,6 +103,8 @@ class JobRequisition(models.Model):
     source_internal_campaign_name_3 = models.CharField(max_length=200, null=True, blank=True)
     source_social_3 = models.CharField(max_length=100,null=True,blank=True)
     source_partners_3 = models.CharField(max_length=100,null=True,blank=True)
+    interviewer_3 = models.CharField(max_length=100,null=True,blank=True)
+
 
     candidate_name_4 = models.TextField(null=True,blank=True)
     source_4 = models.CharField(max_length=50,null=True,blank=True)
@@ -110,6 +115,8 @@ class JobRequisition(models.Model):
     source_internal_campaign_name_4 = models.CharField(max_length=200, null=True, blank=True)
     source_social_4 = models.CharField(max_length=100,null=True,blank=True)
     source_partners_4 = models.CharField(max_length=100,null=True,blank=True)
+    interviewer_4 = models.CharField(max_length=100,null=True,blank=True)
+
 
     candidate_name_5 = models.TextField(null=True,blank=True)
     source_5 = models.CharField(max_length=50,null=True,blank=True)
@@ -120,6 +127,8 @@ class JobRequisition(models.Model):
     source_internal_campaign_name_5 = models.CharField(max_length=200, null=True, blank=True)
     source_social_5 = models.CharField(max_length=100,null=True,blank=True)
     source_partners_5 = models.CharField(max_length=100,null=True,blank=True)
+    interviewer_5 = models.CharField(max_length=100,null=True,blank=True)
+
 
     candidate_name_6 = models.TextField(null=True,blank=True)
     source_6 = models.CharField(max_length=50,null=True,blank=True)
@@ -130,6 +139,8 @@ class JobRequisition(models.Model):
     source_internal_campaign_name_6 = models.CharField(max_length=200, null=True, blank=True)
     source_social_6 = models.CharField(max_length=100,null=True,blank=True)
     source_partners_6 = models.CharField(max_length=100,null=True,blank=True)
+    interviewer_6 = models.CharField(max_length=100,null=True,blank=True)
+
 
     candidate_name_7 = models.TextField(null=True,blank=True)
     source_7 = models.CharField(max_length=50,null=True,blank=True)
@@ -140,6 +151,8 @@ class JobRequisition(models.Model):
     source_internal_campaign_name_7 = models.CharField(max_length=200, null=True, blank=True)
     source_social_7 = models.CharField(max_length=100,null=True,blank=True)
     source_partners_7 = models.CharField(max_length=100,null=True,blank=True)
+    interviewer_7 = models.CharField(max_length=100,null=True,blank=True)
+
 
     candidate_name_8 = models.TextField(null=True,blank=True)
     source_8 = models.CharField(max_length=50,null=True,blank=True)
@@ -150,6 +163,8 @@ class JobRequisition(models.Model):
     source_internal_campaign_name_8 = models.CharField(max_length=200, null=True, blank=True)
     source_social_8 = models.CharField(max_length=100,null=True,blank=True)
     source_partners_8 = models.CharField(max_length=100,null=True,blank=True)
+    interviewer_8 = models.CharField(max_length=100,null=True,blank=True)
+
 
     candidate_name_9 = models.TextField(null=True,blank=True)
     source_9 = models.CharField(max_length=50,null=True,blank=True)
@@ -160,6 +175,8 @@ class JobRequisition(models.Model):
     source_internal_campaign_name_9 = models.CharField(max_length=200, null=True, blank=True)
     source_social_9 = models.CharField(max_length=100,null=True,blank=True)
     source_partners_9 = models.CharField(max_length=100,null=True,blank=True)
+    interviewer_9 = models.CharField(max_length=100,null=True,blank=True)
+
 
     candidate_name_10 = models.TextField(null=True,blank=True)
     source_10 = models.CharField(max_length=50,null=True,blank=True)
@@ -170,6 +187,8 @@ class JobRequisition(models.Model):
     source_internal_campaign_name_10 = models.CharField(max_length=200, null=True, blank=True)
     source_social_10 = models.CharField(max_length=100,null=True,blank=True)
     source_partners_10 = models.CharField(max_length=100,null=True,blank=True)
+    interviewer_10 = models.CharField(max_length=100,null=True,blank=True)
+
 
     candidate_name_11 = models.TextField(null=True,blank=True)
     source_11 = models.CharField(max_length=50,null=True,blank=True)
@@ -180,6 +199,8 @@ class JobRequisition(models.Model):
     source_internal_campaign_name_11 = models.CharField(max_length=200, null=True, blank=True)
     source_social_11 = models.CharField(max_length=100,null=True,blank=True)
     source_partners_11 = models.CharField(max_length=100,null=True,blank=True)
+    interviewer_11 = models.CharField(max_length=100,null=True,blank=True)
+
 
     candidate_name_12 = models.TextField(null=True,blank=True)
     source_12 = models.CharField(max_length=50,null=True,blank=True)
@@ -190,6 +211,8 @@ class JobRequisition(models.Model):
     source_internal_campaign_name_12 = models.CharField(max_length=200, null=True, blank=True)
     source_social_12 = models.CharField(max_length=100,null=True,blank=True)
     source_partners_12 = models.CharField(max_length=100,null=True,blank=True)
+    interviewer_12 = models.CharField(max_length=100,null=True,blank=True)
+
 
     candidate_name_13 = models.TextField(null=True,blank=True)
     source_13 = models.CharField(max_length=50,null=True,blank=True)
@@ -200,6 +223,8 @@ class JobRequisition(models.Model):
     source_internal_campaign_name_13 = models.CharField(max_length=200, null=True, blank=True)
     source_social_13 = models.CharField(max_length=100,null=True,blank=True)
     source_partners_13 = models.CharField(max_length=100,null=True,blank=True)
+    interviewer_13 = models.CharField(max_length=100,null=True,blank=True)
+
 
     candidate_name_14 = models.TextField(null=True,blank=True)
     source_14 = models.CharField(max_length=50,null=True,blank=True)
@@ -210,6 +235,8 @@ class JobRequisition(models.Model):
     source_internal_campaign_name_14 = models.CharField(max_length=200, null=True, blank=True)
     source_social_14 = models.CharField(max_length=100,null=True,blank=True)
     source_partners_14 = models.CharField(max_length=100,null=True,blank=True)
+    interviewer_14 = models.CharField(max_length=100,null=True,blank=True)
+
 
     candidate_name_15 = models.TextField(null=True,blank=True)
     source_15 = models.CharField(max_length=50,null=True,blank=True)
@@ -220,6 +247,8 @@ class JobRequisition(models.Model):
     source_internal_campaign_name_15 = models.CharField(max_length=200, null=True, blank=True)
     source_social_15 = models.CharField(max_length=100,null=True,blank=True)
     source_partners_15 = models.CharField(max_length=100,null=True,blank=True)
+    interviewer_15 = models.CharField(max_length=100,null=True,blank=True)
+
 
     candidate_name_16 = models.TextField(null=True,blank=True)
     source_16 = models.CharField(max_length=50,null=True,blank=True)
@@ -230,6 +259,8 @@ class JobRequisition(models.Model):
     source_internal_campaign_name_16 = models.CharField(max_length=200, null=True, blank=True)
     source_social_16 = models.CharField(max_length=100,null=True,blank=True)
     source_partners_16 = models.CharField(max_length=100,null=True,blank=True)
+    interviewer_16 = models.CharField(max_length=100,null=True,blank=True)
+
 
     candidate_name_17 = models.TextField(null=True,blank=True)
     source_17 = models.CharField(max_length=50,null=True,blank=True)
@@ -240,6 +271,8 @@ class JobRequisition(models.Model):
     source_internal_campaign_name_17 = models.CharField(max_length=200, null=True, blank=True)
     source_social_17 = models.CharField(max_length=100,null=True,blank=True)
     source_partners_17 = models.CharField(max_length=100,null=True,blank=True)
+    interviewer_17 = models.CharField(max_length=100,null=True,blank=True)
+
 
     candidate_name_18 = models.TextField(null=True,blank=True)
     source_18 = models.CharField(max_length=50,null=True,blank=True)
@@ -250,6 +283,8 @@ class JobRequisition(models.Model):
     source_internal_campaign_name_18 = models.CharField(max_length=200, null=True, blank=True)
     source_social_18 = models.CharField(max_length=100,null=True,blank=True)
     source_partners_18 = models.CharField(max_length=100,null=True,blank=True)
+    interviewer_18 = models.CharField(max_length=100,null=True,blank=True)
+
 
     candidate_name_19 = models.TextField(null=True,blank=True)
     source_19 = models.CharField(max_length=50,null=True,blank=True)
@@ -260,6 +295,8 @@ class JobRequisition(models.Model):
     source_internal_campaign_name_19 = models.CharField(max_length=200, null=True, blank=True)
     source_social_19 = models.CharField(max_length=100,null=True,blank=True)
     source_partners_19 = models.CharField(max_length=100,null=True,blank=True)
+    interviewer_19 = models.CharField(max_length=100,null=True,blank=True)
+
 
     candidate_name_20 = models.TextField(null=True,blank=True)
     source_20 = models.CharField(max_length=50,null=True,blank=True)
@@ -270,6 +307,8 @@ class JobRequisition(models.Model):
     source_internal_campaign_name_20 = models.CharField(max_length=200, null=True, blank=True)
     source_social_20 = models.CharField(max_length=100,null=True,blank=True)
     source_partners_20 = models.CharField(max_length=100,null=True,blank=True)
+    interviewer_20 = models.CharField(max_length=100,null=True,blank=True)
+
     dead_line = models.DateField(null=True,blank=True)
 
     closed_by = models.CharField(max_length=150,null=True,blank=True)
