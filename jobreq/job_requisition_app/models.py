@@ -33,7 +33,11 @@ class Campaigns(models.Model):
 
 class JobRequisition(models.Model):
     unique_id = models.CharField(max_length=500,null=True,blank=True)
+    manager_approval = models.BooleanField(default=False)
+    created_by_rm1 = models.CharField(max_length=300,null=True,blank=True)
+    created_by_rm1_id = models.CharField(max_length=30,null=True,blank=True)
     requisition_date = models.DateTimeField()
+    edited_date = models.DateTimeField(null=True,blank=True)
     hc_req = models.IntegerField()
     req_raised_by = models.CharField(max_length=150)
     created_by_manager = models.CharField(max_length=150)
@@ -315,10 +319,14 @@ class JobRequisition(models.Model):
     closed_by_id = models.CharField(max_length=30,null=True,blank=True)
 
     recruited_people = models.IntegerField(null=True,blank=True)
+    reason_for_deleting = models.TextField(null=True,blank=True)
+    deletion = models.BooleanField(default=False)
+    ticket_status = models.BooleanField(default=True)
     request_status = models.CharField(max_length=100, default="Pending")
     candidate_remark = models.TextField(null=True,blank=True)
     initial_status = models.BooleanField(default=False)
     final_status = models.BooleanField(default=False)
+
 
 
 class Tickets(models.Model):

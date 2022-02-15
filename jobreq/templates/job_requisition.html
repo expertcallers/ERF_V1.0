@@ -14,8 +14,6 @@
 </style>
 {% endblock %}
 {% block main %}
-
-
         <!-- page content -->
         <div class="right_col" role="main">
           <div class="page-title">
@@ -65,12 +63,14 @@
                       <div class="col-md-3">
                         <div class="form-group">
                           <label for="campaign">Campaign / Process</label>
-                          <select name="campaign" id="campaign" required class="form-control select2">
+                          <select name="campaign" id="campaign" required class="form-control select2" onchange="getNewCam(this);">
                             <option value="" selected disabled>Please Select</option>
+                            <option value="new">New</option>
                             {% for i in campaigns %}
                             <option value="{{i.campaign_name}}">{{i.campaign_name}}</option>
                             {% endfor %}
                           </select>
+                          <input type="text" name="new_campaign" id="new_campaign" class="mt-2 form-control d-none" placeholder="Enter New Campaign Name">
                         </div>
                       </div>
                       <div class="col-md-3">
@@ -788,7 +788,7 @@
                       <div class="col-md-3">
                         <div class="form-group">
                           <label for="dead_line">Dead Line</label>
-                          <input type="date" name="dead_line" id="dead_line" class="form-control" required>
+                          <input type="number" min="1" name="dead_line" id="dead_line" class="form-control" required placeholder="Please Enter Number of Days">
                         </div>
                       </div>
                       <div class="col-md-12">
@@ -813,6 +813,15 @@
 
 {% block scripts %}
   <script>
+  function getNewCam(e) {
+    if (e.value == "new") {
+      $("#new_campaign").removeClass("d-none");
+      $("#new_campaign").attr("required","");
+    } else {
+      $("#new_campaign").addClass("d-none");
+      $("#new_campaign").removeAttr("required","");
+    }
+  }
   function setMax(e){
     $("#salaryto").attr("min",e.value);
   }

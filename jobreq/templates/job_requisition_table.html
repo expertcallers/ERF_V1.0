@@ -57,7 +57,7 @@
                     {% for i in job %}
                       <tr>
                           <td>{{i.id}}</td>
-                          <td>{{i.requisition_date}}</td>
+                          <td>{{i.edited_date}}</td>
                           <td>{{i.hc_req}}</td>
                           <td>{{i.req_raised_by}}</td>
                           <td>{{i.department}}</td>
@@ -67,7 +67,7 @@
                           <td>
                             <div style="display: inline-flex;">
                               <button class="btn btn-success btn-sm" data-toggle="modal" data-target="#view_{{i.id}}">View</button>
-                              {% if i.initial_status == False %}
+                              {% if i.initial_status == False and i.deletion == False and i.ticket_status == True %}
                                   {% if request.user.profile.emp_desi in editaccess %}
                                   <a href="/erf/job-requisition-edit/{{i.id}}">
                                     <button class="btn btn-primary btn-sm">Update</button>
@@ -77,7 +77,7 @@
                               {% if i.final_status == False and request.user.profile.emp_desi in manager and i.initial_status == True %}
                                   <button class="btn btn-dark btn-sm" data-toggle="modal" data-target="#approval_{{i.id}}">Approve</button>
                               {% endif %}
-                              {% if i.final_status == False and i.initial_status == False and request.user.profile.emp_id == i.created_by_id %}
+                              {% if i.final_status == False and i.deletion == False and i.initial_status == False and request.user.profile.emp_id == i.created_by_id %}
                                   <form action="/erf/edit-requisition" method="POST" enctype="multipart/form-data">
                                     {% csrf_token %}
                                     <input type="hidden" name="id" value="{{i.id}}">
@@ -85,8 +85,14 @@
                                     <button class="btn btn-info btn-sm">Edit</button>
                                   </form>
                               {% endif %}
-                              {% if i.final_status == False and i.initial_status == False and request.user.profile.emp_id == i.created_by_id %}
+                              {% if i.final_status == False and i.deletion == False and i.initial_status == False and request.user.profile.emp_id == i.created_by_id and i.ticket_status == True %}
                                   <button class="btn btn-danger btn-sm" data-toggle="modal" data-target="#delete_{{i.id}}">Delete</button>
+                              {% endif %}
+                              {% if i.manager_approval == False and request.user.profile.emp_desi in manager and i.created_by_rm1_id == request.user.profile.emp_id %}
+                                  <button class="btn btn-dark btn-sm" data-toggle="modal" data-target="#create_approval_{{i.id}}">Approve</button>
+                              {% endif %}
+                              {% if request.user.profile.emp_desi in editaccess and i.deletion == True and i.ticket_status == True %}
+                                  <button class="btn btn-dark btn-sm" data-toggle="modal" data-target="#delete_approval_{{i.id}}">Approve</button>
                               {% endif %}
                             </div>
                           </td>
@@ -102,6 +108,88 @@
         </div>
         <!-- /page content -->
 
+
+<!-- Delete Approval Pop-Up -->
+    {% for i in job %}
+      <div class="modal fade" id="delete_approval_{{i.id}}" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="delete_approval">Delete Request ID: {{i.id}}</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <form action="/erf/delete/approve" method="POST" enctype="multipart/form-data">
+              {% csrf_token %}
+              <div class="modal-body">
+                <div class="row">
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label for="delete_approval{{i.id}}req_date">Requested Date</label>
+                      <input type="text" readonly value="{{i.edited_date}}" id="delete_approval{{i.id}}req_date" required class="form-control">
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label for="delete_approval{{i.id}}req_rais_by">Request Raised By</label>
+                      <input type="text" readonly value="{{i.req_raised_by}}" id="delete_approval{{i.id}}req_rais_by" required class="form-control">
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label for="delete_approval{{i.id}}hc_required">HC Required</label>
+                      <input type="text" readonly value="{{i.hc_req}}" id="delete_approval{{i.id}}hc_required" required class="form-control">
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label for="delete_approval{{i.id}}campaign">Campaign</label>
+                      <input type="text" readonly value="{{i.campaign}}" id="delete_approval{{i.id}}campaign" required class="form-control">
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label for="delete_approval{{i.id}}department">Department</label>
+                      <input type="text" readonly value="{{i.department}}" id="delete_approval{{i.id}}department" required class="form-control">
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label for="delete_approval{{i.id}}designation">Role/Designation</label>
+                      <input type="text" readonly value="{{i.designation}}" id="delete_approval{{i.id}}designation" required class="form-control">
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="delete_approval{{i.id}}Reason">Reason For Deleting</label>
+                      <textarea id="delete_approval{{i.id}}Reason" readonly name="reason" class="form-control">{{i.reason_for_deleting}}</textarea>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="delete_approval{{i.id}}Approval">Approval</label>
+                      <select id="delete_approval{{i.id}}Approval" name="response" required class="form-control">
+                        <option value="" selected disabled>Please Select</option>
+                        <option value="Approve">Approve</option>
+                        <option value="Reject">Reject</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button type="submit" class="btn btn-success">Submit</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              </div>
+              <input type="hidden" name="id" value="{{i.id}}">
+            </form>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+<!-- Delete Approval Pop-Up -->
+
 <!-- Delete Pop-Up -->
     {% for i in job %}
       <div class="modal fade" id="delete_{{i.id}}" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
@@ -113,14 +201,14 @@
                 <span aria-hidden="true">&times;</span>
               </button>
             </div>
-            <form action="" method="POST" enctype="multipart/form-data">
+            <form action="/erf/delete/request" method="POST" enctype="multipart/form-data">
               {% csrf_token %}
               <div class="modal-body">
                 <div class="row">
                   <div class="col-md-4">
                     <div class="form-group">
                       <label for="delete_{{i.id}}req_date">Requested Date</label>
-                      <input type="text" readonly value="{{i.requisition_date}}" id="delete_{{i.id}}req_date" required class="form-control">
+                      <input type="text" readonly value="{{i.edited_date}}" id="delete_{{i.id}}req_date" required class="form-control">
                     </div>
                   </div>
                   <div class="col-md-4">
@@ -172,7 +260,87 @@
       </div>
     {% endfor %}
 <!-- Delete Pop-Up -->
-<!-- Start View Pop-Up -->
+
+
+<!-- Start approval on created by AM Pop-Up -->
+    {% for i in job %}
+      <div class="modal fade" id="create_approval_{{i.id}}" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="CreateApprove">Request ID: {{i.id}}</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <form action="/erf/initial-approval" method="POST" enctype="multipart/form-data">
+              {% csrf_token %}
+              <div class="modal-body">
+                <div class="row">
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label for="cre_app_{{i.id}}req_date">Requested Date</label>
+                      <input type="text" readonly value="{{i.edited_date}}" id="cre_app_{{i.id}}req_date" required class="form-control">
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label for="cre_app_{{i.id}}req_rais_by">Request Raised By</label>
+                      <input type="text" readonly value="{{i.req_raised_by}}" id="cre_app_{{i.id}}req_rais_by" required class="form-control">
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label for="cre_app_{{i.id}}hc_required">HC Required</label>
+                      <input type="text" readonly value="{{i.hc_req}}" id="cre_app_{{i.id}}hc_required" required class="form-control">
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label for="cre_app_{{i.id}}campaign">Campaign</label>
+                      <input type="text" readonly value="{{i.campaign}}" id="cre_app_{{i.id}}campaign" required class="form-control">
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label for="cre_app_{{i.id}}department">Department</label>
+                      <input type="text" readonly value="{{i.department}}" id="cre_app_{{i.id}}department" required class="form-control">
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label for="cre_app_{{i.id}}designation">Role/Designation</label>
+                      <input type="text" readonly value="{{i.designation}}" id="cre_app_{{i.id}}designation" required class="form-control">
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label for="cre_app_{{i.id}}Approval">Approval</label>
+                      <select id="cre_app_{{i.id}}Approval" name="response" required class="form-control">
+                        <option value="" selected disabled>Please Select</option>
+                        <option value="Approve">Approve</option>
+                        <option value="Reject">Reject</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button type="submit" class="btn btn-success">Submit</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              </div>
+              <input type="hidden" name="id" value="{{i.id}}">
+            </form>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+    <!-- End approval on created by AM Pop-Up -->
+
+
+
+<!-- Start approval Pop-Up -->
+
     {% for i in job %}
       <div class="modal fade" id="approval_{{i.id}}" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
@@ -190,7 +358,7 @@
                   <div class="col-md-4">
                     <div class="form-group">
                       <label for="app_{{i.id}}req_date">Requested Date</label>
-                      <input type="text" readonly value="{{i.requisition_date}}" id="app_{{i.id}}req_date" required class="form-control">
+                      <input type="text" readonly value="{{i.edited_date}}" id="app_{{i.id}}req_date" required class="form-control">
                     </div>
                   </div>
                   <div class="col-md-4">
@@ -257,7 +425,7 @@
         </div>
       </div>
     {% endfor %}
-    <!-- End View Pop-Up -->
+    <!-- End approval Pop-Up -->
 
     <!-- Start View Pop-Up -->
     {% for i in job %}
@@ -279,7 +447,7 @@
                             <div class="col-md-3">
                               <div class="form-group">
                                 <label for="v_{{i.id}}req_date">Requested Date</label>
-                                <input type="text" readonly value="{{i.requisition_date}}" id="v_{{i.id}}req_date" required class="form-control">
+                                <input type="text" readonly value="{{i.edited_date}}" id="v_{{i.id}}req_date" required class="form-control">
                               </div>
                             </div>
                             <div class="col-md-3">
@@ -437,6 +605,12 @@
                             </div>
                             <div class="col-md-3">
                               <div class="form-group">
+                                <label for="v_{{i.id}}inter_1">Interviewer</label>
+                                <input type="text" readonly value="{{i.interviewer1}}" id="v_{{i.id}}inter_1" class="form-control">
+                              </div>
+                            </div>
+                            <div class="col-md-3">
+                              <div class="form-group">
                                 <label for="v_{{i.id}}source_1">Source</label>
                                 <input type="text" readonly value="{{i.source_1}}" id="v_{{i.id}}source_1" class="form-control">
                               </div>
@@ -483,6 +657,12 @@
                             </div>
                             <div class="col-md-3">
                               <div class="form-group">
+                                <label for="v_{{i.id}}inter_2">Interviewer</label>
+                                <input type="text" readonly value="{{i.interviewer_2}}" id="v_{{i.id}}inter_2" class="form-control">
+                              </div>
+                            </div>
+                            <div class="col-md-3">
+                              <div class="form-group">
                                 <label for="v_{{i.id}}source_2">Source</label>
                                 <input type="text" readonly value="{{i.source_2}}" id="v_{{i.id}}source_2" class="form-control">
                               </div>
@@ -524,6 +704,12 @@
                               <div class="form-group">
                                 <label for="v_{{i.id}}cand_name_3">Candidate Name</label>
                                 <input readonly id="v_{{i.id}}cand_name_3" class="form-control" value="{% if i.candidate_name_3 %}{{i.candidate_name_3}}{% endif %}">
+                              </div>
+                            </div>
+                            <div class="col-md-3">
+                              <div class="form-group">
+                                <label for="v_{{i.id}}inter_3">Interviewer</label>
+                                <input type="text" readonly value="{{i.interviewer_3}}" id="v_{{i.id}}inter_3" class="form-control">
                               </div>
                             </div>
                             <div class="col-md-3">
@@ -575,6 +761,12 @@
                             </div>
                             <div class="col-md-3">
                               <div class="form-group">
+                                <label for="v_{{i.id}}inter_4">Interviewer</label>
+                                <input type="text" readonly value="{{i.interviewer_4}}" id="v_{{i.id}}inter_4" class="form-control">
+                              </div>
+                            </div>
+                            <div class="col-md-3">
+                              <div class="form-group">
                                 <label for="v_{{i.id}}source_4">Source</label>
                                 <input type="text" readonly value="{{i.source_4}}" id="v_{{i.id}}source_4" class="form-control">
                               </div>
@@ -618,6 +810,12 @@
                               <div class="form-group">
                                 <label for="v_{{i.id}}cand_name_5">Candidate Name</label>
                                 <input readonly id="v_{{i.id}}cand_name_5" class="form-control" value="{% if i.candidate_name_5 %}{{i.candidate_name_5}}{% endif %}">
+                              </div>
+                            </div>
+                            <div class="col-md-3">
+                              <div class="form-group">
+                                <label for="v_{{i.id}}inter_5">Interviewer</label>
+                                <input type="text" readonly value="{{i.interviewer_5}}" id="v_{{i.id}}inter_5" class="form-control">
                               </div>
                             </div>
                             <div class="col-md-3">
@@ -668,6 +866,12 @@
                             </div>
                             <div class="col-md-3">
                               <div class="form-group">
+                                <label for="v_{{i.id}}inter_6">Interviewer</label>
+                                <input type="text" readonly value="{{i.interviewer_6}}" id="v_{{i.id}}inter_6" class="form-control">
+                              </div>
+                            </div>
+                            <div class="col-md-3">
+                              <div class="form-group">
                                 <label for="v_{{i.id}}source_6">Source</label>
                                 <input type="text" readonly value="{{i.source_6}}" id="v_{{i.id}}source_6" class="form-control">
                               </div>
@@ -710,6 +914,12 @@
                               <div class="form-group">
                                 <label for="v_{{i.id}}cand_name_7">Candidate Name</label>
                                 <input readonly id="v_{{i.id}}cand_name_7" class="form-control" value="{% if i.candidate_name_7 %}{{i.candidate_name_7}}{% endif %}">
+                              </div>
+                            </div>
+                            <div class="col-md-3">
+                              <div class="form-group">
+                                <label for="v_{{i.id}}inter_7">Interviewer</label>
+                                <input type="text" readonly value="{{i.interviewer_7}}" id="v_{{i.id}}inter_7" class="form-control">
                               </div>
                             </div>
                             <div class="col-md-3">
@@ -760,6 +970,12 @@
                             </div>
                             <div class="col-md-3">
                               <div class="form-group">
+                                <label for="v_{{i.id}}inter_8">Interviewer</label>
+                                <input type="text" readonly value="{{i.interviewer_8}}" id="v_{{i.id}}inter_8" class="form-control">
+                              </div>
+                            </div>
+                            <div class="col-md-3">
+                              <div class="form-group">
                                 <label for="v_{{i.id}}source_8">Source</label>
                                 <input type="text" readonly value="{{i.source_8}}" id="v_{{i.id}}source_8" class="form-control">
                               </div>
@@ -802,6 +1018,12 @@
                               <div class="form-group">
                                 <label for="v_{{i.id}}cand_name_9">Candidate Name</label>
                                 <input readonly id="v_{{i.id}}cand_name_9" class="form-control" value="{% if i.candidate_name_9 %}{{i.candidate_name_9}}{% endif %}">
+                              </div>
+                            </div>
+                            <div class="col-md-3">
+                              <div class="form-group">
+                                <label for="v_{{i.id}}inter_9">Interviewer</label>
+                                <input type="text" readonly value="{{i.interviewer_9}}" id="v_{{i.id}}inter_9" class="form-control">
                               </div>
                             </div>
                             <div class="col-md-3">
@@ -852,6 +1074,12 @@
                             </div>
                             <div class="col-md-3">
                               <div class="form-group">
+                                <label for="v_{{i.id}}inter_10">Interviewer</label>
+                                <input type="text" readonly value="{{i.interviewer_10}}" id="v_{{i.id}}inter_10" class="form-control">
+                              </div>
+                            </div>
+                            <div class="col-md-3">
+                              <div class="form-group">
                                 <label for="v_{{i.id}}source_10">Source</label>
                                 <input type="text" readonly value="{{i.source_10}}" id="v_{{i.id}}source_10" class="form-control">
                               </div>
@@ -894,6 +1122,12 @@
                               <div class="form-group">
                                 <label for="v_{{i.id}}cand_name_11">Candidate Name</label>
                                 <input readonly id="v_{{i.id}}cand_name_11" class="form-control" value="{% if i.candidate_name_11 %}{{i.candidate_name_11}}{% endif %}">
+                              </div>
+                            </div>
+                            <div class="col-md-3">
+                              <div class="form-group">
+                                <label for="v_{{i.id}}inter_11">Interviewer</label>
+                                <input type="text" readonly value="{{i.interviewer_11}}" id="v_{{i.id}}inter_11" class="form-control">
                               </div>
                             </div>
                             <div class="col-md-3">
@@ -944,6 +1178,12 @@
                             </div>
                             <div class="col-md-3">
                               <div class="form-group">
+                                <label for="v_{{i.id}}inter_12">Interviewer</label>
+                                <input type="text" readonly value="{{i.interviewer_12}}" id="v_{{i.id}}inter_12" class="form-control">
+                              </div>
+                            </div>
+                            <div class="col-md-3">
+                              <div class="form-group">
                                 <label for="v_{{i.id}}source_12">Source</label>
                                 <input type="text" readonly value="{{i.source_12}}" id="v_{{i.id}}source_12" class="form-control">
                               </div>
@@ -986,6 +1226,12 @@
                               <div class="form-group">
                                 <label for="v_{{i.id}}cand_name_13">Candidate Name</label>
                                 <input readonly id="v_{{i.id}}cand_name_13" class="form-control" value="{% if i.candidate_name_13 %}{{i.candidate_name_13}}{% endif %}">
+                              </div>
+                            </div>
+                            <div class="col-md-3">
+                              <div class="form-group">
+                                <label for="v_{{i.id}}inter_13">Interviewer</label>
+                                <input type="text" readonly value="{{i.interviewer_13}}" id="v_{{i.id}}inter_13" class="form-control">
                               </div>
                             </div>
                             <div class="col-md-3">
@@ -1036,6 +1282,12 @@
                             </div>
                             <div class="col-md-3">
                               <div class="form-group">
+                                <label for="v_{{i.id}}inter_14">Interviewer</label>
+                                <input type="text" readonly value="{{i.interviewer_14}}" id="v_{{i.id}}inter_14" class="form-control">
+                              </div>
+                            </div>
+                            <div class="col-md-3">
+                              <div class="form-group">
                                 <label for="v_{{i.id}}source_14">Source</label>
                                 <input type="text" readonly value="{{i.source_14}}" id="v_{{i.id}}source_14" class="form-control">
                               </div>
@@ -1078,6 +1330,12 @@
                               <div class="form-group">
                                 <label for="v_{{i.id}}cand_name_15">Candidate Name</label>
                                 <input readonly id="v_{{i.id}}cand_name_15" class="form-control" value="{% if i.candidate_name_15 %}{{i.candidate_name_15}}{% endif %}">
+                              </div>
+                            </div>
+                            <div class="col-md-3">
+                              <div class="form-group">
+                                <label for="v_{{i.id}}inter_15">Interviewer</label>
+                                <input type="text" readonly value="{{i.interviewer_15}}" id="v_{{i.id}}inter_15" class="form-control">
                               </div>
                             </div>
                             <div class="col-md-3">
@@ -1128,6 +1386,12 @@
                             </div>
                             <div class="col-md-3">
                               <div class="form-group">
+                                <label for="v_{{i.id}}inter_16">Interviewer</label>
+                                <input type="text" readonly value="{{i.interviewer_16}}" id="v_{{i.id}}inter_16" class="form-control">
+                              </div>
+                            </div>
+                            <div class="col-md-3">
+                              <div class="form-group">
                                 <label for="v_{{i.id}}source_16">Source</label>
                                 <input type="text" readonly value="{{i.source_16}}" id="v_{{i.id}}source_16" class="form-control">
                               </div>
@@ -1170,6 +1434,12 @@
                               <div class="form-group">
                                 <label for="v_{{i.id}}cand_name_17">Candidate Name</label>
                                 <input readonly id="v_{{i.id}}cand_name_17" class="form-control" value="{% if i.candidate_name_17 %}{{i.candidate_name_17}}{% endif %}">
+                              </div>
+                            </div>
+                            <div class="col-md-3">
+                              <div class="form-group">
+                                <label for="v_{{i.id}}inter_17">Interviewer</label>
+                                <input type="text" readonly value="{{i.interviewer_17}}" id="v_{{i.id}}inter_17" class="form-control">
                               </div>
                             </div>
                             <div class="col-md-3">
@@ -1220,6 +1490,12 @@
                             </div>
                             <div class="col-md-3">
                               <div class="form-group">
+                                <label for="v_{{i.id}}inter_18">Interviewer</label>
+                                <input type="text" readonly value="{{i.interviewer_18}}" id="v_{{i.id}}inter_18" class="form-control">
+                              </div>
+                            </div>
+                            <div class="col-md-3">
+                              <div class="form-group">
                                 <label for="v_{{i.id}}source_18">Source</label>
                                 <input type="text" readonly value="{{i.source_18}}" id="v_{{i.id}}source_18" class="form-control">
                               </div>
@@ -1266,6 +1542,12 @@
                             </div>
                             <div class="col-md-3">
                               <div class="form-group">
+                                <label for="v_{{i.id}}inter_19">Interviewer</label>
+                                <input type="text" readonly value="{{i.interviewer_19}}" id="v_{{i.id}}inter_19" class="form-control">
+                              </div>
+                            </div>
+                            <div class="col-md-3">
+                              <div class="form-group">
                                 <label for="v_{{i.id}}source_19">Source</label>
                                 <input type="text" readonly value="{{i.source_19}}" id="v_{{i.id}}source_19" class="form-control">
                               </div>
@@ -1308,6 +1590,12 @@
                               <div class="form-group">
                                 <label for="v_{{i.id}}cand_name_20">Candidate Name</label>
                                 <input readonly id="v_{{i.id}}cand_name_20" class="form-control" value="{% if i.candidate_name_20 %}{{i.candidate_name_20}}{% endif %}">
+                              </div>
+                            </div>
+                            <div class="col-md-3">
+                              <div class="form-group">
+                                <label for="v_{{i.id}}inter_20">Interviewer</label>
+                                <input type="text" readonly value="{{i.interviewer_20}}" id="v_{{i.id}}inter_20" class="form-control">
                               </div>
                             </div>
                             <div class="col-md-3">

@@ -21,4 +21,6 @@ urlpatterns = [
     path('add-email', AddEmail),
     path('edit-email', EditEmail),
     path('export/<str:type>', ExportReport),
+    path('initial-approval', CreationApproval),
+    path('delete/<str:type>', DeteleRequest),
 ]
