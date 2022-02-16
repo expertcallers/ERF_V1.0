@@ -1554,11 +1554,13 @@ def DeteleRequest(request, type):
                     e.ticket_status = False
                     e.request_status = "Deletion Approved by "+str(request.user.profile.emp_id)
                     comments = "Deletion Request Approved"
+                    messages = "Requisition Deleted Successfully!!"
                 else:
                     e.ticket_status = True
                     e.deletion = False
                     e.request_status = "Deletion Rejected by "+str(request.user.profile.emp_name)
                     comments = "Deletion Request Rejected"
+                    messages = "Requisition Deletion Rejected"
                 e.save()
 
                 a = Tickets.objects.get(job_requisition_id=id)
@@ -1588,7 +1590,7 @@ def DeteleRequest(request, type):
                                          reply_to=['erf@expertcallers.com'])
                 email_msg.content_subtype = 'html'
                 email_msg.send(fail_silently=False)
-                messages.info(request, "Requisition Deleted Successfully!")
+                messages.info(request, messages)
                 if request.user.profile.emp_desi in hr_list:
                     return redirect("/erf/hr-dashboard")
                 elif request.user.profile.emp_desi in am_mgr_list:
