@@ -189,7 +189,6 @@ def job_requisition(request):
     user = request.user.profile
     if request.method == "POST":
         requisition_date = datetime.datetime.now(pytz.timezone('Asia/Kolkata'))
-        print("********",requisition_date,"requisition_date")
         weekday = datetime.datetime.now(pytz.timezone('Asia/Kolkata')).weekday()
         time = datetime.datetime.now(pytz.timezone('Asia/Kolkata')).time()
         today7pm = time.replace(hour=19, minute=0, second=0, microsecond=0)
@@ -1569,6 +1568,24 @@ def DeteleRequest(request, type):
                 adding = previous + ",\n" + edited_by
                 a.edited_by = adding
                 a.save()
+                action = "Approved Deletion Request"
+                subject = action + " Job Requisition " + str(e.id)
+                html_path = 'email.html'
+                data = {'id': e.id, "created_date": e.edited_date, "hc": e.hc_req, "department": e.department,
+                        "position": e.designation,
+                        "deadline": e.dead_line, "campaign": e.campaign, "user": request.user.profile.emp_name,
+                        "action": action, "status": e.request_status}
+                email_template = get_template(html_path).render(data)
+                creater_email = Profile.objects.get(emp_id=e.created_by_id).emp_email
+                manager_email = Profile.objects.get(emp_id=e.created_by_manager_id).emp_email
+                rm1_email = Profile.objects.get(emp_id=e.created_by_rm1_id).emp_email
+                to = [request.user.profile.emp_email, "aparna.ks@expertcallers.com", creater_email, manager_email, rm1_email]
+                email_msg = EmailMessage(subject,
+                                         email_template, 'erf@expertcallers.com',
+                                         to,
+                                         reply_to=['erf@expertcallers.com'])
+                email_msg.content_subtype = 'html'
+                email_msg.send(fail_silently=False)
                 messages.info(request, "Requisition Deleted Successfully!")
                 if request.user.profile.emp_desi in hr_list:
                     return redirect("/erf/hr-dashboard")
@@ -1608,6 +1625,24 @@ def DeteleRequest(request, type):
                 adding = previous + ",\n" + edited_by
                 a.edited_by = adding
                 a.save()
+                action = "Requested for Deletion"
+                subject = action + " Job Requisition " + str(e.id)
+                html_path = 'email.html'
+                data = {'id': e.id, "created_date": e.edited_date, "hc": e.hc_req, "department": e.department,
+                        "position": e.designation,
+                        "deadline": e.dead_line, "campaign": e.campaign, "user": request.user.profile.emp_name,
+                        "action": action, "status": e.request_status}
+                email_template = get_template(html_path).render(data)
+                creater_email = Profile.objects.get(emp_id=e.created_by_id).emp_email
+                manager_email = Profile.objects.get(emp_id=e.created_by_manager_id).emp_email
+                rm1_email = Profile.objects.get(emp_id=e.created_by_rm1_id).emp_email
+                to = [request.user.profile.emp_email, "aparna.ks@expertcallers.com", creater_email, manager_email, rm1_email]
+                email_msg = EmailMessage(subject,
+                                         email_template, 'erf@expertcallers.com',
+                                         to,
+                                         reply_to=['erf@expertcallers.com'])
+                email_msg.content_subtype = 'html'
+                email_msg.send(fail_silently=False)
                 messages.info(request, "Deletion Request Successful!")
                 if request.user.profile.emp_desi in hr_list:
                     return redirect("/erf/hr-dashboard")

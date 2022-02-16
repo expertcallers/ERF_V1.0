@@ -670,7 +670,7 @@
                             <option value="Post Graduate" {% if 'Post Graduate' == job.qualification %}selected{% endif %}>Post Graduate</option>
                             <option value="Others" {% if 'Others' == job.qualification %}selected{% endif %}>Others</option>
                           </select>
-                          <input type="text" name="other_quali" value="{{job.other_quali}}" id="other_quali" class="form-control d-none mt-2" placeholder=" Please Enter Your Qualification">
+                          <input type="text" name="other_quali" value="{% if 'Others' == job.qualification %}{{job.other_quali}}{% endif %}" id="other_quali" class="form-control d-none mt-2" placeholder=" Please Enter Your Qualification">
                         </div>
                       </div>
                       <div class="col-md-3">
