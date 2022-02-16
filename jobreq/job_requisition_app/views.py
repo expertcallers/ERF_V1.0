@@ -1598,6 +1598,10 @@ def DeteleRequest(request, type):
                 else:
                     messages.info(request, "Invalid Request. You have been logged out :)")
                     return redirect("/erf/")
+        else:
+            messages.info(request, "Invalid Request. You have been logged out :)")
+            return redirect("/erf/")
+
     elif type == "request":
         if request.method == "POST":
             id = request.POST["id"]
@@ -1656,4 +1660,6 @@ def DeteleRequest(request, type):
                     messages.info(request, "Invalid Request. You have been logged out :)")
                     return redirect("/erf/")
 
-
+        else:
+            messages.info(request, "Invalid Request. You have been logged out :)")
+            return redirect("/erf/")
