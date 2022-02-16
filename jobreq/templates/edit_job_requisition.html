@@ -786,7 +786,7 @@
                       <div class="col-md-3 d-none" id="reason_replace">
                         <div class="form-group">
                           <label for="replace_reason">Reason for Replacement/Buffer</label>
-                          <textarea name="replace_reason" id="replace_reason" class="form-control">{{job.reason_for_replace}}</textarea>
+                          <textarea name="replace_reason" id="replace_reason" class="form-control">{% if 'Budgeted' == job.requisition_type %}{% else %}{{job.reason_for_replace}}{% endif %}</textarea>
                                                     <input type="hidden" name="id" value="{{job.id}}" id="id">
 
                         </div>

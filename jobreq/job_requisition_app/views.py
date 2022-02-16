@@ -26,6 +26,19 @@ mgr_list = ['Learning and Development Head', 'Quality Head', 'Operations Manager
 management_list = ['Associate Director']
 
 def index(request):
+    obj = JobRequisition.objects.get(id=109)
+    a = obj.edited_date
+    print(a)
+    b = datetime.datetime.now(pytz.timezone('Asia/Kolkata'))
+    print(b)
+    delta = b - a
+    days = delta.days
+    print(days)
+    c = obj.dead_line
+    print("Old Dead Line",c)
+    new_dead_line = c + datetime.timedelta(days=days)
+    print("New Dead Line",new_dead_line)
+
     logout(request)
     return render(request, "index.html")
 
@@ -189,6 +202,7 @@ def job_requisition(request):
     user = request.user.profile
     if request.method == "POST":
         requisition_date = datetime.datetime.now(pytz.timezone('Asia/Kolkata'))
+        print("********",requisition_date,"requisition_date")
         weekday = datetime.datetime.now(pytz.timezone('Asia/Kolkata')).weekday()
         time = datetime.datetime.now(pytz.timezone('Asia/Kolkata')).time()
         today7pm = time.replace(hour=19, minute=0, second=0, microsecond=0)
@@ -1357,7 +1371,7 @@ def approval(request):
             adding = previous + ",\n" + edited_by
             a.edited_by = adding
             a.save()
-            messages.info(request, "Changes have been made successfully!")
+            messages.info(request, "Approved Successfully!")
 
             subject = action + " Job Requisition " + str(e.id)
             html_path = 'email.html'
@@ -1551,7 +1565,23 @@ def DeteleRequest(request, type):
                 if response == "Approve":
                     e.ticket_status = False
                     e.request_status = "Deletion Approved by "+str(request.user.profile.emp_id)
+                    comments = "Deletion Request Approved"
+                else:
+                    e.ticket_status = True
+                    e.deletion = False
+                    e.request_status = "Deletion Rejected by "+str(request.user.profile.emp_name)
+                    comments = "Deletion Request Rejected"
                 e.save()
+
+                a = Tickets.objects.get(job_requisition_id=id)
+                now_datetime = datetime.datetime.now().strftime('%b %d,%Y %H:%M:%S')
+                edited_name = request.user.profile.emp_name
+                edited_id = request.user.profile.emp_id
+                edited_by = str([now_datetime, edited_name, edited_id, comments])
+                previous = a.edited_by
+                adding = previous + ",\n" + edited_by
+                a.edited_by = adding
+                a.save()
                 messages.info(request, "Requisition Deleted Successfully!")
                 if request.user.profile.emp_desi in hr_list:
                     return redirect("/erf/hr-dashboard")
@@ -1582,6 +1612,15 @@ def DeteleRequest(request, type):
                 e.reason_for_deleting = reason
                 e.deletion = True
                 e.save()
+                a = Tickets.objects.get(job_requisition_id=id)
+                now_datetime = datetime.datetime.now().strftime('%b %d,%Y %H:%M:%S')
+                edited_name = request.user.profile.emp_name
+                edited_id = request.user.profile.emp_id
+                edited_by = str([now_datetime, edited_name, edited_id, "Raised Deletion Request"])
+                previous = a.edited_by
+                adding = previous + ",\n" + edited_by
+                a.edited_by = adding
+                a.save()
                 messages.info(request, "Deletion Request Successful!")
                 if request.user.profile.emp_desi in hr_list:
                     return redirect("/erf/hr-dashboard")

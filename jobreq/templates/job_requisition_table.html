@@ -577,7 +577,7 @@
                               </div>
                             </div>
                             {% if i.reason_for_replace %}
-                            <div class="col-md-3">
+                            <div class="col-md-3 d-none" id="reason_RB_{{i.id}}">
                               <div class="form-group">
                                 <label for="v_{{i.id}}reason">Reason for Replacement / Buffer</label>
                                 <textarea disabled class="form-control" id="v_{{i.id}}reason">{{i.reason_for_replace}}</textarea>
@@ -1703,6 +1703,10 @@
         shift_time.classList.add("d-none");
       } else {
         shift_time.classList.remove("d-none");
+      }
+      var req_type_{{i.id}} = $("#v_{{i.id}}req_type").val()
+      if ( req_type_{{i.id}} != 'Budgeted' ) {
+        $("#reason_RB_{{i.id}}").removeClass("d-none")
       }
 
 
