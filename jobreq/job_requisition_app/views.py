@@ -1484,11 +1484,13 @@ def CreationApproval(request):
                 e.manager_approval = True
                 e.request_status = request_status
                 comment = "Approved by Manager"
+                message = "The Requisition Approved Successfully!"
                 action = "Approved the AM Job Requisition"
             if response == "Reject":
                 e.initial_status = False
                 e.request_status = request_status
                 comment = "Rejected by Manager"
+                message = "The Requisition status have been made as Rejected"
                 action = "Rejected the AM Job Requisition"
             e.save()
             now_datetime = datetime.datetime.now().strftime('%b %d,%Y %H:%M:%S')
@@ -1499,7 +1501,7 @@ def CreationApproval(request):
             adding = previous + ",\n" + edited_by
             a.edited_by = adding
             a.save()
-            messages.info(request, "Changes have been made successfully!")
+            messages.info(request, message)
 
             subject = action + " Job Requisition " + str(e.id)
             html_path = 'email.html'
