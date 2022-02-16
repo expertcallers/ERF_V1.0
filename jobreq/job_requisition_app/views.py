@@ -26,19 +26,6 @@ mgr_list = ['Learning and Development Head', 'Quality Head', 'Operations Manager
 management_list = ['Associate Director']
 
 def index(request):
-    obj = JobRequisition.objects.get(id=109)
-    a = obj.edited_date
-    print(a)
-    b = datetime.datetime.now(pytz.timezone('Asia/Kolkata'))
-    print(b)
-    delta = b - a
-    days = delta.days
-    print(days)
-    c = obj.dead_line
-    print("Old Dead Line",c)
-    new_dead_line = c + datetime.timedelta(days=days)
-    print("New Dead Line",new_dead_line)
-
     logout(request)
     return render(request, "index.html")
 
