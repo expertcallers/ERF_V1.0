@@ -324,7 +324,11 @@ def job_requisition(request):
                     "status": "Pending"}
             email_template = get_template(html_path).render(data)
             manager_email = Profile.objects.get(emp_id=manager_id).emp_email
-            to = [request.user.profile.emp_email, "aparna.ks@expertcallers.com", manager_email]
+            try:
+                rm1_email = Profile.objects.get(emp_id=user.emp_rm1_id).emp_email
+            except Profile.DoesNotExist:
+                rm1_email = request.user.profile.emp_email
+            to = [request.user.profile.emp_email, "aparna.ks@expertcallers.com", manager_email, rm1_email]
             email_msg = EmailMessage(subject,
                                      email_template, 'erf@expertcallers.com',
                                      to,
@@ -706,7 +710,11 @@ def job_requisition_manager_edit(request):
                     "action": action, "status": e.request_status}
             email_template = get_template(html_path).render(data)
             manager_email = Profile.objects.get(emp_id=manager_id).emp_email
-            to = [request.user.profile.emp_email, "aparna.ks@expertcallers.com", manager_email]
+            try:
+                rm1_email = Profile.objects.get(emp_id=e.created_by_rm1_id).emp_email
+            except Profile.DoesNotExist:
+                rm1_email = request.user.profile.emp_email
+            to = [request.user.profile.emp_email, "aparna.ks@expertcallers.com", manager_email, rm1_email]
             email_msg = EmailMessage(subject,
                                      email_template, 'erf@expertcallers.com',
                                      to,
@@ -1254,7 +1262,11 @@ def jobRequisitionEditUpdate(request):
             creater_email = Profile.objects.get(emp_id=creater_id).emp_email
             manager_id = e.created_by_manager_id
             manager_email = Profile.objects.get(emp_id=manager_id).emp_email
-            to = [request.user.profile.emp_email, "aparna.ks@expertcallers.com", creater_email, manager_email]
+            try:
+                rm1_email = Profile.objects.get(emp_id=e.created_by_rm1_id).emp_email
+            except Profile.DoesNotExist:
+                rm1_email = creater_email
+            to = [request.user.profile.emp_email, "aparna.ks@expertcallers.com", creater_email, manager_email, rm1_email]
             email_msg = EmailMessage(subject,
                                      email_template, 'erf@expertcallers.com',
                                      to,
@@ -1370,7 +1382,11 @@ def approval(request):
             email_template = get_template(html_path).render(data)
             creater_id = e.created_by_id
             creater_email = Profile.objects.get(emp_id=creater_id).emp_email
-            to = [request.user.profile.emp_email, "aparna.ks@expertcallers.com", creater_email]
+            try:
+                rm1_email = Profile.objects.get(emp_id=e.created_by_rm1_id).emp_email
+            except Profile.DoesNotExist:
+                rm1_email = creater_email
+            to = [request.user.profile.emp_email, "aparna.ks@expertcallers.com", creater_email, rm1_email]
             email_msg = EmailMessage(subject,
                                      email_template, 'erf@expertcallers.com',
                                      to,
@@ -1514,7 +1530,8 @@ def CreationApproval(request):
             email_template = get_template(html_path).render(data)
             creater_id = e.created_by_id
             creater_email = Profile.objects.get(emp_id=creater_id).emp_email
-            to = [request.user.profile.emp_email, "aparna.ks@expertcallers.com", creater_email]
+            manager_email = Profile.objects.get(emp_id=e.created_by_manager_id).emp_email
+            to = [request.user.profile.emp_email, "aparna.ks@expertcallers.com", creater_email, manager_email]
             email_msg = EmailMessage(subject,
                                      email_template, 'erf@expertcallers.com',
                                      to,
@@ -1585,7 +1602,10 @@ def DeteleRequest(request, type):
                 email_template = get_template(html_path).render(data)
                 creater_email = Profile.objects.get(emp_id=e.created_by_id).emp_email
                 manager_email = Profile.objects.get(emp_id=e.created_by_manager_id).emp_email
-                rm1_email = Profile.objects.get(emp_id=e.created_by_rm1_id).emp_email
+                try:
+                    rm1_email = Profile.objects.get(emp_id=e.created_by_rm1_id).emp_email
+                except Profile.DoesNotExist:
+                    rm1_email = creater_email
                 to = [request.user.profile.emp_email, "aparna.ks@expertcallers.com", creater_email, manager_email, rm1_email]
                 email_msg = EmailMessage(subject,
                                          email_template, 'erf@expertcallers.com',
@@ -1646,7 +1666,10 @@ def DeteleRequest(request, type):
                 email_template = get_template(html_path).render(data)
                 creater_email = Profile.objects.get(emp_id=e.created_by_id).emp_email
                 manager_email = Profile.objects.get(emp_id=e.created_by_manager_id).emp_email
-                rm1_email = Profile.objects.get(emp_id=e.created_by_rm1_id).emp_email
+                try:
+                    rm1_email = Profile.objects.get(emp_id=e.created_by_rm1_id).emp_email
+                except Profile.DoesNotExist:
+                    rm1_email = creater_email
                 to = [request.user.profile.emp_email, "aparna.ks@expertcallers.com", creater_email, manager_email, rm1_email]
                 email_msg = EmailMessage(subject,
                                          email_template, 'erf@expertcallers.com',
@@ -1666,3 +1689,5 @@ def DeteleRequest(request, type):
         else:
             messages.info(request, "Invalid Request. You have been logged out :)")
             return redirect("/erf/")
+
+test
