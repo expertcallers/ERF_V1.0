@@ -176,7 +176,6 @@
       <input type="hidden" id="value_inter_name_1" value="{{job.interviewer1}}">
       <select id="inter_name_1" name="inter_name_1" class="form-control select2">
         <option value="" selected disabled>Please Select</option>
-        <option value="Test">Test</option>
         {% for i in interviewers %}
         <option value="{{i.emp_name}} ({{i.emp_id}})">{{i.emp_name}} ({{i.emp_id}})</option>
         {% endfor %}

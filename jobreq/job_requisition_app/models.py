@@ -365,3 +365,7 @@ class LoginHistory(models.Model):
     ip = models.GenericIPAddressField()
     system = models.CharField(max_length=200)
     date_time = models.DateTimeField()
+
+class Interviewers(models.Model):
+    emp_id = models.CharField(max_length=30)
+    emp_name = models.CharField(max_length=200)

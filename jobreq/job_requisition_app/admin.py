@@ -16,6 +16,9 @@ class TicketSearch(admin.ModelAdmin):
 class CampaigntSearch(admin.ModelAdmin):
     search_fields = ("campaign_name", 'manager', 'manager_id')
     list_display = ("campaign_name", 'manager', 'manager_id')
+class InterSearch(admin.ModelAdmin):
+    search_fields = ('emp_name','emp_id')
+    list_display = ('emp_name','emp_id')
 
 admin.site.register(Profile, ProfileSearch)
 admin.site.register(JobRequisition, JobSearch)
@@ -24,3 +27,4 @@ admin.site.register(Employee)
 admin.site.register(Campaigns,CampaigntSearch)
 admin.site.register(AllAgents, ProfileSearch)
 admin.site.register(LoginHistory)
+admin.site.register(Interviewers,InterSearch)

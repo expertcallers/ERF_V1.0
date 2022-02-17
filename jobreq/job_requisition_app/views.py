@@ -6,6 +6,7 @@ from django.contrib.auth import authenticate, login, logout, update_session_auth
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.decorators import login_required
 from django.core.mail import EmailMessage
+from django.db.models import Q
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.template.loader import get_template
@@ -132,10 +133,10 @@ def ManagerDashboard(request):
     designation = request.user.profile.emp_desi
     emp_id = request.user.profile.emp_id
     if designation in am_mgr_list:
-        all = JobRequisition.objects.filter(created_by_id=emp_id, manager_approval=True, ticket_status=True).count()
-        open = JobRequisition.objects.filter(created_by_id=emp_id, final_status=False, manager_approval=True, ticket_status=True).count()
-        closed = JobRequisition.objects.filter(created_by_id=emp_id, final_status=True, manager_approval=True, ticket_status=True).count()
-        dead_line = JobRequisition.objects.filter(created_by_id=emp_id, final_status=False, manager_approval=True, ticket_status=True)
+        all = JobRequisition.objects.filter(Q(created_by_id=emp_id) | Q(created_by_rm1_id=emp_id) | Q(created_by_manager_id=emp_id), manager_approval=True, ticket_status=True).count()
+        open = JobRequisition.objects.filter(Q(created_by_id=emp_id) | Q(created_by_rm1_id=emp_id) | Q(created_by_manager_id=emp_id), final_status=False, manager_approval=True, ticket_status=True).count()
+        closed = JobRequisition.objects.filter(Q(created_by_id=emp_id) | Q(created_by_rm1_id=emp_id) | Q(created_by_manager_id=emp_id), final_status=True, manager_approval=True, ticket_status=True).count()
+        dead_line = JobRequisition.objects.filter(Q(created_by_id=emp_id) | Q(created_by_rm1_id=emp_id) | Q(created_by_manager_id=emp_id), final_status=False, manager_approval=True, ticket_status=True)
         today = datetime.date.today()
         dead_line_count_list = []
         for i in dead_line:
@@ -315,7 +316,7 @@ def job_requisition(request):
             a.save()
             messages.info(request, "Job Requisition Added Successfully !!")
             action = "Created"
-            subject = action + " Job Requisition " + str(e.id)
+            subject = action + " - Employee Requisition [" + str(e.id) +"]"
             html_path = 'email.html'
             data = {'id': e.id, "created_date": edited_date, "hc": hc_req, "department": department,
                     "position": designation,
@@ -362,20 +363,20 @@ def jobRequisitionOpen(request):
 def jobRequisitionSelf(request, type):
     user = request.user.profile.emp_id
     if type == "all":
-        job = JobRequisition.objects.filter(created_by_id=user, manager_approval=True, ticket_status=True)
+        job = JobRequisition.objects.filter(Q(created_by_id=user) | Q(created_by_rm1_id=user) | Q(created_by_manager_id=user), manager_approval=True, ticket_status=True)
         data = {"job": job, "type": type, "number": number, "editaccess": edit_list}
         return render(request, "job_requisition_table.html", data)
     elif type == "open":
-        job = JobRequisition.objects.filter(created_by_id=user, final_status=False, manager_approval=True, ticket_status=True)
+        job = JobRequisition.objects.filter(Q(created_by_id=user) | Q(created_by_rm1_id=user) | Q(created_by_manager_id=user), final_status=False, manager_approval=True, ticket_status=True)
         data = {"job": job, "type": type, "number": number, "editaccess": edit_list}
         return render(request, "job_requisition_table.html", data)
     elif type == "closed":
-        job = JobRequisition.objects.filter(created_by_id=user, final_status=True, manager_approval=True, ticket_status=True)
+        job = JobRequisition.objects.filter(Q(created_by_id=user) | Q(created_by_rm1_id=user) | Q(created_by_manager_id=user), final_status=True, manager_approval=True, ticket_status=True)
         data = {"job": job, "type": type, "number": number, "editaccess": edit_list}
         return render(request, "job_requisition_table.html", data)
     elif type == "dead-line":
         today = datetime.date.today()
-        job = JobRequisition.objects.filter(created_by_id=user, final_status=False, manager_approval=True, ticket_status=True)
+        job = JobRequisition.objects.filter(Q(created_by_id=user) | Q(created_by_rm1_id=user) | Q(created_by_manager_id=user), final_status=False, manager_approval=True, ticket_status=True)
         job_list = []
         for i in job:
             if i.dead_line < today:
@@ -529,7 +530,8 @@ def jobRequisitionEditView(request, id):
             today = date.today()
             campaigns = Campaigns.objects.all()
             employees = AllAgents.objects.all()
-            data = {"today": today, "job": job, "number": number, "employees": employees, "campaigns": campaigns}
+            interviewers = Interviewers.objects.all()
+            data = {"today": today, "job": job, "number": number, "employees": employees, "campaigns": campaigns,"interviewers":interviewers}
             return render(request, "job_requisition_edit.html", data)
         except JobRequisition.DoesNotExist:
             messages.info(request, "Invalid Request!!")
@@ -696,7 +698,7 @@ def job_requisition_manager_edit(request):
             messages.info(request, "Requisition Updated Successfully !!")
 
             action = "Edited"
-            subject = action + " Job Requisition " + str(e.id)
+            subject = action + " - Employee Requisition [" + str(e.id) +"]"
             html_path = 'email.html'
             data = {'id': e.id, "created_date": e.edited_date, "hc": e.hc_req, "department": e.department,
                     "position": e.designation,
@@ -1241,7 +1243,7 @@ def jobRequisitionEditUpdate(request):
             messages.info(request, "Requisition Updated Successfully !!")
 
             action = "Updated"
-            subject = action + " Job Requisition " + str(e.id)
+            subject = action + " - Employee Requisition [" + str(e.id) +"]"
             html_path = 'email.html'
             data = {'id': e.id, "created_date": e.edited_date, "hc": e.hc_req, "department": e.department,
                     "position": e.designation,
@@ -1359,7 +1361,7 @@ def approval(request):
             a.save()
             messages.info(request, "Approved Successfully!")
 
-            subject = action + " Job Requisition " + str(e.id)
+            subject = action + " - Employee Requisition [" + str(e.id) + "]"
             html_path = 'email.html'
             data = {'id': e.id, "created_date": e.edited_date, "hc": e.hc_req, "department": e.department,
                     "position": e.designation,
@@ -1503,7 +1505,7 @@ def CreationApproval(request):
             a.save()
             messages.info(request, message)
 
-            subject = action + " Job Requisition " + str(e.id)
+            subject = action + " - Employee Requisition [" + str(e.id) + "]"
             html_path = 'email.html'
             data = {'id': e.id, "created_date": e.edited_date, "hc": e.hc_req, "department": e.department,
                     "position": e.designation,
@@ -1552,15 +1554,17 @@ def DeteleRequest(request, type):
                 e.unique_id = csrf
                 if response == "Approve":
                     e.ticket_status = False
-                    e.request_status = "Deletion Approved by "+str(request.user.profile.emp_id)
+                    e.request_status = "Deletion Approved by "+str(request.user.profile.emp_name)
                     comments = "Deletion Request Approved"
                     message = "Requisition Deleted Successfully!!"
+                    action = "Approved Deletion Request"
                 else:
                     e.ticket_status = True
                     e.deletion = False
                     e.request_status = "Deletion Rejected by "+str(request.user.profile.emp_name)
                     comments = "Deletion Request Rejected"
                     message = "Requisition Deletion Rejected"
+                    action = "Rejected Deletion Request"
                 e.save()
 
                 a = Tickets.objects.get(job_requisition_id=id)
@@ -1572,8 +1576,7 @@ def DeteleRequest(request, type):
                 adding = previous + ",\n" + edited_by
                 a.edited_by = adding
                 a.save()
-                action = "Approved Deletion Request"
-                subject = action + " Job Requisition " + str(e.id)
+                subject = action + " - Employee Requisition [" + str(e.id) +"]"
                 html_path = 'email.html'
                 data = {'id': e.id, "created_date": e.edited_date, "hc": e.hc_req, "department": e.department,
                         "position": e.designation,
@@ -1634,7 +1637,7 @@ def DeteleRequest(request, type):
                 a.edited_by = adding
                 a.save()
                 action = "Requested for Deletion"
-                subject = action + " Job Requisition " + str(e.id)
+                subject = action + " - Employee Requisition [" + str(e.id) +"]"
                 html_path = 'email.html'
                 data = {'id': e.id, "created_date": e.edited_date, "hc": e.hc_req, "department": e.department,
                         "position": e.designation,

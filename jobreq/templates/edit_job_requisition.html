@@ -708,8 +708,8 @@
                           </select>
                         </div>
                         <div id="shift_time" style="width:100%; display: inline-flex;" class="mt-2 d-none">
-                          <input type="time" name="shift_from" id="shift_from" class="form-control" value="{{job.shift_timing_frm}}"  placeholder="From">
-                          <input type="time" name="shift_to" id="shift_to" class="form-control" value="{{job.shift_timing_to}}" placeholder="To">
+                          <input type="time" name="shift_from" id="shift_from" class="form-control" value="{% if 'Rotational - Timing' != job.shift_timing %}{{job.shift_timing_frm}}{% endif %}"  placeholder="From">
+                          <input type="time" name="shift_to" id="shift_to" class="form-control" value="{% if 'Rotational - Timing' != job.shift_timing %}{{job.shift_timing_to}}{% endif %}" placeholder="To">
                         </div>
                       </div>
                       <div class="col-md-3">
