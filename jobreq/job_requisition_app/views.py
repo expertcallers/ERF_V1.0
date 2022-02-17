@@ -1689,3 +1689,5 @@ def DeteleRequest(request, type):
         else:
             messages.info(request, "Invalid Request. You have been logged out :)")
             return redirect("/erf/")
+
+test
