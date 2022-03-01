@@ -23,4 +23,5 @@ urlpatterns = [
     path('export/<str:type>', ExportReport),
     path('initial-approval', CreationApproval),
     path('delete/<str:type>', DeteleRequest),
+    path('send-mail', SendMail),
 ]

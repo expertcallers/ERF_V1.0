@@ -1,5 +1,67 @@
 {% extends 'common_base.html' %}
+{% block style %}
+<style>
+  .switch {
+    position: relative;
+    display: inline-block;
+    width: 80px;
+    height: 34px;
+  }
 
+  .switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: .4s;
+    transition: .4s;
+  }
+
+  .slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s;
+  }
+
+  input:checked + .slider {
+    background-color: #2196F3;
+  }
+
+  input:focus + .slider {
+    box-shadow: 0 0 1px #2196F3;
+  }
+
+  input:checked + .slider:before {
+    -webkit-transform: translateX(44px);
+    -ms-transform: translateX(44px);
+    transform: translateX(44px);
+  }
+
+  /* Rounded sliders */
+  .slider.round {
+    border-radius: 34px;
+  }
+
+  .slider.round:before {
+    border-radius: 50%;
+  }
+</style>
+{% endblock %}
 {% block main %}
   {% load static %}
         <!-- page content -->
@@ -44,6 +106,12 @@
                         <div class="form-group">
                           <label for="campaign">Campaign / Process</label>
                           <input type="text" readonly value="{{job.campaign}}" id="campaign" required class="form-control">
+                        </div>
+                      </div>
+                      <div class="col-md-3">
+                        <div class="form-group">
+                          <label for="pricing">Pricing</label>
+                          <input type="text" readonly value="{{job.pricing}}" id="pricing" required class="form-control">
                         </div>
                       </div>
                       <div class="col-md-3">
@@ -103,7 +171,7 @@
                       <div class="col-md-3">
                         <div class="form-group">
                           <label for="lang">Languages</label>
-                          <textarea class="form-control" readonly id="lang" rows="3" >{{job.languages}}</textarea>
+                          <textarea class="form-control" readonly id="lang" rows="3">{{job.languages}}</textarea>
                         </div>
                       </div>
                       <div class="col-md-3">
@@ -172,14 +240,11 @@
   </div>
   <div class="col-md-3">
     <div class="form-group">
-      <label for="inter_name_1">Interviewer Name</label>
-      <input type="hidden" id="value_inter_name_1" value="{{job.interviewer1}}">
-      <select id="inter_name_1" name="inter_name_1" class="form-control select2">
-        <option value="" selected disabled>Please Select</option>
-        {% for i in interviewers %}
-        <option value="{{i.emp_name}} ({{i.emp_id}})">{{i.emp_name}} ({{i.emp_id}})</option>
-        {% endfor %}
-      </select>
+      <label for="inter_name_1">Interviewer Details</label>
+      <div style="display: inline-flex; width: 100%;" id="inter_name_1">
+        <input type="text" id="value_inter_name_1" class="form-control" name="inter_name_1" value="{% if job.interviewer1 %}{{job.interviewer1}}{% endif %}" style="width:180%;" placeholder="Name">
+        <input type="text" id="value_inter_id_1" class="form-control" name="inter_id_1" value="{% if job.interviewer_id_1 %}{{job.interviewer_id_1}}{% endif %}" placeholder="Emp ID">
+      </div>
     </div>
   </div>
 
@@ -203,31 +268,42 @@
   </div>
 
   <div class="col-md-3 d-none" id="internal_1">
-    <div class="form-group">
-      <div class="row">
-        <div class="col-md-12">
-          <label for="internal_emp_1">Select Employee</label>
-          <input type="hidden" id="internal_emp_view_1"  value="{{job.source_internal_emp_id_1}}">
-          <select class="form-control select2" name="internal_emp_id_1" id="internal_emp_1">
-              <option value="" selected disabled>Please Select Employee</option>
-              {% for i in employees %}
-               <option value="{{i.emp_id}}">{{i.emp_name}} ({{i.emp_id}})</option>
-              {% endfor %}
-          </select>
-        </div>
-        <div class="col-md-12">
-          <label for="internal_cam_1">Select Campaign</label>
-          <input type="hidden" id="internal_cam_view_1" value="{{job.source_internal_campaign_name_1}}">
-          <select class="form-control select2" name="internal_campaign_1" id="internal_cam_1">
-              <option value="" selected disabled>Please Select Campaign</option>
-              {% for i in campaigns %}
-              <option value="{{i.campaign_name}}">{{i.campaign_name}}</option>
-              {% endfor %}
-          </select>
+    <div class="col-md-8">
+      <div class="form-group">
+        <div class="row">
+          <div class="col-md-12">
+            <label for="internal_emp_1">Select Employee</label>
+            <input type="hidden" id="internal_emp_view_1"  value="{{job.source_internal_emp_id_1}}">
+            <select class="form-control select2" name="internal_emp_id_1" id="internal_emp_1">
+                <option value="" selected disabled>Please Select Employee</option>
+                {% for i in employees %}
+                 <option value="{{i.emp_id}}">{{i.emp_name}} ({{i.emp_id}})</option>
+                {% endfor %}
+            </select>
+          </div>
+          <div class="col-md-12">
+            <label for="internal_cam_1">Select Campaign</label>
+            <input type="hidden" id="internal_cam_view_1" value="{{job.source_internal_campaign_name_1}}">
+            <select class="form-control select2" name="internal_campaign_1" id="internal_cam_1">
+                <option value="" selected disabled>Please Select Campaign</option>
+                {% for i in campaigns %}
+                <option value="{{i.campaign_name}}">{{i.campaign_name}}</option>
+                {% endfor %}
+            </select>
+          </div>
         </div>
       </div>
     </div>
+    <div class="col-md-4">
+        <label>Send Email to CC</label>
+      <label class="switch">
+        <input type="checkbox" {% if job.send_mail_1 == True %}checked disabled{% endif %} id="send_mail_1">
+
+        <span class="slider round"></span>
+      </label>
+    </div>
   </div>
+
 
   <div class="col-md-3 d-none" id="pleasefill_1">
     <div class="form-group">
@@ -296,14 +372,11 @@
   </div>
   <div class="col-md-3">
     <div class="form-group">
-      <label for="inter_name_2">Interviewer Name</label>
-      <input type="hidden" id="value_inter_name_2" value="{{job.interviewer_2}}">
-      <select id="inter_name_2" name="inter_name_2" class="form-control select2">
-        <option value="" selected disabled>Please Select</option>
-        {% for i in interviewers %}
-        <option value="{{i.emp_name}} ({{i.emp_id}})">{{i.emp_name}} ({{i.emp_id}})</option>
-        {% endfor %}
-      </select>
+      <label for="inter_name_2">Interviewer Details</label>
+      <div style="display: inline-flex; width: 100%;" id="inter_name_2">
+        <input type="text" id="value_inter_name_2" class="form-control" name="inter_name_2" value="{% if job.interviewer_2 %}{{job.interviewer_2}}{% endif %}" style="width:180%;" placeholder="Name">
+        <input type="text" id="value_inter_id_2" class="form-control" name="inter_id_2" value="{% if job.interviewer_id_2 %}{{job.interviewer_id_2}}{% endif %}" placeholder="Emp ID">
+      </div>
     </div>
   </div>
 
@@ -327,32 +400,38 @@
   </div>
 
   <div class="col-md-3 d-none" id="internal_2">
-    <div class="form-group">
-      <div class="row">
-        <div class="col-md-12">
-          <label for="internal_emp_2">Select Employee</label>
-          <input type="hidden" id="internal_emp_view_2" value="{{job.source_internal_emp_id_2}}">
-
-
-          <select class="form-control select2" name="internal_emp_id_2" id="internal_emp_2">
-              <option value="" selected disabled>Please Select Employee</option>
-              {% for i in employees %}
-               <option value="{{i.emp_id}}">{{i.emp_name}} ({{i.emp_id}})</option>
-              {% endfor %}
-          </select>
-        </div>
-        <div class="col-md-12">
-          <label for="internal_cam_2">Select Campaign</label>
-          <input type="hidden" id="internal_cam_view_2" value="{{job.source_internal_campaign_name_2}}">
-
-          <select class="form-control select2" name="internal_campaign_2" id="internal_cam_2">
-              <option value="" selected disabled>Please Select Campaign</option>
-              {% for i in campaigns %}
-              <option value="{{i.campaign_name}}">{{i.campaign_name}}</option>
-              {% endfor %}
-          </select>
+    <div class="col-md-8">
+      <div class="form-group">
+        <div class="row">
+          <div class="col-md-12">
+            <label for="internal_emp_2">Select Employee</label>
+            <input type="hidden" id="internal_emp_view_2"  value="{{job.source_internal_emp_id_2}}">
+            <select class="form-control select2" name="internal_emp_id_2" id="internal_emp_2">
+                <option value="" selected disabled>Please Select Employee</option>
+                {% for i in employees %}
+                 <option value="{{i.emp_id}}">{{i.emp_name}} ({{i.emp_id}})</option>
+                {% endfor %}
+            </select>
+          </div>
+          <div class="col-md-12">
+            <label for="internal_cam_2">Select Campaign</label>
+            <input type="hidden" id="internal_cam_view_2" value="{{job.source_internal_campaign_name_2}}">
+            <select class="form-control select2" name="internal_campaign_2" id="internal_cam_2">
+                <option value="" selected disabled>Please Select Campaign</option>
+                {% for i in campaigns %}
+                <option value="{{i.campaign_name}}">{{i.campaign_name}}</option>
+                {% endfor %}
+            </select>
+          </div>
         </div>
       </div>
+    </div>
+    <div class="col-md-4">
+        <label>Send Email to CC</label>
+      <label class="switch">
+        <input type="checkbox" {% if job.send_mail_2 == True %}checked disabled{% endif %} id="send_mail_2">
+        <span class="slider round"></span>
+      </label>
     </div>
   </div>
 
@@ -423,14 +502,11 @@
   </div>
   <div class="col-md-3">
     <div class="form-group">
-      <label for="inter_name_3">Interviewer Name</label>
-      <input type="hidden" id="value_inter_name_3" value="{{job.interviewer_3}}">
-      <select id="inter_name_3" name="inter_name_3" class="form-control select2">
-        <option value="" selected disabled>Please Select</option>
-        {% for i in interviewers %}
-        <option value="{{i.emp_name}} ({{i.emp_id}})">{{i.emp_name}} ({{i.emp_id}})</option>
-        {% endfor %}
-      </select>
+      <label for="inter_name_3">Interviewer Details</label>
+      <div style="display: inline-flex; width: 100%;" id="inter_name_3">
+        <input type="text" id="value_inter_name_3" class="form-control" name="inter_name_3" value="{% if job.interviewer_3 %}{{job.interviewer_3}}{% endif %}" style="width:180%;" placeholder="Name">
+        <input type="text" id="value_inter_id_3" class="form-control" name="inter_id_3" value="{% if job.interviewer_id_3 %}{{job.interviewer_id_3}}{% endif %}" placeholder="Emp ID">
+      </div>
     </div>
   </div>
 
@@ -452,35 +528,39 @@
       </div>
     </div>
   </div>
-
   <div class="col-md-3 d-none" id="internal_3">
-    <div class="form-group">
-      <div class="row">
-        <div class="col-md-12">
-          <label for="internal_emp_3">Select Employee</label>
-          <input type="hidden" id="internal_emp_view_3" name="source_internal_emp_name_3" value="{{job.source_internal_emp_id_3}}">
-<!--          -->
-
-
-          <select class="form-control select2" name="internal_emp_id_3" id="internal_emp_3">
-              <option value="" selected disabled>Please Select Employee</option>
-              {% for i in employees %}
-               <option value="{{i.emp_id}}">{{i.emp_name}} ({{i.emp_id}})</option>
-              {% endfor %}
-          </select>
-        </div>
-        <div class="col-md-12">
-          <label for="internal_cam_3">Select Campaign</label>
-          <input type="hidden" id="internal_cam_view_3" value="{{job.source_internal_campaign_name_3}}">
-
-          <select class="form-control select2" name="internal_campaign_3" id="internal_cam_3">
-              <option value="" selected disabled>Please Select Campaign</option>
-              {% for i in campaigns %}
-              <option value="{{i.campaign_name}}">{{i.campaign_name}}</option>
-              {% endfor %}
-          </select>
+    <div class="col-md-8">
+      <div class="form-group">
+        <div class="row">
+          <div class="col-md-12">
+            <label for="internal_emp_3">Select Employee</label>
+            <input type="hidden" id="internal_emp_view_3"  value="{{job.source_internal_emp_id_3}}">
+            <select class="form-control select2" name="internal_emp_id_3" id="internal_emp_3">
+                <option value="" selected disabled>Please Select Employee</option>
+                {% for i in employees %}
+                 <option value="{{i.emp_id}}">{{i.emp_name}} ({{i.emp_id}})</option>
+                {% endfor %}
+            </select>
+          </div>
+          <div class="col-md-12">
+            <label for="internal_cam_3">Select Campaign</label>
+            <input type="hidden" id="internal_cam_view_3" value="{{job.source_internal_campaign_name_3}}">
+            <select class="form-control select2" name="internal_campaign_3" id="internal_cam_3">
+                <option value="" selected disabled>Please Select Campaign</option>
+                {% for i in campaigns %}
+                <option value="{{i.campaign_name}}">{{i.campaign_name}}</option>
+                {% endfor %}
+            </select>
+          </div>
         </div>
       </div>
+    </div>
+    <div class="col-md-4">
+        <label>Send Email to CC</label>
+      <label class="switch">
+        <input type="checkbox" {% if job.send_mail_3 == True %}checked disabled{% endif %} id="send_mail_3">
+        <span class="slider round"></span>
+      </label>
     </div>
   </div>
 
@@ -552,14 +632,11 @@
   </div>
   <div class="col-md-3">
     <div class="form-group">
-      <label for="inter_name_4">Interviewer Name</label>
-      <input type="hidden" id="value_inter_name_4" value="{{job.interviewer_4}}">
-      <select id="inter_name_4" name="inter_name_4" class="form-control select2">
-        <option value="" selected disabled>Please Select</option>
-        {% for i in interviewers %}
-        <option value="{{i.emp_name}} ({{i.emp_id}})">{{i.emp_name}} ({{i.emp_id}})</option>
-        {% endfor %}
-      </select>
+      <label for="inter_name_4">Interviewer Details</label>
+      <div style="display: inline-flex; width: 100%;" id="inter_name_4">
+        <input type="text" id="value_inter_name_4" class="form-control" name="inter_name_4" value="{% if job.interviewer_4 %}{{job.interviewer_4}}{% endif %}" style="width:180%;" placeholder="Name">
+        <input type="text" id="value_inter_id_4" class="form-control" name="inter_id_4" value="{% if job.interviewer_id_4 %}{{job.interviewer_id_4}}{% endif %}" placeholder="Emp ID">
+      </div>
     </div>
   </div>
 
@@ -581,34 +658,39 @@
       </div>
     </div>
   </div>
-
   <div class="col-md-3 d-none" id="internal_4">
-    <div class="form-group">
-      <div class="row">
-        <div class="col-md-12">
-          <label for="internal_emp_4">Select Employee</label>
-          <input type="hidden" id="internal_emp_view_4" value="{{job.source_internal_emp_id_4}}">
-
-
-          <select class="form-control select2" name="internal_emp_id_4" id="internal_emp_4">
-              <option value="" selected disabled>Please Select Employee</option>
-              {% for i in employees %}
-               <option value="{{i.emp_id}}">{{i.emp_name}} ({{i.emp_id}})</option>
-              {% endfor %}
-          </select>
-        </div>
-        <div class="col-md-12">
-          <label for="internal_cam_4">Select Campaign</label>
-          <input type="hidden" id="internal_cam_view_4" value="{{job.source_internal_campaign_name_4}}">
-
-          <select class="form-control select2" name="internal_campaign_4" id="internal_cam_4">
-              <option value="" selected disabled>Please Select Campaign</option>
-              {% for i in campaigns %}
-              <option value="{{i.campaign_name}}">{{i.campaign_name}}</option>
-              {% endfor %}
-          </select>
+    <div class="col-md-8">
+      <div class="form-group">
+        <div class="row">
+          <div class="col-md-12">
+            <label for="internal_emp_4">Select Employee</label>
+            <input type="hidden" id="internal_emp_view_4"  value="{{job.source_internal_emp_id_4}}">
+            <select class="form-control select2" name="internal_emp_id_4" id="internal_emp_4">
+                <option value="" selected disabled>Please Select Employee</option>
+                {% for i in employees %}
+                 <option value="{{i.emp_id}}">{{i.emp_name}} ({{i.emp_id}})</option>
+                {% endfor %}
+            </select>
+          </div>
+          <div class="col-md-12">
+            <label for="internal_cam_4">Select Campaign</label>
+            <input type="hidden" id="internal_cam_view_4" value="{{job.source_internal_campaign_name_4}}">
+            <select class="form-control select2" name="internal_campaign_4" id="internal_cam_4">
+                <option value="" selected disabled>Please Select Campaign</option>
+                {% for i in campaigns %}
+                <option value="{{i.campaign_name}}">{{i.campaign_name}}</option>
+                {% endfor %}
+            </select>
+          </div>
         </div>
       </div>
+    </div>
+    <div class="col-md-4">
+        <label>Send Email to CC</label>
+      <label class="switch">
+        <input type="checkbox" {% if job.send_mail_4 == True %}checked disabled{% endif %} id="send_mail_4">
+        <span class="slider round"></span>
+      </label>
     </div>
   </div>
 
@@ -680,14 +762,11 @@
   </div>
   <div class="col-md-3">
     <div class="form-group">
-      <label for="inter_name_5">Interviewer Name</label>
-      <input type="hidden" id="value_inter_name_5" value="{{job.interviewer_5}}">
-      <select id="inter_name_5" name="inter_name_5" class="form-control select2">
-        <option value="" selected disabled>Please Select</option>
-        {% for i in interviewers %}
-        <option value="{{i.emp_name}} ({{i.emp_id}})">{{i.emp_name}} ({{i.emp_id}})</option>
-        {% endfor %}
-      </select>
+      <label for="inter_name_5">Interviewer Details</label>
+      <div style="display: inline-flex; width: 100%;" id="inter_name_5">
+        <input type="text" id="value_inter_name_5" class="form-control" name="inter_name_5" value="{% if job.interviewer_5 %}{{job.interviewer_5}}{% endif %}" style="width:180%;" placeholder="Name">
+        <input type="text" id="value_inter_id_5" class="form-control" name="inter_id_5" value="{% if job.interviewer_id_5 %}{{job.interviewer_id_5}}{% endif %}" placeholder="Emp ID">
+      </div>
     </div>
   </div>
 
@@ -709,37 +788,41 @@
       </div>
     </div>
   </div>
-
   <div class="col-md-3 d-none" id="internal_5">
-    <div class="form-group">
-      <div class="row">
-        <div class="col-md-12">
-          <label for="internal_emp_5">Select Employee</label>
-          <input type="hidden" id="internal_emp_view_5" value="{{job.source_internal_emp_id_5}}">
-
-
-          <select class="form-control select2" name="internal_emp_id_5" id="internal_emp_5">
-              <option value="" selected disabled>Please Select Employee</option>
-              {% for i in employees %}
-               <option value="{{i.emp_id}}">{{i.emp_name}} ({{i.emp_id}})</option>
-              {% endfor %}
-          </select>
-        </div>
-        <div class="col-md-12">
-          <label for="internal_cam_5">Select Campaign</label>
-          <input type="hidden" id="internal_cam_view_5" value="{{job.source_internal_campaign_name_5}}">
-
-          <select class="form-control select2" name="internal_campaign_5" id="internal_cam_5">
-              <option value="" selected disabled>Please Select Campaign</option>
-              {% for i in campaigns %}
-              <option value="{{i.campaign_name}}">{{i.campaign_name}}</option>
-              {% endfor %}
-          </select>
+    <div class="col-md-8">
+      <div class="form-group">
+        <div class="row">
+          <div class="col-md-12">
+            <label for="internal_emp_5">Select Employee</label>
+            <input type="hidden" id="internal_emp_view_5"  value="{{job.source_internal_emp_id_5}}">
+            <select class="form-control select2" name="internal_emp_id_5" id="internal_emp_5">
+                <option value="" selected disabled>Please Select Employee</option>
+                {% for i in employees %}
+                 <option value="{{i.emp_id}}">{{i.emp_name}} ({{i.emp_id}})</option>
+                {% endfor %}
+            </select>
+          </div>
+          <div class="col-md-12">
+            <label for="internal_cam_5">Select Campaign</label>
+            <input type="hidden" id="internal_cam_view_5" value="{{job.source_internal_campaign_name_5}}">
+            <select class="form-control select2" name="internal_campaign_5" id="internal_cam_5">
+                <option value="" selected disabled>Please Select Campaign</option>
+                {% for i in campaigns %}
+                <option value="{{i.campaign_name}}">{{i.campaign_name}}</option>
+                {% endfor %}
+            </select>
+          </div>
         </div>
       </div>
     </div>
+    <div class="col-md-4">
+        <label>Send Email to CC</label>
+      <label class="switch">
+        <input type="checkbox" {% if job.send_mail_5 == True %}checked disabled{% endif %} id="send_mail_5">
+        <span class="slider round"></span>
+      </label>
+    </div>
   </div>
-
   <div class="col-md-3 d-none" id="pleasefill_5">
     <div class="form-group">
       <p>Please Fill</p>
@@ -808,14 +891,11 @@
   </div>
   <div class="col-md-3">
     <div class="form-group">
-      <label for="inter_name_6">Interviewer Name</label>
-      <input type="hidden" id="value_inter_name_6" value="{{job.interviewer_6}}">
-      <select id="inter_name_6" name="inter_name_6" class="form-control select2">
-        <option value="" selected disabled>Please Select</option>
-        {% for i in interviewers %}
-        <option value="{{i.emp_name}} ({{i.emp_id}})">{{i.emp_name}} ({{i.emp_id}})</option>
-        {% endfor %}
-      </select>
+      <label for="inter_name_6">Interviewer Details</label>
+      <div style="display: inline-flex; width: 100%;" id="inter_name_6">
+        <input type="text" id="value_inter_name_6" class="form-control" name="inter_name_6" value="{% if job.interviewer_6 %}{{job.interviewer_6}}{% endif %}" style="width:180%;" placeholder="Name">
+        <input type="text" id="value_inter_id_6" class="form-control" name="inter_id_6" value="{% if job.interviewer_id_6 %}{{job.interviewer_id_6}}{% endif %}" placeholder="Emp ID">
+      </div>
     </div>
   </div>
 
@@ -839,32 +919,38 @@
   </div>
 
   <div class="col-md-3 d-none" id="internal_6">
-    <div class="form-group">
-      <div class="row">
-        <div class="col-md-12">
-          <label for="internal_emp_6">Select Employee</label>
-          <input type="hidden" id="internal_emp_view_6" value="{{job.source_internal_emp_id_6}}">
-
-
-          <select class="form-control select2" name="internal_emp_id_6" id="internal_emp_6">
-              <option value="" selected disabled>Please Select Employee</option>
-              {% for i in employees %}
-               <option value="{{i.emp_id}}">{{i.emp_name}} ({{i.emp_id}})</option>
-              {% endfor %}
-          </select>
-        </div>
-        <div class="col-md-12">
-          <label for="internal_cam_6">Select Campaign</label>
-          <input type="hidden" id="internal_cam_view_6" value="{{job.source_internal_campaign_name_6}}">
-
-          <select class="form-control select2" name="internal_campaign_6" id="internal_cam_6">
-              <option value="" selected disabled>Please Select Campaign</option>
-              {% for i in campaigns %}
-              <option value="{{i.campaign_name}}">{{i.campaign_name}}</option>
-              {% endfor %}
-          </select>
+    <div class="col-md-8">
+      <div class="form-group">
+        <div class="row">
+          <div class="col-md-12">
+            <label for="internal_emp_6">Select Employee</label>
+            <input type="hidden" id="internal_emp_view_6"  value="{{job.source_internal_emp_id_6}}">
+            <select class="form-control select2" name="internal_emp_id_6" id="internal_emp_6">
+                <option value="" selected disabled>Please Select Employee</option>
+                {% for i in employees %}
+                 <option value="{{i.emp_id}}">{{i.emp_name}} ({{i.emp_id}})</option>
+                {% endfor %}
+            </select>
+          </div>
+          <div class="col-md-12">
+            <label for="internal_cam_6">Select Campaign</label>
+            <input type="hidden" id="internal_cam_view_6" value="{{job.source_internal_campaign_name_6}}">
+            <select class="form-control select2" name="internal_campaign_6" id="internal_cam_6">
+                <option value="" selected disabled>Please Select Campaign</option>
+                {% for i in campaigns %}
+                <option value="{{i.campaign_name}}">{{i.campaign_name}}</option>
+                {% endfor %}
+            </select>
+          </div>
         </div>
       </div>
+    </div>
+    <div class="col-md-4">
+        <label>Send Email to CC</label>
+      <label class="switch">
+        <input type="checkbox" {% if job.send_mail_6 == True %}checked disabled{% endif %} id="send_mail_6">
+        <span class="slider round"></span>
+      </label>
     </div>
   </div>
 
@@ -936,14 +1022,11 @@
   </div>
   <div class="col-md-3">
     <div class="form-group">
-      <label for="inter_name_7">Interviewer Name</label>
-      <input type="hidden" id="value_inter_name_7" value="{{job.interviewer_7}}">
-      <select id="inter_name_7" name="inter_name_7" class="form-control select2">
-        <option value="" selected disabled>Please Select</option>
-        {% for i in interviewers %}
-        <option value="{{i.emp_name}} ({{i.emp_id}})">{{i.emp_name}} ({{i.emp_id}})</option>
-        {% endfor %}
-      </select>
+      <label for="inter_name_7">Interviewer Details</label>
+      <div style="display: inline-flex; width: 100%;" id="inter_name_7">
+        <input type="text" id="value_inter_name_7" class="form-control" name="inter_name_7" value="{% if job.interviewer_7 %}{{job.interviewer_7}}{% endif %}" style="width:180%;" placeholder="Name">
+        <input type="text" id="value_inter_id_7" class="form-control" name="inter_id_7" value="{% if job.interviewer_id_7 %}{{job.interviewer_id_7}}{% endif %}" placeholder="Emp ID">
+      </div>
     </div>
   </div>
 
@@ -967,32 +1050,38 @@
   </div>
 
   <div class="col-md-3 d-none" id="internal_7">
-    <div class="form-group">
-      <div class="row">
-        <div class="col-md-12">
-          <label for="internal_emp_7">Select Employee</label>
-          <input type="hidden" id="internal_emp_view_7" value="{{job.source_internal_emp_id_7}}">
-
-
-          <select class="form-control select2" name="internal_emp_id_7" id="internal_emp_7">
-              <option value="" selected disabled>Please Select Employee</option>
-              {% for i in employees %}
-               <option value="{{i.emp_id}}">{{i.emp_name}} ({{i.emp_id}})</option>
-              {% endfor %}
-          </select>
-        </div>
-        <div class="col-md-12">
-          <label for="internal_cam_7">Select Campaign</label>
-          <input type="hidden" id="internal_cam_view_7" value="{{job.source_internal_campaign_name_7}}">
-
-          <select class="form-control select2" name="internal_campaign_7" id="internal_cam_7">
-              <option value="" selected disabled>Please Select Campaign</option>
-              {% for i in campaigns %}
-              <option value="{{i.campaign_name}}">{{i.campaign_name}}</option>
-              {% endfor %}
-          </select>
+    <div class="col-md-8">
+      <div class="form-group">
+        <div class="row">
+          <div class="col-md-12">
+            <label for="internal_emp_7">Select Employee</label>
+            <input type="hidden" id="internal_emp_view_7"  value="{{job.source_internal_emp_id_7}}">
+            <select class="form-control select2" name="internal_emp_id_7" id="internal_emp_7">
+                <option value="" selected disabled>Please Select Employee</option>
+                {% for i in employees %}
+                 <option value="{{i.emp_id}}">{{i.emp_name}} ({{i.emp_id}})</option>
+                {% endfor %}
+            </select>
+          </div>
+          <div class="col-md-12">
+            <label for="internal_cam_7">Select Campaign</label>
+            <input type="hidden" id="internal_cam_view_7" value="{{job.source_internal_campaign_name_7}}">
+            <select class="form-control select2" name="internal_campaign_7" id="internal_cam_7">
+                <option value="" selected disabled>Please Select Campaign</option>
+                {% for i in campaigns %}
+                <option value="{{i.campaign_name}}">{{i.campaign_name}}</option>
+                {% endfor %}
+            </select>
+          </div>
         </div>
       </div>
+    </div>
+    <div class="col-md-4">
+        <label>Send Email to CC</label>
+      <label class="switch">
+        <input type="checkbox" {% if job.send_mail_7 == True %}checked disabled{% endif %} id="send_mail_7">
+        <span class="slider round"></span>
+      </label>
     </div>
   </div>
 
@@ -1064,14 +1153,11 @@
   </div>
   <div class="col-md-3">
     <div class="form-group">
-      <label for="inter_name_8">Interviewer Name</label>
-      <input type="hidden" id="value_inter_name_8" value="{{job.interviewer_8}}">
-      <select id="inter_name_8" name="inter_name_8" class="form-control select2">
-        <option value="" selected disabled>Please Select</option>
-        {% for i in interviewers %}
-        <option value="{{i.emp_name}} ({{i.emp_id}})">{{i.emp_name}} ({{i.emp_id}})</option>
-        {% endfor %}
-      </select>
+      <label for="inter_name_8">Interviewer Details</label>
+      <div style="display: inline-flex; width: 100%;" id="inter_name_8">
+        <input type="text" id="value_inter_name_8" class="form-control" name="inter_name_8" value="{% if job.interviewer_8 %}{{job.interviewer_8}}{% endif %}" style="width:180%;" placeholder="Name">
+        <input type="text" id="value_inter_id_8" class="form-control" name="inter_id_8" value="{% if job.interviewer_id_8 %}{{job.interviewer_id_8}}{% endif %}" placeholder="Emp ID">
+      </div>
     </div>
   </div>
 
@@ -1093,34 +1179,39 @@
       </div>
     </div>
   </div>
-
   <div class="col-md-3 d-none" id="internal_8">
-    <div class="form-group">
-      <div class="row">
-        <div class="col-md-12">
-          <label for="internal_emp_8">Select Employee</label>
-          <input type="hidden" id="internal_emp_view_8" value="{{job.source_internal_emp_id_8}}">
-
-
-          <select class="form-control select2" name="internal_emp_id_8" id="internal_emp_8">
-              <option value="" selected disabled>Please Select Employee</option>
-              {% for i in employees %}
-               <option value="{{i.emp_id}}">{{i.emp_name}} ({{i.emp_id}})</option>
-              {% endfor %}
-          </select>
-        </div>
-        <div class="col-md-12">
-          <label for="internal_cam_8">Select Campaign</label>
-          <input type="hidden" id="internal_cam_view_8" value="{{job.source_internal_campaign_name_8}}">
-
-          <select class="form-control select2" name="internal_campaign_8" id="internal_cam_8">
-              <option value="" selected disabled>Please Select Campaign</option>
-              {% for i in campaigns %}
-              <option value="{{i.campaign_name}}">{{i.campaign_name}}</option>
-              {% endfor %}
-          </select>
+    <div class="col-md-8">
+      <div class="form-group">
+        <div class="row">
+          <div class="col-md-12">
+            <label for="internal_emp_8">Select Employee</label>
+            <input type="hidden" id="internal_emp_view_8"  value="{{job.source_internal_emp_id_8}}">
+            <select class="form-control select2" name="internal_emp_id_8" id="internal_emp_8">
+                <option value="" selected disabled>Please Select Employee</option>
+                {% for i in employees %}
+                 <option value="{{i.emp_id}}">{{i.emp_name}} ({{i.emp_id}})</option>
+                {% endfor %}
+            </select>
+          </div>
+          <div class="col-md-12">
+            <label for="internal_cam_8">Select Campaign</label>
+            <input type="hidden" id="internal_cam_view_8" value="{{job.source_internal_campaign_name_8}}">
+            <select class="form-control select2" name="internal_campaign_8" id="internal_cam_8">
+                <option value="" selected disabled>Please Select Campaign</option>
+                {% for i in campaigns %}
+                <option value="{{i.campaign_name}}">{{i.campaign_name}}</option>
+                {% endfor %}
+            </select>
+          </div>
         </div>
       </div>
+    </div>
+    <div class="col-md-4">
+        <label>Send Email to CC</label>
+      <label class="switch">
+        <input type="checkbox" {% if job.send_mail_8 == True %}checked disabled{% endif %} id="send_mail_8">
+        <span class="slider round"></span>
+      </label>
     </div>
   </div>
 
@@ -1193,14 +1284,11 @@
 
   <div class="col-md-3">
     <div class="form-group">
-      <label for="inter_name_9">Interviewer Name</label>
-      <input type="hidden" id="value_inter_name_9" value="{{job.interviewer_9}}">
-      <select id="inter_name_9" name="inter_name_9" class="form-control select2">
-        <option value="" selected disabled>Please Select</option>
-        {% for i in interviewers %}
-        <option value="{{i.emp_name}} ({{i.emp_id}})">{{i.emp_name}} ({{i.emp_id}})</option>
-        {% endfor %}
-      </select>
+      <label for="inter_name_9">Interviewer Details</label>
+      <div style="display: inline-flex; width: 100%;" id="inter_name_9">
+        <input type="text" id="value_inter_name_9" class="form-control" name="inter_name_9" value="{% if job.interviewer_9 %}{{job.interviewer_9}}{% endif %}" style="width:180%;" placeholder="Name">
+        <input type="text" id="value_inter_id_9" class="form-control" name="inter_id_9" value="{% if job.interviewer_id_9 %}{{job.interviewer_id_9}}{% endif %}" placeholder="Emp ID">
+      </div>
     </div>
   </div>
   <div class="col-md-3">
@@ -1221,34 +1309,39 @@
       </div>
     </div>
   </div>
-
   <div class="col-md-3 d-none" id="internal_9">
-    <div class="form-group">
-      <div class="row">
-        <div class="col-md-12">
-          <label for="internal_emp_9">Select Employee</label>
-          <input type="hidden" id="internal_emp_view_9" value="{{job.source_internal_emp_id_9}}">
-
-
-          <select class="form-control select2" name="internal_emp_id_9" id="internal_emp_9">
-              <option value="" selected disabled>Please Select Employee</option>
-              {% for i in employees %}
-               <option value="{{i.emp_id}}">{{i.emp_name}} ({{i.emp_id}})</option>
-              {% endfor %}
-          </select>
-        </div>
-        <div class="col-md-12">
-          <label for="internal_cam_9">Select Campaign</label>
-          <input type="hidden" id="internal_cam_view_9" value="{{job.source_internal_campaign_name_9}}">
-
-          <select class="form-control select2" name="internal_campaign_9" id="internal_cam_9">
-              <option value="" selected disabled>Please Select Campaign</option>
-              {% for i in campaigns %}
-              <option value="{{i.campaign_name}}">{{i.campaign_name}}</option>
-              {% endfor %}
-          </select>
+    <div class="col-md-8">
+      <div class="form-group">
+        <div class="row">
+          <div class="col-md-12">
+            <label for="internal_emp_9">Select Employee</label>
+            <input type="hidden" id="internal_emp_view_9"  value="{{job.source_internal_emp_id_9}}">
+            <select class="form-control select2" name="internal_emp_id_9" id="internal_emp_9">
+                <option value="" selected disabled>Please Select Employee</option>
+                {% for i in employees %}
+                 <option value="{{i.emp_id}}">{{i.emp_name}} ({{i.emp_id}})</option>
+                {% endfor %}
+            </select>
+          </div>
+          <div class="col-md-12">
+            <label for="internal_cam_9">Select Campaign</label>
+            <input type="hidden" id="internal_cam_view_9" value="{{job.source_internal_campaign_name_9}}">
+            <select class="form-control select2" name="internal_campaign_9" id="internal_cam_9">
+                <option value="" selected disabled>Please Select Campaign</option>
+                {% for i in campaigns %}
+                <option value="{{i.campaign_name}}">{{i.campaign_name}}</option>
+                {% endfor %}
+            </select>
+          </div>
         </div>
       </div>
+    </div>
+    <div class="col-md-4">
+        <label>Send Email to CC</label>
+      <label class="switch">
+        <input type="checkbox" {% if job.send_mail_9 == True %}checked disabled{% endif %} id="send_mail_9">
+        <span class="slider round"></span>
+      </label>
     </div>
   </div>
 
@@ -1320,14 +1413,11 @@
   </div>
   <div class="col-md-3">
     <div class="form-group">
-      <label for="inter_name_10">Interviewer Name</label>
-      <input type="hidden" id="value_inter_name_10" value="{{job.interviewer_10}}">
-      <select id="inter_name_10" name="inter_name_10" class="form-control select2">
-        <option value="" selected disabled>Please Select</option>
-        {% for i in interviewers %}
-        <option value="{{i.emp_name}} ({{i.emp_id}})">{{i.emp_name}} ({{i.emp_id}})</option>
-        {% endfor %}
-      </select>
+      <label for="inter_name_10">Interviewer Details</label>
+      <div style="display: inline-flex; width: 100%;" id="inter_name_10">
+        <input type="text" id="value_inter_name_10" class="form-control" name="inter_name_10" value="{% if job.interviewer_10 %}{{job.interviewer_10}}{% endif %}" style="width:180%;" placeholder="Name">
+        <input type="text" id="value_inter_id_10" class="form-control" name="inter_id_10" value="{% if job.interviewer_id_10 %}{{job.interviewer_id_10}}{% endif %}" placeholder="Emp ID">
+      </div>
     </div>
   </div>
 
@@ -1349,34 +1439,39 @@
       </div>
     </div>
   </div>
-
   <div class="col-md-3 d-none" id="internal_10">
-    <div class="form-group">
-      <div class="row">
-        <div class="col-md-12">
-          <label for="internal_emp_10">Select Employee</label>
-          <input type="hidden" id="internal_emp_view_10" value="{{job.source_internal_emp_id_10}}">
-
-
-          <select class="form-control select2" name="internal_emp_id_10" id="internal_emp_10">
-              <option value="" selected disabled>Please Select Employee</option>
-              {% for i in employees %}
-               <option value="{{i.emp_id}}">{{i.emp_name}} ({{i.emp_id}})</option>
-              {% endfor %}
-          </select>
-        </div>
-        <div class="col-md-12">
-          <label for="internal_cam_10">Select Campaign</label>
-                    <input type="hidden" id="internal_cam_view_10" value="{{job.source_internal_campaign_name_10}}">
-
-          <select class="form-control select2" name="internal_campaign_10" id="internal_cam_10">
-              <option value="" selected disabled>Please Select Campaign</option>
-              {% for i in campaigns %}
-              <option value="{{i.campaign_name}}">{{i.campaign_name}}</option>
-              {% endfor %}
-          </select>
+    <div class="col-md-8">
+      <div class="form-group">
+        <div class="row">
+          <div class="col-md-12">
+            <label for="internal_emp_10">Select Employee</label>
+            <input type="hidden" id="internal_emp_view_10"  value="{{job.source_internal_emp_id_10}}">
+            <select class="form-control select2" name="internal_emp_id_10" id="internal_emp_10">
+                <option value="" selected disabled>Please Select Employee</option>
+                {% for i in employees %}
+                 <option value="{{i.emp_id}}">{{i.emp_name}} ({{i.emp_id}})</option>
+                {% endfor %}
+            </select>
+          </div>
+          <div class="col-md-12">
+            <label for="internal_cam_10">Select Campaign</label>
+            <input type="hidden" id="internal_cam_view_10" value="{{job.source_internal_campaign_name_10}}">
+            <select class="form-control select2" name="internal_campaign_10" id="internal_cam_10">
+                <option value="" selected disabled>Please Select Campaign</option>
+                {% for i in campaigns %}
+                <option value="{{i.campaign_name}}">{{i.campaign_name}}</option>
+                {% endfor %}
+            </select>
+          </div>
         </div>
       </div>
+    </div>
+    <div class="col-md-4">
+        <label>Send Email to CC</label>
+      <label class="switch">
+        <input type="checkbox" {% if job.send_mail_10 == True %}checked disabled{% endif %} id="send_mail_10">
+        <span class="slider round"></span>
+      </label>
     </div>
   </div>
 
@@ -1448,14 +1543,11 @@
   </div>
   <div class="col-md-3">
     <div class="form-group">
-      <label for="inter_name_11">Interviewer Name</label>
-      <input type="hidden" id="value_inter_name_11" value="{{job.interviewer_11}}">
-      <select id="inter_name_11" name="inter_name_11" class="form-control select2">
-        <option value="" selected disabled>Please Select</option>
-        {% for i in interviewers %}
-        <option value="{{i.emp_name}} ({{i.emp_id}})">{{i.emp_name}} ({{i.emp_id}})</option>
-        {% endfor %}
-      </select>
+      <label for="inter_name_11">Interviewer Details</label>
+      <div style="display: inline-flex; width: 100%;" id="inter_name_11">
+        <input type="text" id="value_inter_name_11" class="form-control" name="inter_name_11" value="{% if job.interviewer_11 %}{{job.interviewer_11}}{% endif %}" style="width:180%;" placeholder="Name">
+        <input type="text" id="value_inter_id_11" class="form-control" name="inter_id_11" value="{% if job.interviewer_id_11 %}{{job.interviewer_id_11}}{% endif %}" placeholder="Emp ID">
+      </div>
     </div>
   </div>
 
@@ -1477,31 +1569,39 @@
       </div>
     </div>
   </div>
-
   <div class="col-md-3 d-none" id="internal_11">
-    <div class="form-group">
-      <div class="row">
-        <div class="col-md-12">
-          <label for="internal_emp_11">Select Employee</label>
-          <input type="hidden" id="internal_emp_view_11" value="{{job.source_internal_emp_id_11}}">
-          <select class="form-control select2" name="internal_emp_id_11" id="internal_emp_11">
-              <option value="" selected disabled>Please Select Employee</option>
-              {% for i in employees %}
-               <option value="{{i.emp_id}}">{{i.emp_name}} ({{i.emp_id}})</option>
-              {% endfor %}
-          </select>
-        </div>
-        <div class="col-md-12">
-          <label for="internal_cam_11">Select Campaign</label>
-          <input type="hidden" id="internal_cam_view_11" value="{{job.source_internal_campaign_name_11}}">
-          <select class="form-control select2" name="internal_campaign_11" id="internal_cam_11">
-              <option value="" selected disabled>Please Select Campaign</option>
-              {% for i in campaigns %}
-              <option value="{{i.campaign_name}}">{{i.campaign_name}}</option>
-              {% endfor %}
-          </select>
+    <div class="col-md-8">
+      <div class="form-group">
+        <div class="row">
+          <div class="col-md-12">
+            <label for="internal_emp_11">Select Employee</label>
+            <input type="hidden" id="internal_emp_view_11"  value="{{job.source_internal_emp_id_11}}">
+            <select class="form-control select2" name="internal_emp_id_11" id="internal_emp_11">
+                <option value="" selected disabled>Please Select Employee</option>
+                {% for i in employees %}
+                 <option value="{{i.emp_id}}">{{i.emp_name}} ({{i.emp_id}})</option>
+                {% endfor %}
+            </select>
+          </div>
+          <div class="col-md-12">
+            <label for="internal_cam_11">Select Campaign</label>
+            <input type="hidden" id="internal_cam_view_11" value="{{job.source_internal_campaign_name_11}}">
+            <select class="form-control select2" name="internal_campaign_11" id="internal_cam_11">
+                <option value="" selected disabled>Please Select Campaign</option>
+                {% for i in campaigns %}
+                <option value="{{i.campaign_name}}">{{i.campaign_name}}</option>
+                {% endfor %}
+            </select>
+          </div>
         </div>
       </div>
+    </div>
+    <div class="col-md-4">
+        <label>Send Email to CC</label>
+      <label class="switch">
+        <input type="checkbox" {% if job.send_mail_11 == True %}checked disabled{% endif %} id="send_mail_11">
+        <span class="slider round"></span>
+      </label>
     </div>
   </div>
 
@@ -1574,14 +1674,11 @@
 
   <div class="col-md-3">
     <div class="form-group">
-      <label for="inter_name_12">Interviewer Name</label>
-      <input type="hidden" id="value_inter_name_12" value="{{job.interviewer_12}}">
-      <select id="inter_name_12" name="inter_name_12" class="form-control select2">
-        <option value="" selected disabled>Please Select</option>
-        {% for i in interviewers %}
-        <option value="{{i.emp_name}} ({{i.emp_id}})">{{i.emp_name}} ({{i.emp_id}})</option>
-        {% endfor %}
-      </select>
+      <label for="inter_name_12">Interviewer Details</label>
+      <div style="display: inline-flex; width: 100%;" id="inter_name_12">
+        <input type="text" id="value_inter_name_12" class="form-control" name="inter_name_12" value="{% if job.interviewer_12 %}{{job.interviewer_12}}{% endif %}" style="width:180%;" placeholder="Name">
+        <input type="text" id="value_inter_id_12" class="form-control" name="inter_id_12" value="{% if job.interviewer_id_12 %}{{job.interviewer_id_12}}{% endif %}" placeholder="Emp ID">
+      </div>
     </div>
   </div>
   <div class="col-md-3">
@@ -1602,31 +1699,39 @@
       </div>
     </div>
   </div>
-
   <div class="col-md-3 d-none" id="internal_12">
-    <div class="form-group">
-      <div class="row">
-        <div class="col-md-12">
-          <label for="internal_emp_12">Select Employee</label>
-          <input type="hidden" id="internal_emp_view_12" value="{{job.source_internal_emp_id_12}}">
-          <select class="form-control select2" name="internal_emp_id_12" id="internal_emp_12">
-              <option value="" selected disabled>Please Select Employee</option>
-              {% for i in employees %}
-               <option value="{{i.emp_id}}">{{i.emp_name}} ({{i.emp_id}})</option>
-              {% endfor %}
-          </select>
-        </div>
-        <div class="col-md-12">
-          <label for="internal_cam_12">Select Campaign</label>
-          <input type="hidden" id="internal_cam_view_12" value="{{job.source_internal_campaign_name_12}}">
-          <select class="form-control select2" name="internal_campaign_12" id="internal_cam_12">
-              <option value="" selected disabled>Please Select Campaign</option>
-              {% for i in campaigns %}
-              <option value="{{i.campaign_name}}">{{i.campaign_name}}</option>
-              {% endfor %}
-          </select>
+    <div class="col-md-8">
+      <div class="form-group">
+        <div class="row">
+          <div class="col-md-12">
+            <label for="internal_emp_12">Select Employee</label>
+            <input type="hidden" id="internal_emp_view_12"  value="{{job.source_internal_emp_id_12}}">
+            <select class="form-control select2" name="internal_emp_id_12" id="internal_emp_12">
+                <option value="" selected disabled>Please Select Employee</option>
+                {% for i in employees %}
+                 <option value="{{i.emp_id}}">{{i.emp_name}} ({{i.emp_id}})</option>
+                {% endfor %}
+            </select>
+          </div>
+          <div class="col-md-12">
+            <label for="internal_cam_12">Select Campaign</label>
+            <input type="hidden" id="internal_cam_view_12" value="{{job.source_internal_campaign_name_12}}">
+            <select class="form-control select2" name="internal_campaign_12" id="internal_cam_12">
+                <option value="" selected disabled>Please Select Campaign</option>
+                {% for i in campaigns %}
+                <option value="{{i.campaign_name}}">{{i.campaign_name}}</option>
+                {% endfor %}
+            </select>
+          </div>
         </div>
       </div>
+    </div>
+    <div class="col-md-4">
+        <label>Send Email to CC</label>
+      <label class="switch">
+        <input type="checkbox" {% if job.send_mail_12 == True %}checked disabled{% endif %} id="send_mail_12">
+        <span class="slider round"></span>
+      </label>
     </div>
   </div>
 
@@ -1696,17 +1801,13 @@
       <input type="text" name="cand_name_13" id="cand_name_13" class="form-control"onfocusout="makeReq_13(this);" value="{% if job.candidate_name_13 %}{{job.candidate_name_13}}{% endif %}">
     </div>
   </div>
-
   <div class="col-md-3">
     <div class="form-group">
-      <label for="inter_name_13">Interviewer Name</label>
-      <input type="hidden" id="value_inter_name_13" value="{{job.interviewer_13}}">
-      <select id="inter_name_13" name="inter_name_13" class="form-control select2">
-        <option value="" selected disabled>Please Select</option>
-        {% for i in interviewers %}
-        <option value="{{i.emp_name}} ({{i.emp_id}})">{{i.emp_name}} ({{i.emp_id}})</option>
-        {% endfor %}
-      </select>
+      <label for="inter_name_13">Interviewer Details</label>
+      <div style="display: inline-flex; width: 100%;" id="inter_name_13">
+        <input type="text" id="value_inter_name_13" class="form-control" name="inter_name_13" value="{% if job.interviewer_13 %}{{job.interviewer_13}}{% endif %}" style="width:180%;" placeholder="Name">
+        <input type="text" id="value_inter_id_13" class="form-control" name="inter_id_13" value="{% if job.interviewer_id_13 %}{{job.interviewer_id_13}}{% endif %}" placeholder="Emp ID">
+      </div>
     </div>
   </div>
   <div class="col-md-3">
@@ -1727,31 +1828,39 @@
       </div>
     </div>
   </div>
-
   <div class="col-md-3 d-none" id="internal_13">
-    <div class="form-group">
-      <div class="row">
-        <div class="col-md-12">
-          <label for="internal_emp_13">Select Employee</label>
-          <input type="hidden" id="internal_emp_view_13" value="{{job.source_internal_emp_id_13}}">
-          <select class="form-control select2" name="internal_emp_id_13" id="internal_emp_13">
-              <option value="" selected disabled>Please Select Employee</option>
-              {% for i in employees %}
-               <option value="{{i.emp_id}}">{{i.emp_name}} ({{i.emp_id}})</option>
-              {% endfor %}
-          </select>
-        </div>
-        <div class="col-md-12">
-          <label for="internal_cam_13">Select Campaign</label>
-          <input type="hidden" id="internal_cam_view_13" value="{{job.source_internal_campaign_name_13}}">
-          <select class="form-control select2" name="internal_campaign_13" id="internal_cam_13">
-              <option value="" selected disabled>Please Select Campaign</option>
-              {% for i in campaigns %}
-              <option value="{{i.campaign_name}}">{{i.campaign_name}}</option>
-              {% endfor %}
-          </select>
+    <div class="col-md-8">
+      <div class="form-group">
+        <div class="row">
+          <div class="col-md-12">
+            <label for="internal_emp_13">Select Employee</label>
+            <input type="hidden" id="internal_emp_view_13"  value="{{job.source_internal_emp_id_13}}">
+            <select class="form-control select2" name="internal_emp_id_13" id="internal_emp_13">
+                <option value="" selected disabled>Please Select Employee</option>
+                {% for i in employees %}
+                 <option value="{{i.emp_id}}">{{i.emp_name}} ({{i.emp_id}})</option>
+                {% endfor %}
+            </select>
+          </div>
+          <div class="col-md-12">
+            <label for="internal_cam_13">Select Campaign</label>
+            <input type="hidden" id="internal_cam_view_13" value="{{job.source_internal_campaign_name_13}}">
+            <select class="form-control select2" name="internal_campaign_13" id="internal_cam_13">
+                <option value="" selected disabled>Please Select Campaign</option>
+                {% for i in campaigns %}
+                <option value="{{i.campaign_name}}">{{i.campaign_name}}</option>
+                {% endfor %}
+            </select>
+          </div>
         </div>
       </div>
+    </div>
+    <div class="col-md-4">
+        <label>Send Email to CC</label>
+      <label class="switch">
+        <input type="checkbox" {% if job.send_mail_13 == True %}checked disabled{% endif %} id="send_mail_13">
+        <span class="slider round"></span>
+      </label>
     </div>
   </div>
 
@@ -1824,14 +1933,11 @@
 
   <div class="col-md-3">
     <div class="form-group">
-      <label for="inter_name_14">Interviewer Name</label>
-      <input type="hidden" id="value_inter_name_14" value="{{job.interviewer_14}}">
-      <select id="inter_name_14" name="inter_name_14" class="form-control select2">
-        <option value="" selected disabled>Please Select</option>
-        {% for i in interviewers %}
-        <option value="{{i.emp_name}} ({{i.emp_id}})">{{i.emp_name}} ({{i.emp_id}})</option>
-        {% endfor %}
-      </select>
+      <label for="inter_name_14">Interviewer Details</label>
+      <div style="display: inline-flex; width: 100%;" id="inter_name_14">
+        <input type="text" id="value_inter_name_14" class="form-control" name="inter_name_14" value="{% if job.interviewer_14 %}{{job.interviewer_14}}{% endif %}" style="width:180%;" placeholder="Name">
+        <input type="text" id="value_inter_id_14" class="form-control" name="inter_id_14" value="{% if job.interviewer_id_14 %}{{job.interviewer_id_14}}{% endif %}" placeholder="Emp ID">
+      </div>
     </div>
   </div>
   <div class="col-md-3">
@@ -1852,33 +1958,39 @@
       </div>
     </div>
   </div>
-
   <div class="col-md-3 d-none" id="internal_14">
-    <div class="form-group">
-      <div class="row">
-        <div class="col-md-12">
-          <label for="internal_emp_14">Select Employee</label>
-          <input type="hidden" id="internal_emp_view_14" value="{{job.source_internal_emp_id_14}}">
-
-          <select class="form-control select2" name="internal_emp_id_14" id="internal_emp_14">
-              <option value="" selected disabled>Please Select Employee</option>
-              {% for i in employees %}
-               <option value="{{i.emp_id}}">{{i.emp_name}} ({{i.emp_id}})</option>
-              {% endfor %}
-          </select>
-        </div>
-        <div class="col-md-12">
-          <label for="internal_cam_14">Select Campaign</label>
-          <input type="hidden" id="internal_cam_view_14" value="{{job.source_internal_campaign_name_14}}">
-
-          <select class="form-control select2" name="internal_campaign_14" id="internal_cam_14">
-              <option value="" selected disabled>Please Select Campaign</option>
-              {% for i in campaigns %}
-              <option value="{{i.campaign_name}}">{{i.campaign_name}}</option>
-              {% endfor %}
-          </select>
+    <div class="col-md-8">
+      <div class="form-group">
+        <div class="row">
+          <div class="col-md-12">
+            <label for="internal_emp_14">Select Employee</label>
+            <input type="hidden" id="internal_emp_view_14"  value="{{job.source_internal_emp_id_14}}">
+            <select class="form-control select2" name="internal_emp_id_14" id="internal_emp_14">
+                <option value="" selected disabled>Please Select Employee</option>
+                {% for i in employees %}
+                 <option value="{{i.emp_id}}">{{i.emp_name}} ({{i.emp_id}})</option>
+                {% endfor %}
+            </select>
+          </div>
+          <div class="col-md-12">
+            <label for="internal_cam_14">Select Campaign</label>
+            <input type="hidden" id="internal_cam_view_14" value="{{job.source_internal_campaign_name_14}}">
+            <select class="form-control select2" name="internal_campaign_14" id="internal_cam_14">
+                <option value="" selected disabled>Please Select Campaign</option>
+                {% for i in campaigns %}
+                <option value="{{i.campaign_name}}">{{i.campaign_name}}</option>
+                {% endfor %}
+            </select>
+          </div>
         </div>
       </div>
+    </div>
+    <div class="col-md-4">
+        <label>Send Email to CC</label>
+      <label class="switch">
+        <input type="checkbox" {% if job.send_mail_14 == True %}checked disabled{% endif %} id="send_mail_14">
+        <span class="slider round"></span>
+      </label>
     </div>
   </div>
 
@@ -1951,14 +2063,11 @@
 
   <div class="col-md-3">
     <div class="form-group">
-      <label for="inter_name_15">Interviewer Name</label>
-      <input type="hidden" id="value_inter_name_15" value="{{job.interviewer_15}}">
-      <select id="inter_name_15" name="inter_name_15" class="form-control select2">
-        <option value="" selected disabled>Please Select</option>
-        {% for i in interviewers %}
-        <option value="{{i.emp_name}} ({{i.emp_id}})">{{i.emp_name}} ({{i.emp_id}})</option>
-        {% endfor %}
-      </select>
+      <label for="inter_name_15">Interviewer Details</label>
+      <div style="display: inline-flex; width: 100%;" id="inter_name_15">
+        <input type="text" id="value_inter_name_15" class="form-control" name="inter_name_15" value="{% if job.interviewer_15 %}{{job.interviewer_15}}{% endif %}" style="width:180%;" placeholder="Name">
+        <input type="text" id="value_inter_id_15" class="form-control" name="inter_id_15" value="{% if job.interviewer_id_15 %}{{job.interviewer_id_15}}{% endif %}" placeholder="Emp ID">
+      </div>
     </div>
   </div>
   <div class="col-md-3">
@@ -1979,31 +2088,39 @@
       </div>
     </div>
   </div>
-
   <div class="col-md-3 d-none" id="internal_15">
-    <div class="form-group">
-      <div class="row">
-        <div class="col-md-12">
-          <label for="internal_emp_15">Select Employee</label>
-          <input type="hidden" id="internal_emp_view_15" value="{{job.source_internal_emp_id_15}}">
-          <select class="form-control select2" name="internal_emp_id_15" id="internal_emp_15">
-              <option value="" selected disabled>Please Select Employee</option>
-              {% for i in employees %}
-               <option value="{{i.emp_id}}">{{i.emp_name}} ({{i.emp_id}})</option>
-              {% endfor %}
-          </select>
-        </div>
-        <div class="col-md-12">
-          <label for="internal_cam_15">Select Campaign</label>
-          <input type="hidden" id="internal_cam_view_15" value="{{job.source_internal_campaign_name_15}}">
-          <select class="form-control select2" name="internal_campaign_15" id="internal_cam_15">
-              <option value="" selected disabled>Please Select Campaign</option>
-              {% for i in campaigns %}
-              <option value="{{i.campaign_name}}">{{i.campaign_name}}</option>
-              {% endfor %}
-          </select>
+    <div class="col-md-8">
+      <div class="form-group">
+        <div class="row">
+          <div class="col-md-12">
+            <label for="internal_emp_15">Select Employee</label>
+            <input type="hidden" id="internal_emp_view_15"  value="{{job.source_internal_emp_id_15}}">
+            <select class="form-control select2" name="internal_emp_id_15" id="internal_emp_15">
+                <option value="" selected disabled>Please Select Employee</option>
+                {% for i in employees %}
+                 <option value="{{i.emp_id}}">{{i.emp_name}} ({{i.emp_id}})</option>
+                {% endfor %}
+            </select>
+          </div>
+          <div class="col-md-12">
+            <label for="internal_cam_15">Select Campaign</label>
+            <input type="hidden" id="internal_cam_view_15" value="{{job.source_internal_campaign_name_15}}">
+            <select class="form-control select2" name="internal_campaign_15" id="internal_cam_15">
+                <option value="" selected disabled>Please Select Campaign</option>
+                {% for i in campaigns %}
+                <option value="{{i.campaign_name}}">{{i.campaign_name}}</option>
+                {% endfor %}
+            </select>
+          </div>
         </div>
       </div>
+    </div>
+    <div class="col-md-4">
+        <label>Send Email to CC</label>
+      <label class="switch">
+        <input type="checkbox" {% if job.send_mail_15 == True %}checked disabled{% endif %} id="send_mail_15">
+        <span class="slider round"></span>
+      </label>
     </div>
   </div>
 
@@ -2073,17 +2190,13 @@
       <input type="text" name="cand_name_16" id="cand_name_16" class="form-control" onfocusout="makeReq_16(this);" value="{% if job.candidate_name_16 %}{{job.candidate_name_16}}{% endif %}">
     </div>
   </div>
-
   <div class="col-md-3">
     <div class="form-group">
-      <label for="inter_name_16">Interviewer Name</label>
-      <input type="hidden" id="value_inter_name_16" value="{{job.interviewer_16}}">
-      <select id="inter_name_16" name="inter_name_16" class="form-control select2">
-        <option value="" selected disabled>Please Select</option>
-        {% for i in interviewers %}
-        <option value="{{i.emp_name}} ({{i.emp_id}})">{{i.emp_name}} ({{i.emp_id}})</option>
-        {% endfor %}
-      </select>
+      <label for="inter_name_16">Interviewer Details</label>
+      <div style="display: inline-flex; width: 100%;" id="inter_name_16">
+        <input type="text" id="value_inter_name_16" class="form-control" name="inter_name_16" value="{% if job.interviewer_16 %}{{job.interviewer_16}}{% endif %}" style="width:180%;" placeholder="Name">
+        <input type="text" id="value_inter_id_16" class="form-control" name="inter_id_16" value="{% if job.interviewer_id_16 %}{{job.interviewer_id_16}}{% endif %}" placeholder="Emp ID">
+      </div>
     </div>
   </div>
   <div class="col-md-3">
@@ -2104,31 +2217,39 @@
       </div>
     </div>
   </div>
-
   <div class="col-md-3 d-none" id="internal_16">
-    <div class="form-group">
-      <div class="row">
-        <div class="col-md-12">
-          <label for="internal_emp_16">Select Employee</label>
-          <input type="hidden" id="internal_emp_view_16" value="{{job.source_internal_emp_id_16}}">
-          <select class="form-control select2" name="internal_emp_id_16" id="internal_emp_16">
-              <option value="" selected disabled>Please Select Employee</option>
-              {% for i in employees %}
-               <option value="{{i.emp_id}}">{{i.emp_name}} ({{i.emp_id}})</option>
-              {% endfor %}
-          </select>
-        </div>
-        <div class="col-md-12">
-          <label for="internal_cam_16">Select Campaign</label>
-          <input type="hidden" id="internal_cam_view_16" value="{{job.source_internal_campaign_name_16}}">
-          <select class="form-control select2" name="internal_campaign_16" id="internal_cam_16">
-              <option value="" selected disabled>Please Select Campaign</option>
-              {% for i in campaigns %}
-              <option value="{{i.campaign_name}}">{{i.campaign_name}}</option>
-              {% endfor %}
-          </select>
+    <div class="col-md-8">
+      <div class="form-group">
+        <div class="row">
+          <div class="col-md-12">
+            <label for="internal_emp_16">Select Employee</label>
+            <input type="hidden" id="internal_emp_view_16"  value="{{job.source_internal_emp_id_16}}">
+            <select class="form-control select2" name="internal_emp_id_16" id="internal_emp_16">
+                <option value="" selected disabled>Please Select Employee</option>
+                {% for i in employees %}
+                 <option value="{{i.emp_id}}">{{i.emp_name}} ({{i.emp_id}})</option>
+                {% endfor %}
+            </select>
+          </div>
+          <div class="col-md-12">
+            <label for="internal_cam_16">Select Campaign</label>
+            <input type="hidden" id="internal_cam_view_16" value="{{job.source_internal_campaign_name_16}}">
+            <select class="form-control select2" name="internal_campaign_16" id="internal_cam_16">
+                <option value="" selected disabled>Please Select Campaign</option>
+                {% for i in campaigns %}
+                <option value="{{i.campaign_name}}">{{i.campaign_name}}</option>
+                {% endfor %}
+            </select>
+          </div>
         </div>
       </div>
+    </div>
+    <div class="col-md-4">
+        <label>Send Email to CC</label>
+      <label class="switch">
+        <input type="checkbox" {% if job.send_mail_16 == True %}checked disabled{% endif %} id="send_mail_16">
+        <span class="slider round"></span>
+      </label>
     </div>
   </div>
 
@@ -2201,14 +2322,11 @@
 
   <div class="col-md-3">
     <div class="form-group">
-      <label for="inter_name_17">Interviewer Name</label>
-      <input type="hidden" id="value_inter_name_17" value="{{job.interviewer_17}}">
-      <select id="inter_name_17" name="inter_name_17" class="form-control select2">
-        <option value="" selected disabled>Please Select</option>
-        {% for i in interviewers %}
-        <option value="{{i.emp_name}} ({{i.emp_id}})">{{i.emp_name}} ({{i.emp_id}})</option>
-        {% endfor %}
-      </select>
+      <label for="inter_name_17">Interviewer Details</label>
+      <div style="display: inline-flex; width: 100%;" id="inter_name_17">
+        <input type="text" id="value_inter_name_17" class="form-control" name="inter_name_17" value="{% if job.interviewer_17 %}{{job.interviewer_17}}{% endif %}" style="width:180%;" placeholder="Name">
+        <input type="text" id="value_inter_id_17" class="form-control" name="inter_id_17" value="{% if job.interviewer_id_17 %}{{job.interviewer_id_17}}{% endif %}" placeholder="Emp ID">
+      </div>
     </div>
   </div>
   <div class="col-md-3">
@@ -2230,29 +2348,38 @@
     </div>
   </div>
   <div class="col-md-3 d-none" id="internal_17">
-    <div class="form-group">
-      <div class="row">
-        <div class="col-md-12">
-          <label for="internal_emp_17">Select Employee</label>
-          <input type="hidden" id="internal_emp_view_17" value="{{job.source_internal_emp_id_17}}">
-          <select class="form-control select2" name="internal_emp_id_17" id="internal_emp_17">
-              <option value="" selected disabled>Please Select Employee</option>
-              {% for i in employees %}
-               <option value="{{i.emp_id}}">{{i.emp_name}} ({{i.emp_id}})</option>
-              {% endfor %}
-          </select>
-        </div>
-        <div class="col-md-12">
-          <label for="internal_cam_17">Select Campaign</label>
-          <input type="hidden" id="internal_cam_view_17" value="{{job.source_internal_campaign_name_17}}">
-          <select class="form-control select2" name="internal_campaign_17" id="internal_cam_17">
-              <option value="" selected disabled>Please Select Campaign</option>
-              {% for i in campaigns %}
-              <option value="{{i.campaign_name}}">{{i.campaign_name}}</option>
-              {% endfor %}
-          </select>
+    <div class="col-md-8">
+      <div class="form-group">
+        <div class="row">
+          <div class="col-md-12">
+            <label for="internal_emp_17">Select Employee</label>
+            <input type="hidden" id="internal_emp_view_17"  value="{{job.source_internal_emp_id_17}}">
+            <select class="form-control select2" name="internal_emp_id_17" id="internal_emp_17">
+                <option value="" selected disabled>Please Select Employee</option>
+                {% for i in employees %}
+                 <option value="{{i.emp_id}}">{{i.emp_name}} ({{i.emp_id}})</option>
+                {% endfor %}
+            </select>
+          </div>
+          <div class="col-md-12">
+            <label for="internal_cam_17">Select Campaign</label>
+            <input type="hidden" id="internal_cam_view_17" value="{{job.source_internal_campaign_name_17}}">
+            <select class="form-control select2" name="internal_campaign_17" id="internal_cam_17">
+                <option value="" selected disabled>Please Select Campaign</option>
+                {% for i in campaigns %}
+                <option value="{{i.campaign_name}}">{{i.campaign_name}}</option>
+                {% endfor %}
+            </select>
+          </div>
         </div>
       </div>
+    </div>
+    <div class="col-md-4">
+        <label>Send Email to CC</label>
+      <label class="switch">
+        <input type="checkbox" {% if job.send_mail_17 == True %}checked disabled{% endif %} id="send_mail_17">
+        <span class="slider round"></span>
+      </label>
     </div>
   </div>
 
@@ -2322,17 +2449,13 @@
       <input type="text" name="cand_name_18" id="cand_name_18" class="form-control" onfocusout="makeReq_18(this);" value="{% if job.candidate_name_18 %}{{job.candidate_name_18}}{% endif %}">
     </div>
   </div>
-
   <div class="col-md-3">
     <div class="form-group">
-      <label for="inter_name_18">Interviewer Name</label>
-      <input type="hidden" id="value_inter_name_18" value="{{job.interviewer_18}}">
-      <select id="inter_name_18" name="inter_name_18" class="form-control select2">
-        <option value="" selected disabled>Please Select</option>
-        {% for i in interviewers %}
-        <option value="{{i.emp_name}} ({{i.emp_id}})">{{i.emp_name}} ({{i.emp_id}})</option>
-        {% endfor %}
-      </select>
+      <label for="inter_name_18">Interviewer Details</label>
+      <div style="display: inline-flex; width: 100%;" id="inter_name_18">
+        <input type="text" id="value_inter_name_18" class="form-control" name="inter_name_18" value="{% if job.interviewer_18 %}{{job.interviewer_18}}{% endif %}" style="width:180%;" placeholder="Name">
+        <input type="text" id="value_inter_id_18" class="form-control" name="inter_id_18" value="{% if job.interviewer_id_18 %}{{job.interviewer_id_18}}{% endif %}" placeholder="Emp ID">
+      </div>
     </div>
   </div>
   <div class="col-md-3">
@@ -2353,31 +2476,39 @@
       </div>
     </div>
   </div>
-
   <div class="col-md-3 d-none" id="internal_18">
-    <div class="form-group">
-      <div class="row">
-        <div class="col-md-12">
-          <label for="internal_emp_18">Select Employee</label>
-          <input type="hidden" id="internal_emp_view_18" value="{{job.source_internal_emp_id_18}}">
-          <select class="form-control select2" name="internal_emp_id_18" id="internal_emp_18">
-              <option value="" selected disabled>Please Select Employee</option>
-              {% for i in employees %}
-               <option value="{{i.emp_id}}">{{i.emp_name}} ({{i.emp_id}})</option>
-              {% endfor %}
-          </select>
-        </div>
-        <div class="col-md-12">
-          <label for="internal_cam_18">Select Campaign</label>
-          <input type="hidden" id="internal_cam_view_18" value="{{job.source_internal_campaign_name_18}}">
-          <select class="form-control select2" name="internal_campaign_18" id="internal_cam_18">
-              <option value="" selected disabled>Please Select Campaign</option>
-              {% for i in campaigns %}
-              <option value="{{i.campaign_name}}">{{i.campaign_name}}</option>
-              {% endfor %}
-          </select>
+    <div class="col-md-8">
+      <div class="form-group">
+        <div class="row">
+          <div class="col-md-12">
+            <label for="internal_emp_18">Select Employee</label>
+            <input type="hidden" id="internal_emp_view_18"  value="{{job.source_internal_emp_id_18}}">
+            <select class="form-control select2" name="internal_emp_id_18" id="internal_emp_18">
+                <option value="" selected disabled>Please Select Employee</option>
+                {% for i in employees %}
+                 <option value="{{i.emp_id}}">{{i.emp_name}} ({{i.emp_id}})</option>
+                {% endfor %}
+            </select>
+          </div>
+          <div class="col-md-12">
+            <label for="internal_cam_18">Select Campaign</label>
+            <input type="hidden" id="internal_cam_view_18" value="{{job.source_internal_campaign_name_18}}">
+            <select class="form-control select2" name="internal_campaign_18" id="internal_cam_18">
+                <option value="" selected disabled>Please Select Campaign</option>
+                {% for i in campaigns %}
+                <option value="{{i.campaign_name}}">{{i.campaign_name}}</option>
+                {% endfor %}
+            </select>
+          </div>
         </div>
       </div>
+    </div>
+    <div class="col-md-4">
+        <label>Send Email to CC</label>
+      <label class="switch">
+        <input type="checkbox" {% if job.send_mail_18 == True %}checked disabled{% endif %} id="send_mail_18">
+        <span class="slider round"></span>
+      </label>
     </div>
   </div>
 
@@ -2447,17 +2578,13 @@
       <input type="text" name="cand_name_19" id="cand_name_19" class="form-control" onfocusout="makeReq_19(this);" value="{% if job.candidate_name_19 %}{{job.candidate_name_19}}{% endif %}">
     </div>
   </div>
-
   <div class="col-md-3">
     <div class="form-group">
-      <label for="inter_name_19">Interviewer Name</label>
-      <input type="hidden" id="value_inter_name_19" value="{{job.interviewer_19}}">
-      <select id="inter_name_19" name="inter_name_19" class="form-control select2">
-        <option value="" selected disabled>Please Select</option>
-        {% for i in interviewers %}
-        <option value="{{i.emp_name}} ({{i.emp_id}})">{{i.emp_name}} ({{i.emp_id}})</option>
-        {% endfor %}
-      </select>
+      <label for="inter_name_19">Interviewer Details</label>
+      <div style="display: inline-flex; width: 100%;" id="inter_name_19">
+        <input type="text" id="value_inter_name_19" class="form-control" name="inter_name_19" value="{% if job.interviewer_19 %}{{job.interviewer_19}}{% endif %}" style="width:180%;" placeholder="Name">
+        <input type="text" id="value_inter_id_19" class="form-control" name="inter_id_19" value="{% if job.interviewer_id_19 %}{{job.interviewer_id_19}}{% endif %}" placeholder="Emp ID">
+      </div>
     </div>
   </div>
   <div class="col-md-3">
@@ -2478,31 +2605,39 @@
       </div>
     </div>
   </div>
-
   <div class="col-md-3 d-none" id="internal_19">
-    <div class="form-group">
-      <div class="row">
-        <div class="col-md-12">
-          <label for="internal_emp_19">Select Employee</label>
-          <input type="hidden" id="internal_emp_view_19" value="{{job.source_internal_emp_id_19}}">
-          <select class="form-control select2" name="internal_emp_id_19" id="internal_emp_19">
-              <option value="" selected disabled>Please Select Employee</option>
-              {% for i in employees %}
-               <option value="{{i.emp_id}}">{{i.emp_name}} ({{i.emp_id}})</option>
-              {% endfor %}
-          </select>
-        </div>
-        <div class="col-md-12">
-          <label for="internal_cam_19">Select Campaign</label>
-          <input type="hidden" id="internal_cam_view_19" value="{{job.source_internal_campaign_name_19}}">
-          <select class="form-control select2" name="internal_campaign_19" id="internal_cam_19">
-              <option value="" selected disabled>Please Select Campaign</option>
-              {% for i in campaigns %}
-              <option value="{{i.campaign_name}}">{{i.campaign_name}}</option>
-              {% endfor %}
-          </select>
+    <div class="col-md-8">
+      <div class="form-group">
+        <div class="row">
+          <div class="col-md-12">
+            <label for="internal_emp_19">Select Employee</label>
+            <input type="hidden" id="internal_emp_view_19"  value="{{job.source_internal_emp_id_19}}">
+            <select class="form-control select2" name="internal_emp_id_19" id="internal_emp_19">
+                <option value="" selected disabled>Please Select Employee</option>
+                {% for i in employees %}
+                 <option value="{{i.emp_id}}">{{i.emp_name}} ({{i.emp_id}})</option>
+                {% endfor %}
+            </select>
+          </div>
+          <div class="col-md-12">
+            <label for="internal_cam_19">Select Campaign</label>
+            <input type="hidden" id="internal_cam_view_19" value="{{job.source_internal_campaign_name_19}}">
+            <select class="form-control select2" name="internal_campaign_19" id="internal_cam_19">
+                <option value="" selected disabled>Please Select Campaign</option>
+                {% for i in campaigns %}
+                <option value="{{i.campaign_name}}">{{i.campaign_name}}</option>
+                {% endfor %}
+            </select>
+          </div>
         </div>
       </div>
+    </div>
+    <div class="col-md-4">
+        <label>Send Email to CC</label>
+      <label class="switch">
+        <input type="checkbox" {% if job.send_mail_19 == True %}checked disabled{% endif %} id="send_mail_19">
+        <span class="slider round"></span>
+      </label>
     </div>
   </div>
 
@@ -2572,17 +2707,13 @@
       <input type="text" name="cand_name_20" id="cand_name_20" class="form-control" onfocusout="makeReq_20(this);" value="{% if job.candidate_name_20 %}{{job.candidate_name_20}}{% endif %}">
     </div>
   </div>
-
   <div class="col-md-3">
     <div class="form-group">
-      <label for="inter_name_20">Interviewer Name</label>
-      <input type="hidden" id="value_inter_name_20" value="{{job.interviewer_20}}">
-      <select id="inter_name_20" name="inter_name_20" class="form-control select2">
-        <option value="" selected disabled>Please Select</option>
-        {% for i in interviewers %}
-        <option value="{{i.emp_name}} ({{i.emp_id}})">{{i.emp_name}} ({{i.emp_id}})</option>
-        {% endfor %}
-      </select>
+      <label for="inter_name_20">Interviewer Details</label>
+      <div style="display: inline-flex; width: 100%;" id="inter_name_20">
+        <input type="text" id="value_inter_name_20" class="form-control" name="inter_name_20" value="{% if job.interviewer_20 %}{{job.interviewer_20}}{% endif %}" style="width:180%;" placeholder="Name">
+        <input type="text" id="value_inter_id_20" class="form-control" name="inter_id_20" value="{% if job.interviewer_id_20 %}{{job.interviewer_id_20}}{% endif %}" placeholder="Emp ID">
+      </div>
     </div>
   </div>
   <div class="col-md-3">
@@ -2603,31 +2734,39 @@
       </div>
     </div>
   </div>
-
   <div class="col-md-3 d-none" id="internal_20">
-    <div class="form-group">
-      <div class="row">
-        <div class="col-md-12">
-          <label for="internal_emp_20">Select Employee</label>
-          <input type="hidden" id="internal_emp_view_20" value="{{job.source_internal_emp_id_20}}">
-          <select class="form-control select2" name="internal_emp_id_20" id="internal_emp_20">
-              <option value="" selected disabled>Please Select Employee</option>
-              {% for i in employees %}
-               <option value="{{i.emp_id}}">{{i.emp_name}} ({{i.emp_id}})</option>
-              {% endfor %}
-          </select>
-        </div>
-        <div class="col-md-12">
-          <label for="internal_cam_20">Select Campaign</label>
-          <input type="hidden" id="internal_cam_view_20" value="{{job.source_internal_campaign_name_20}}">
-          <select class="form-control select2" name="internal_campaign_20" id="internal_cam_20">
-              <option value="" selected disabled>Please Select Campaign</option>
-              {% for i in campaigns %}
-              <option value="{{i.campaign_name}}">{{i.campaign_name}}</option>
-              {% endfor %}
-          </select>
+    <div class="col-md-8">
+      <div class="form-group">
+        <div class="row">
+          <div class="col-md-12">
+            <label for="internal_emp_20">Select Employee</label>
+            <input type="hidden" id="internal_emp_view_20"  value="{{job.source_internal_emp_id_20}}">
+            <select class="form-control select2" name="internal_emp_id_20" id="internal_emp_20">
+                <option value="" selected disabled>Please Select Employee</option>
+                {% for i in employees %}
+                 <option value="{{i.emp_id}}">{{i.emp_name}} ({{i.emp_id}})</option>
+                {% endfor %}
+            </select>
+          </div>
+          <div class="col-md-12">
+            <label for="internal_cam_20">Select Campaign</label>
+            <input type="hidden" id="internal_cam_view_20" value="{{job.source_internal_campaign_name_20}}">
+            <select class="form-control select2" name="internal_campaign_20" id="internal_cam_20">
+                <option value="" selected disabled>Please Select Campaign</option>
+                {% for i in campaigns %}
+                <option value="{{i.campaign_name}}">{{i.campaign_name}}</option>
+                {% endfor %}
+            </select>
+          </div>
         </div>
       </div>
+    </div>
+    <div class="col-md-4">
+        <label>Send Email to CC</label>
+      <label class="switch">
+        <input type="checkbox" {% if job.send_mail_20 == True %}checked disabled{% endif %} id="send_mail_20">
+        <span class="slider round"></span>
+      </label>
     </div>
   </div>
 
@@ -2732,7 +2871,7 @@
                         <button type="submit" class="btn btn-success btn-lg" onclick="return confirmm();" >Submit</button>
                       </div>
                     </div>
-                  <input type="hidden" value="{{job.id}}" name="id">
+                  <input type="hidden" value="{{job.id}}" name="id" id="idd">
                 </form>
 
                 </div>
@@ -2791,10 +2930,12 @@
     function makeReq_{{i}}(e) {
       if (e.value != ""){
         $("[name=source_{{i}}]").attr("required","required")
-        $("#inter_name_1").attr("required","required")
+        $("#value_inter_name_{{i}}").attr("required","required")
+        $("#value_inter_id_{{i}}").attr("required","required")
       } else {
         $("[name=source_{{i}}]").removeAttr("required","required")
-        $("#inter_name_1").removeAttr("required","required")
+        $("#value_inter_name_{{i}}").removeAttr("required","required")
+        $("#value_inter_id_{{i}}").removeAttr("required","required")
       }
     }
     function esource_{{i}}(e) {
@@ -2838,21 +2979,21 @@
         document.getElementById('partner_{{i}}').removeAttribute("required","required");
       }
       if ( soc_{{i}} == "Internal Movement" ) {
+        alert("Please toggle/on Send Email to CC else form will not be submitted !")
         document.getElementById('pleasefill_{{i}}').classList.add("d-none");
         $("#internal_{{i}}").removeClass("d-none");
         $("#internal_emp_{{i}}").attr("required","");
+        $("#send_mail_{{i}}").attr("required","");
         $("#internal_cam_{{i}}").attr("required","");
       } else {
         $("#internal_{{i}}").addClass("d-none");
         $("#internal_emp_{{i}}").removeAttr("required","");
+        $("#send_mail_{{i}}").removeAttr("required","");
         $("#internal_cam_{{i}}").removeAttr("required","");
       }
     }
     $emp_{{i}} = $('#internal_emp_view_{{i}}').val();
     $("[name=internal_emp_id_{{i}}]").select2().val($emp_{{i}}).trigger("change");
-
-    $interviewer_{{i}} = $("#value_inter_name_{{i}}").val();
-    $("[name=inter_name_{{i}}]").select2().val($interviewer_{{i}}).trigger("change");
 
     $cam_{{i}} = $('#internal_cam_view_{{i}}').val();
     $("[name=internal_campaign_{{i}}]").select2().val($cam_{{i}}).trigger("change");
@@ -2892,10 +3033,6 @@
 
         var date1 = document.getElementById('myclos_date').value;
         document.getElementById('clos_date').value = moment(date1).format('YYYY-MM-DD');
-
-
-
-
    </script>
 
 
@@ -2924,4 +3061,37 @@
       }
 
     </script>
+
+
+<script>
+  {% for i in number %}
+  $(document).ready(function() {
+      csrf = document.querySelector("input[name='csrfmiddlewaretoken']").value;
+      $("#send_mail_{{i}}").on("click",function(){
+        var job_id = $("#idd").val();
+        var send = this.id;
+        var oldcampaign = $("#campaign").val();
+        var internal_emp_id_{{i}} = $("#internal_emp_{{i}}").val();
+        var internal_campaign_{{i}} = $("#internal_cam_{{i}}").val();
+        if(job_id) {
+          if ( internal_emp_id_{{i}} == null || internal_campaign_{{i}} == null ) {
+            alert("Please Select Employee and Campaign 1st.");
+            $("#send_mail_{{i}}").removeAttr("checked");
+          } else {
+            $("#send_mail_{{i}}").attr("disabled","");
+            $.ajax({
+              type:'POST',
+              url:"/erf/send-mail",
+              data:{job:job_id,csrfmiddlewaretoken:csrf,emp_id:internal_emp_id_{{i}},campaign:internal_campaign_{{i}},oldcampaign:oldcampaign,send:send},
+              success:function(data) {
+                alert(data);
+              }
+            });
+          }
+        }
+      })
+    });
+   {% endfor %}
+</script>
+
 {% endblock %}

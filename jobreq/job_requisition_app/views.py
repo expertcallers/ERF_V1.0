@@ -7,6 +7,7 @@ from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.decorators import login_required
 from django.core.mail import EmailMessage
 from django.db.models import Q
+from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.template.loader import get_template
@@ -69,7 +70,8 @@ def Login(request):
             messages.info(request, 'Invalid user !')
             return redirect("/erf/")
     else:
-        pass
+        messages.info(request, 'Invalid Request !')
+        return redirect("/erf/")
 
 
 @login_required
@@ -233,6 +235,7 @@ def job_requisition(request):
         manager = Profile.objects.get(emp_id=manager_id).emp_name
         dead_line = int(request.POST["dead_line"])
         campaign = request.POST["campaign"]
+        pricing = request.POST["pricing"]
         unique_id = request.POST["csrfmiddlewaretoken"]
         dead_line = edited_date + datetime.timedelta(days=dead_line)
         new_campaign = request.POST.get("new_campaign")
@@ -270,6 +273,7 @@ def job_requisition(request):
             e.created_by_rm1 = user.emp_rm1
             e.created_by_rm1_id = user.emp_rm1_id
             e.campaign = campaign
+            e.pricing = pricing
             e.edited_date = edited_date
             e.unique_id = unique_id
             e.dead_line = dead_line
@@ -314,7 +318,7 @@ def job_requisition(request):
             now_datetime = datetime.datetime.now().strftime('%b %d,%Y %H:%M:%S')
             a.edited_by = [now_datetime, req_raised_by, created_by_id, "Created"]
             a.save()
-            messages.info(request, "Job Requisition Added Successfully !!")
+            messages.info(request, "Employee Requisition Added Successfully !!")
             action = "Created"
             subject = action + " - Employee Requisition [" + str(e.id) +"]"
             html_path = 'email.html'
@@ -403,12 +407,12 @@ def jobRequisitionSelf(request, type):
                 end = datetime.datetime.strptime(tomorrow, "%Y-%m-%d")
             end = end + datetime.timedelta(days=1)
             if status == "all":
-                job = JobRequisition.objects.filter(created_by_id=user, ticket_status=True, edited_date__range=[start, end])
+                job = JobRequisition.objects.filter(Q(created_by_id=user) | Q(created_by_rm1_id=user) | Q(created_by_manager_id=user), ticket_status=True, edited_date__range=[start, end])
             elif status == "open":
-                job = JobRequisition.objects.filter(created_by_id=user, ticket_status=True, final_status=False,
+                job = JobRequisition.objects.filter(Q(created_by_id=user) | Q(created_by_rm1_id=user) | Q(created_by_manager_id=user), ticket_status=True, final_status=False,
                                                     edited_date__range=[start, end])
             elif status == "closed":
-                job = JobRequisition.objects.filter(created_by_id=user, ticket_status=True, final_status=True,
+                job = JobRequisition.objects.filter(Q(created_by_id=user) | Q(created_by_rm1_id=user) | Q(created_by_manager_id=user), ticket_status=True, final_status=True,
                                                     edited_date__range=[start, end])
             else:
                 pass
@@ -961,6 +965,26 @@ def jobRequisitionEditUpdate(request):
         interviewer_18 = request.POST.get("inter_name_18")
         interviewer_19 = request.POST.get("inter_name_19")
         interviewer_20 = request.POST.get("inter_name_20")
+        interviewer_id_1 = request.POST.get('inter_id_1')
+        interviewer_id_2 = request.POST.get('inter_id_2')
+        interviewer_id_3 = request.POST.get('inter_id_3')
+        interviewer_id_4 = request.POST.get('inter_id_4')
+        interviewer_id_5 = request.POST.get('inter_id_5')
+        interviewer_id_6 = request.POST.get('inter_id_6')
+        interviewer_id_7 = request.POST.get('inter_id_7')
+        interviewer_id_8 = request.POST.get('inter_id_8')
+        interviewer_id_9 = request.POST.get('inter_id_9')
+        interviewer_id_10 = request.POST.get('inter_id_10')
+        interviewer_id_11 = request.POST.get('inter_id_11')
+        interviewer_id_12 = request.POST.get('inter_id_12')
+        interviewer_id_13 = request.POST.get('inter_id_13')
+        interviewer_id_14 = request.POST.get('inter_id_14')
+        interviewer_id_15 = request.POST.get('inter_id_15')
+        interviewer_id_16 = request.POST.get('inter_id_16')
+        interviewer_id_17 = request.POST.get('inter_id_17')
+        interviewer_id_18 = request.POST.get('inter_id_18')
+        interviewer_id_19 = request.POST.get('inter_id_19')
+        interviewer_id_20 = request.POST.get('inter_id_20')
 
         today = str(datetime.date.today())
         recruited_people = request.POST["rec_peo"]
@@ -1005,6 +1029,26 @@ def jobRequisitionEditUpdate(request):
             e.interviewer_18 = interviewer_18
             e.interviewer_19 = interviewer_19
             e.interviewer_20 = interviewer_20
+            e.interviewer_id_1 = interviewer_id_1
+            e.interviewer_id_2 = interviewer_id_2
+            e.interviewer_id_3 = interviewer_id_3
+            e.interviewer_id_4 = interviewer_id_4
+            e.interviewer_id_5 = interviewer_id_5
+            e.interviewer_id_6 = interviewer_id_6
+            e.interviewer_id_7 = interviewer_id_7
+            e.interviewer_id_8 = interviewer_id_8
+            e.interviewer_id_9 = interviewer_id_9
+            e.interviewer_id_10 = interviewer_id_10
+            e.interviewer_id_11 = interviewer_id_11
+            e.interviewer_id_12 = interviewer_id_12
+            e.interviewer_id_13 = interviewer_id_13
+            e.interviewer_id_14 = interviewer_id_14
+            e.interviewer_id_15 = interviewer_id_15
+            e.interviewer_id_16 = interviewer_id_16
+            e.interviewer_id_17 = interviewer_id_17
+            e.interviewer_id_18 = interviewer_id_18
+            e.interviewer_id_19 = interviewer_id_19
+            e.interviewer_id_20 = interviewer_id_20
             e.unique_id = unique
             if request_status == "Waiting For Manager Approval":
                 e.initial_status = True
@@ -1357,11 +1401,13 @@ def approval(request):
                 e.request_status = request_status
                 comment = "Approved and Complete"
                 action = "Approved"
+                message = "Approved Successfully!!"
             if response == "Reject":
                 e.initial_status = False
                 e.request_status = request_status
                 comment = "Rejected by Manager"
                 action = "Rejected"
+                message = "Requisition Rejected."
             e.save()
             now_datetime = datetime.datetime.now().strftime('%b %d,%Y %H:%M:%S')
             edited_name = request.user.profile.emp_name
@@ -1371,7 +1417,7 @@ def approval(request):
             adding = previous + ",\n" + edited_by
             a.edited_by = adding
             a.save()
-            messages.info(request, "Approved Successfully!")
+            messages.info(request, message)
 
             subject = action + " - Employee Requisition [" + str(e.id) + "]"
             html_path = 'email.html'
@@ -1503,13 +1549,13 @@ def CreationApproval(request):
                 e.request_status = request_status
                 comment = "Approved by Manager"
                 message = "The Requisition Approved Successfully!"
-                action = "Approved the AM Job Requisition"
+                action = "Approved the AM Employee Requisition"
             if response == "Reject":
                 e.initial_status = False
                 e.request_status = request_status
                 comment = "Rejected by Manager"
                 message = "The Requisition status have been made as Rejected"
-                action = "Rejected the AM Job Requisition"
+                action = "Rejected the AM Employee Requisition"
             e.save()
             now_datetime = datetime.datetime.now().strftime('%b %d,%Y %H:%M:%S')
             edited_name = request.user.profile.emp_name
@@ -1690,4 +1736,123 @@ def DeteleRequest(request, type):
             messages.info(request, "Invalid Request. You have been logged out :)")
             return redirect("/erf/")
 
-#test
+def SendMail(request):
+    id = request.POST["job"]
+    emp_id = request.POST["emp_id"]
+    newcampaign = request.POST["campaign"]
+    oldcampaign = request.POST["oldcampaign"]
+    send = request.POST["send"]
+    name = AllAgents.objects.get(emp_id=emp_id).emp_name
+    subject = "New Internal Movement"
+    email_template = "Name: "+name+"<br> Emp ID: "+emp_id+"<br> Old Campaign: "+oldcampaign+"<br> New Campaign: "+newcampaign
+    to = ["aparna.ks@expertcallers.com"]
+    email_msg = EmailMessage(subject,
+                             email_template, 'erf@expertcallers.com',
+                             to,
+                             reply_to=['erf@expertcallers.com'])
+    email_msg.content_subtype = 'html'
+    email_msg.send(fail_silently=False)
+
+    job = JobRequisition.objects.get(id=id)
+    if send == "send_mail_1":
+        job.send_mail_1 = True
+        job.source_internal_emp_id_1 = emp_id
+        job.source_internal_emp_name_1 = name
+        job.source_internal_campaign_name_1 = oldcampaign
+    if send == "send_mail_2":
+        job.send_mail_2 = True
+        job.source_internal_emp_id_2 = emp_id
+        job.source_internal_emp_name_2 = name
+        job.source_internal_campaign_name_2 = oldcampaign
+    if send == "send_mail_3":
+        job.send_mail_3 = True
+        job.source_internal_emp_id_3 = emp_id
+        job.source_internal_emp_name_3 = name
+        job.source_internal_campaign_name_3 = oldcampaign
+    if send == "send_mail_4":
+        job.send_mail_4 = True
+        job.source_internal_emp_id_4 = emp_id
+        job.source_internal_emp_name_4 = name
+        job.source_internal_campaign_name_4 = oldcampaign
+    if send == "send_mail_5":
+        job.send_mail_5 = True
+        job.source_internal_emp_id_5 = emp_id
+        job.source_internal_emp_name_5 = name
+        job.source_internal_campaign_name_5 = oldcampaign
+    if send == "send_mail_6":
+        job.send_mail_6 = True
+        job.source_internal_emp_id_6 = emp_id
+        job.source_internal_emp_name_6 = name
+        job.source_internal_campaign_name_6 = oldcampaign
+    if send == "send_mail_7":
+        job.send_mail_7 = True
+        job.source_internal_emp_id_7 = emp_id
+        job.source_internal_emp_name_7 = name
+        job.source_internal_campaign_name_7 = oldcampaign
+    if send == "send_mail_8":
+        job.send_mail_8 = True
+        job.source_internal_emp_id_8 = emp_id
+        job.source_internal_emp_name_8 = name
+        job.source_internal_campaign_name_8 = oldcampaign
+    if send == "send_mail_9":
+        job.send_mail_9 = True
+        job.source_internal_emp_id_9 = emp_id
+        job.source_internal_emp_name_9 = name
+        job.source_internal_campaign_name_9 = oldcampaign
+    if send == "send_mail_10":
+        job.send_mail_10 = True
+        job.source_internal_emp_id_10 = emp_id
+        job.source_internal_emp_name_10 = name
+        job.source_internal_campaign_name_10 = oldcampaign
+    if send == "send_mail_11":
+        job.send_mail_11 = True
+        job.source_internal_emp_id_11 = emp_id
+        job.source_internal_emp_name_11 = name
+        job.source_internal_campaign_name_11 = oldcampaign
+    if send == "send_mail_12":
+        job.send_mail_12 = True
+        job.source_internal_emp_id_12 = emp_id
+        job.source_internal_emp_name_12 = name
+        job.source_internal_campaign_name_12 = oldcampaign
+    if send == "send_mail_13":
+        job.send_mail_13 = True
+        job.source_internal_emp_id_13 = emp_id
+        job.source_internal_emp_name_13 = name
+        job.source_internal_campaign_name_13 = oldcampaign
+    if send == "send_mail_14":
+        job.send_mail_14 = True
+        job.source_internal_emp_id_14 = emp_id
+        job.source_internal_emp_name_14 = name
+        job.source_internal_campaign_name_14 = oldcampaign
+    if send == "send_mail_15":
+        job.send_mail_15 = True
+        job.source_internal_emp_id_15 = emp_id
+        job.source_internal_emp_name_15 = name
+        job.source_internal_campaign_name_15 = oldcampaign
+    if send == "send_mail_16":
+        job.send_mail_16 = True
+        job.source_internal_emp_id_16 = emp_id
+        job.source_internal_emp_name_16 = name
+        job.source_internal_campaign_name_16 = oldcampaign
+    if send == "send_mail_17":
+        job.send_mail_17 = True
+        job.source_internal_emp_id_17 = emp_id
+        job.source_internal_emp_name_17 = name
+        job.source_internal_campaign_name_17 = oldcampaign
+    if send == "send_mail_18":
+        job.send_mail_18 = True
+        job.source_internal_emp_id_18 = emp_id
+        job.source_internal_emp_name_18 = name
+        job.source_internal_campaign_name_18 = oldcampaign
+    if send == "send_mail_19":
+        job.send_mail_19 = True
+        job.source_internal_emp_id_19 = emp_id
+        job.source_internal_emp_name_19 = name
+        job.source_internal_campaign_name_19 = oldcampaign
+    if send == "send_mail_20":
+        job.send_mail_20 = True
+        job.source_internal_emp_id_20 = emp_id
+        job.source_internal_emp_name_20 = name
+        job.source_internal_campaign_name_20 = oldcampaign
+    job.save()
+    return HttpResponse("Mail Sent to CC Team Successfully!")
