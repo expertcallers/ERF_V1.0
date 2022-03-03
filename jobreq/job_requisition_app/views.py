@@ -1,10 +1,13 @@
 import datetime
+import math
+import random
 from datetime import date
 import socket
 import pytz
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.hashers import make_password
 from django.core.mail import EmailMessage
 from django.db.models import Q
 from django.http import HttpResponse
@@ -40,7 +43,7 @@ def Login(request):
         if user is not None:
             # user_login
             login(request, user)
-            email = Profile.objects.get(emp_id=username).emp_email
+            user = Profile.objects.get(emp_id=username)
             system = socket.gethostname()
             IPAddr = socket.gethostbyname(system)
             date_time = datetime.datetime.now()
@@ -55,7 +58,7 @@ def Login(request):
             e.save()
             designation = request.user.profile.emp_desi
 
-            if email is not None:
+            if user.emp_email is not None and user.email_verify == True:
                 if designation in am_mgr_list:
                     return redirect("/erf/manager-dashboard")
                 elif designation in hr_list:
@@ -73,49 +76,224 @@ def Login(request):
         messages.info(request, 'Invalid Request !')
         return redirect("/erf/")
 
-
 @login_required
 def AddEmail(request):
     designation = request.user.profile.emp_desi
     if request.method == "POST":
         emp_id = request.POST["emp_id"]
         email = request.POST["email"]
-        e = Profile.objects.get(emp_id=emp_id)
-        e.emp_email = email
-        e.save()
-        messages.info(request, "Email Added Successfully !")
-        if designation in am_mgr_list:
-            return redirect("/erf/manager-dashboard")
-        elif designation in hr_list:
-            return redirect("/erf/hr-dashboard")
-        else:
-            messages.info(request, 'Not authorised to view this page !')
-            return redirect("/erf/")
+        digits = "0123456789"
+        OTP = ""
+        for i in range(6):
+            OTP += digits[math.floor(random.random() * 10)]
+        try:
+            Profile.objects.get(emp_id=emp_id,emp_email=email)
+            messages.info(request,"OTP is sent to your email ID Entered. Please Verify it. Avoid Clicking multiple times.")
+            return redirect("/erf/verify-email")
+        except Profile.DoesNotExist:
+            e = Profile.objects.get(emp_id=emp_id)
+            e.emp_email = email
+            e.otp = OTP
+            e.otp_time = datetime.datetime.now()
+            e.save()
+            subject = "Your OTP for ERF"
+            email_template = "Your OTP for ERF is <b>" + str(OTP) + "</b> Valid only for 5 Minutes."
+            to = [email]
+            email_msg = EmailMessage(subject,
+                                     email_template, 'erf@expertcallers.com',
+                                     to,
+                                     reply_to=['erf@expertcallers.com'])
+            email_msg.content_subtype = 'html'
+            email_msg.send(fail_silently=False)
+            messages.info(request, "OTP is sent to your email ID Entered. Please Verify it.")
+            return redirect("/erf/verify-email")
     else:
         messages.info(request, 'Please add your Email ID')
         return render(request, "add-email.html")
 
+@login_required
+def VerifyEmail(request):
+    designation = request.user.profile.emp_desi
+    emp_id = request.user.profile.emp_id
+    e = Profile.objects.get(emp_id=emp_id)
+    if request.method == "POST":
+        start = e.otp_time.timestamp()
+        timee = datetime.datetime.now(pytz.timezone('Asia/Kolkata')).timestamp() - start
+        if timee <= 300:
+            otp = request.POST["otp"]
+            if e.otp == otp:
+                e.email_verify = True
+                e.save()
+                messages.info(request, "Email Verified Successfully!")
+                if designation in am_mgr_list:
+                    return redirect("/erf/manager-dashboard")
+                elif designation in hr_list:
+                    return redirect("/erf/hr-dashboard")
+                else:
+                    messages.info(request, 'Not authorised to view this page !')
+                    return redirect("/erf/")
+            else:
+                messages.info(request, "Invalid OTP please enter Correct OTP")
+                return redirect("/erf/verify-email")
+        else:
+            messages.info(request, "The OTP has expired. New OTP is sent, please enter New OTP!")
+            digits = "0123456789"
+            OTP = ""
+            for i in range(6):
+                OTP += digits[math.floor(random.random() * 10)]
+            e = Profile.objects.get(emp_id=emp_id)
+            e.otp = OTP
+            e.otp_time = datetime.datetime.now()
+            e.save()
+            subject = "Your OTP for ERF"
+            email_template = "Your OTP for ERF is <b>" + str(OTP) + "</b> Valid only for 5 Minutes."
+            to = [request.user.profile.emp_email]
+            email_msg = EmailMessage(subject,
+                                     email_template, 'erf@expertcallers.com',
+                                     to,
+                                     reply_to=['erf@expertcallers.com'])
+            email_msg.content_subtype = 'html'
+            email_msg.send(fail_silently=False)
+            return redirect("/erf/verify-email")
+    else:
+        data = {"profile":e}
+        return render(request, "verify-email.html",data)
+
 
 @login_required
 def EditEmail(request):
-    designation = request.user.profile.emp_desi
+    user = request.user.profile
     if request.method == "POST":
         emp_id = request.POST["emp_id"]
         email = request.POST["new_email"]
-        e = Profile.objects.get(emp_id=emp_id)
-        e.emp_email = email
-        e.save()
-        messages.info(request, "Email Changed Successfully !")
-        if designation in am_mgr_list:
-            return redirect("/erf/manager-dashboard")
-        elif designation in hr_list:
-            return redirect("/erf/hr-dashboard")
+        if user.emp_email == email:
+            m = "The New Email is same as Previous Email, hence Email not changed :)"
+            messages.info(request,m)
+            return redirect("/erf/settings")
         else:
-            messages.info(request, 'Not authorised to view this page !')
-            return redirect("/erf/")
+            digits = "0123456789"
+            OTP = ""
+            for i in range(6):
+                OTP += digits[math.floor(random.random() * 10)]
+            try:
+                Profile.objects.get(emp_id=emp_id,emp_email=email)
+                m = "OTP is sent to your email ID Entered. Please Verify it. Avoid Clicking multiple times."
+                messages.info(request,m)
+                return redirect("/erf/verify-email")
+            except Profile.DoesNotExist:
+                e = Profile.objects.get(emp_id=emp_id)
+                e.emp_email = email
+                e.email_verify = False
+                e.otp_time = datetime.datetime.now()
+                e.save()
+                subject = "Your OTP for ERF"
+                email_template = "Your OTP for ERF is <b>" + str(OTP) + "</b> Valid only for 5 Minutes."
+                to = [email]
+                email_msg = EmailMessage(subject,
+                                         email_template, 'erf@expertcallers.com',
+                                         to,
+                                         reply_to=['erf@expertcallers.com'])
+                email_msg.content_subtype = 'html'
+                email_msg.send(fail_silently=False)
+                messages.info(request, "OTP is sent to your email ID Entered. Please Verify it.")
+                return redirect("/erf/verify-email")
     else:
         messages.info(request, "Invalid Request. You have been logged out :)")
         return redirect("/erf/")
+
+def forgotPassword(request):
+    if request.method == "POST":
+        emp_id = request.POST["emp_id"]
+        try:
+            profile = Profile.objects.get(emp_id=emp_id)
+            email = profile.emp_email
+            if email is not None:
+                digits = "0123456789"
+                OTP = ""
+                for i in range(6):
+                    OTP += digits[math.floor(random.random() * 10)]
+                try:
+                    Profile.objects.get(emp_id=emp_id,otp=OTP)
+                    m = "Link to reset the password is sent to your email. (" + email + ") Please check your mail " \
+                        "and reset it from there. Avoid Clicking Multiple Times :)"
+                    messages.info(request, m)
+                    return redirect("/erf/")
+                except Profile.DoesNotExist:
+                    profile.otp = OTP
+                    profile.otp_time = datetime.datetime.now()
+                    profile.save()
+                    subject = "Password Reset Link of ERF"
+                    email_template = "Click on the link Below to reset your password. Remember it is valid only for " \
+                                     "5 Min<br><br><a href='http://127.0.0.1:8000/erf/reset-password/"+emp_id+"/"+OTP+"'>" \
+                                     "http://127.0.0.1:8000/erf/reset-password</a>"
+                    to = [email]
+                    email_msg = EmailMessage(subject,
+                                             email_template, 'erf@expertcallers.com',
+                                             to,
+                                             reply_to=['erf@expertcallers.com'])
+                    email_msg.content_subtype = 'html'
+                    email_msg.send(fail_silently=False)
+                    m = "Link to reset the password is sent to your email. ("+email+") Please check your mail " \
+                                                                                    "and reset it from there."
+                    messages.info(request, m)
+                    return redirect("/erf/")
+            else:
+                m = "Could not find your email. Please Enter Username and Password as your Emp ID: " \
+                    ""+emp_id+" and try to login again"
+                messages.info(request, m)
+                return redirect("/erf/")
+
+        except Profile.DoesNotExist:
+            messages.info(request,"Invalid Username! Enter Correct Username")
+            return redirect("/erf/forgot-password")
+    else:
+        return render(request, "forgot_password.html")
+
+def resetPassword(request,emp_id,otp):
+    logout(request)
+    profile = Profile.objects.get(emp_id=emp_id)
+    start = profile.otp_time.timestamp()
+    timee = datetime.datetime.now(pytz.timezone('Asia/Kolkata')).timestamp() - start
+    if request.method == "POST":
+        user = User.objects.get(username=emp_id)
+        new_pass = request.POST["npass"]
+        c_pass = request.POST["cpass"]
+        if new_pass == c_pass:
+            user.password = make_password(new_pass)
+            user.save()
+            messages.info(request, "The Password has been reset Successfully. Login with new Password.")
+            return redirect("/erf/")
+        else:
+            messages.info(request, "The Passwords does not match. Please fill again ")
+            return redirect("/erf/reset-password/"+emp_id+"/"+otp)
+    else:
+        if timee <= 300:
+            if profile.otp == otp and profile.emp_id == emp_id:
+                return render(request, "reset_password.html")
+            else:
+                messages.info(request, "Invalid Link :)")
+                return redirect("/erf/")
+        else:
+            messages.info(request, "The Link has expired. New Link is sent, Please check your email")
+            digits = "0123456789"
+            OTP = ""
+            for i in range(6):
+                OTP += digits[math.floor(random.random() * 10)]
+            profile.otp = OTP
+            profile.otp_time = datetime.datetime.now()
+            profile.save()
+            subject = "Password Reset Link of ERF"
+            email_template = "Click on the link Below to reset your password. Remember it is valid only for " \
+                             "5 Min<br><br><a href='http://127.0.0.1:8000/erf/reset-password/" + emp_id + "/" + OTP + "'>" \
+                             "http://127.0.0.1:8000/erf/reset-password</a>"
+            to = [profile.emp_email]
+            email_msg = EmailMessage(subject,
+                                     email_template, 'erf@expertcallers.com',
+                                     to,
+                                     reply_to=['erf@expertcallers.com'])
+            email_msg.content_subtype = 'html'
+            email_msg.send(fail_silently=False)
+            return redirect("/erf/")
 
 
 @login_required
@@ -1338,12 +1516,10 @@ def change_password(request):
             user = form.save()
             update_session_auth_hash(request, user)  # Important!
             messages.success(request, 'Your password was successfully updated! Please login with new password.')
-
             user = request.user
             user.profile.pc = True
             user.save()
             user.profile.save()
-            logout(request)
             return redirect('/erf/')
         else:
             messages.error(request, 'Please correct the error below.')

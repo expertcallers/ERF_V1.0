@@ -19,8 +19,11 @@
 			background: #136FA0 !important;
 		}
 	</style>
+
 </head>
 <body>
+
+
 	<div class="container h-100">
 		<div class="d-flex justify-content-center h-100">
 			<div class="user_card">
@@ -30,13 +33,21 @@
 					</div>
 				</div>
 				<div class="d-flex justify-content-center form_container">
-					<form action="/erf/add-email" method="POST" enctype="multipart/form-data">
+					<form action="/erf/verify-email" method="POST" enctype="multipart/form-data">
 						{% csrf_token %}
-						<div class="input-group mb-3">
+						<div class="row">
+							<div class="col-md-12">
+								<h6 align="center">Your Entered Email: </h6>
+							</div>
+							<div class="col-md-12">
+								<h6 align="center">{{profile.emp_email}}</h6>
+							</div>
+						</div>
+						<div class="input-group mb-3 mt-2">
 							<div class="input-group-append">
 								<span class="input-group-text"><i class="fas fa-envelope"></i></span>
 							</div>
-							<input type="email" name="email" class="form-control input_user" required placeholder="Email">
+							<input type="number" name="otp" required class="form-control input_user" value="" placeholder="OTP">
 						</div>
 						<div class="form-group">
 							<div class="custom-control custom-checkbox">
@@ -47,7 +58,9 @@
 						<div class="d-flex justify-content-center mt-3 login_container">
 							<button type="submit" class="btn login_btn">Continue</button>
 						</div>
-						<input type="hidden" name="emp_id" value="{{request.user.profile.emp_id}}">
+						<div class="mt-2">
+							<a href="/erf/add-email"><button type="button" class="btn login_btn">Change Email?</button></a>
+						</div>
 					</form>
 				</div>
 		

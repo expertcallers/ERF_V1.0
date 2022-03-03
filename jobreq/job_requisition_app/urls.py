@@ -19,9 +19,12 @@ urlpatterns = [
     path('createuser',createUserandProfile),
     path('approval', approval),
     path('add-email', AddEmail),
+    path('verify-email', VerifyEmail),
     path('edit-email', EditEmail),
     path('export/<str:type>', ExportReport),
     path('initial-approval', CreationApproval),
     path('delete/<str:type>', DeteleRequest),
     path('send-mail', SendMail),
+    path('forgot-password', forgotPassword),
+    path('reset-password/<str:emp_id>/<str:otp>', resetPassword),
 ]

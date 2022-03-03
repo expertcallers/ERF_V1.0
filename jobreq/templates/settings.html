@@ -5,13 +5,15 @@
         <!-- page content -->
         <div class="right_col" role="main">
           <div class="row">
+
             <div class="col-md-6">
-              <div class="card">
-                <div class="card-header">
-                  <h2>Change Password</h2>
-                </div>
-                <div class="card-body">
-                    <div class="row">
+              <div class="card-base">
+                <div class="card-icon">
+                  <span class="imagecard widgetCardIcon">
+                    <i class="fa fa-lock"></i>
+                  </span>
+                  <div class="card-data widgetCardData">
+                    <div class="row mt-5 p-4">
                         <div class="col-md-12">
                             {% load crispy_forms_tags %}
                             <div class="signupform">
@@ -19,21 +21,26 @@
                                   {% csrf_token %}
                                   {{ form|crispy }}
                                     <br><br>
-                                  <button type="submit" class="btn btn-primary form-control">Save changes</button>
+                                  <button type="submit" class="btn btn-success form-control">Save changes</button>
                                 </form>
                             </div>
                         </div>
                     </div>
+                  </div>
                 </div>
+                <div class="space"></div>
               </div>
             </div>
+
             <div class="col-md-6">
-              <div class="card">
-                <div class="card-header">
-                  <h2>Change Email</h2>
-                </div>
-                <div class="card-body">
-                    <div class="row">
+              <div class="card-base">
+                <div class="card-icon">
+                  <span title="All Requisitions" class="imagecard widgetCardIcon">
+                    <i class="fa fa-envelope"></i>
+                  </span>
+                  <div class="card-data widgetCardData" style="min-height: 510px !important;">
+
+                    <div class="row mt-5 p-4">
                         <div class="col-md-12">
                             <label for="current_email">Your Current Email ID</label>
                             <input type="text" readonly id="current_email" class="form-control" value="{{request.user.profile.emp_email}}">
@@ -42,17 +49,20 @@
                             {% csrf_token %}
                             <div class="col-md-12 form-group mt-3">
                                 <label for="new_email">Enter the new Email ID</label>
-                                <input type="email" id="new_email" name="new_email" class="form-control">
+                                <input type="email" id="new_email" name="new_email" required class="form-control">
                             </div>
                             <div class="col-md-12 form-group mt-3">
-                                <button class="form-control btn btn-primary">Save Change</button>
+                                <button class="form-control btn btn-success">Save Change</button>
                             </div>
                             <input type="hidden" name="emp_id" value="{{request.user.profile.emp_id}}">
                         </form>
                     </div>
+                  </div>
                 </div>
+                <div class="space"></div>
               </div>
             </div>
+
           </div>
         </div>
         <!-- /page content -->
