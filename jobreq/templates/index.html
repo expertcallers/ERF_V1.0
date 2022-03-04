@@ -18,6 +18,13 @@
 			height: 100%;
 			background: #136FA0 !important;
 		}
+		.myTitle {
+			position: absolute;
+			color: #fff;
+			font-weight: 900;
+			top: -130px;
+			text-align: center;
+		}
 	</style>
 
 </head>
@@ -26,16 +33,23 @@
 
 	<div class="container h-100">
 		<div class="d-flex justify-content-center h-100">
+
 			<div class="user_card">
 				<div class="d-flex justify-content-center">
+
 					<div class="brand_logo_container">
-						<img src="{% static 'assets/img/expertcallers-icon.png' %}" class="brand_logo" alt="Logo">
+						<img src="{% static 'assets/img/ERF.png' %}" class="brand_logo" alt="Logo">
 					</div>
 				</div>
 				<div class="d-flex justify-content-center form_container">
 					<form action="/erf/login" method="POST" enctype="multipart/form-data">
 						{% csrf_token %}
-						<div class="input-group mb-3">
+						<div class="row" style="margin-top: -20px;">
+							<div class="col-md-12">
+								<h3 style="color:#136FA0;">Employee Requisition</h3>
+							</div>
+						</div>
+						<div class="input-group mb-3 mt-2">
 							<div class="input-group-append">
 								<span class="input-group-text"><i class="fas fa-user"></i></span>
 							</div>
@@ -47,14 +61,13 @@
 							</div>
 							<input type="password" name="pass" class="form-control input_pass" value="" placeholder="password">
 						</div>
-						<div class="form-group">
-							<div class="custom-control custom-checkbox">
-<!--								<input type="checkbox" class="custom-control-input" id="Rem_me" name="rem">-->
-<!--								<label class="custom-control-label" for="Rem_me">Remember me</label>-->
-							</div>
-						</div>
 						<div class="d-flex justify-content-center mt-3 login_container">
 							<button type="submit" class="btn login_btn">Login</button>
+						</div>
+						<div class="mt-4">
+							<div class="d-flex justify-content-center links">
+								<a href="/erf/forgot-password" class="fontred">Forgot your password?</a>
+							</div>
 						</div>
 					</form>
 				</div>

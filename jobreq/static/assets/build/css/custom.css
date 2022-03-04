@@ -918,6 +918,7 @@
 
 .profile_pic {
   width: 100%;
+  display: none;
   float: left; }
 
 .img-circle.profile_img {
@@ -932,21 +933,23 @@
 
 .profile_info {
   width: 100%;
-  text-align: center; 
+  margin-top: 135px;
+  text-align: center;
 }
 
 
 .profile_info h2 {
   font-size: 16px;
   color: #ECF0F1;
-  padding: 0 0 0 15px;
+  border: 2px solid #838F9B;
+  padding: 10px;
   font-weight: 300;
   text-align: left;
 }
 
 .profile_info h2 i{
   font-size: 18px;
-  margin: 0 5px 0 0; 
+  margin: 0 5px 0 0;
   text-align: center;
   width: 24px;
   color: #1ABB9C;
@@ -994,11 +997,11 @@
 
 .nav-sm li li span.fa {
   display: inline-block; }
-
+.nav.toggle {
+    display: none;
+}
 .nav_menu {
   float: left;
-  background: #EDEDED;
-  border-bottom: 1px solid #D9DEE4;
   margin-bottom: 10px;
   width: 100%;
   position: relative; }
@@ -1033,7 +1036,7 @@
   position: fixed; }
 
 body .container.body .right_col {
-  background: #F7F7F7; }
+  background: linear-gradient(to right, #2A3F54 10%, #F7F7F7); }
 
 .nav-md .container.body .right_col {
   padding: 10px 20px 0;
@@ -1041,6 +1044,7 @@ body .container.body .right_col {
 
 .nav_title {
   width: 230px;
+  display: none;
   float: left;
   background: #2A3F54;
   border-radius: 0;
@@ -5057,22 +5061,25 @@ ul.notifications {
   height: 120px;
   border-radius: 50%;
   border: 5px solid white;
-  box-shadow: 1px 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
+  box-shadow: 1px 2px 5px 0 rgba(28, 123, 168,0.25), 0 2px 10px 0 rgba(28, 123, 168,0.25);
   margin: 0 auto;
   color: white;
 }
 .card-base > .card-icon > .card-data {
-  /*min-height: 250px !important;*/
+  min-height: 230px !important;
   margin-top: -50px;
-  background: ghostwhite;
+  background: #EDEDED;
   border: 1px solid #e0e0e0;
   padding: 15px 0 10px 0;
-   box-shadow: 1px 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
+  box-shadow: 1px 2px 5px 0 rgba(28, 123, 168,0.25), 0 2px 10px 0 rgba(28, 123, 168,0.25);
   min-height: 215px;
 }
 .widgetCardIcon {
-  background: #1ABB9C!important;
+  background: #1C7BA8!important;
   font-size: 50px;
   line-height: 115px;
 }
 
+.anchor.btn.btn-default:hover {
+    box-shadow: 2px 1px 5px grey;
+  }

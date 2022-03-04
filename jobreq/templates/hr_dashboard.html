@@ -28,10 +28,10 @@
             <div class="col-md-2">
               <div class="card-base">
                 <div class="card-icon">
-                  <span title="Open Requisitions" class="imagecard widgetCardIcon">
+                  <span title="Open Requisitions" class="imagecard widgetCardIcon" style="background: #fcbf55 !important; box-shadow: 1px 2px 5px 0 rgba(252, 191, 85,0.25), 0 2px 10px 0 rgba(252, 191, 85,0.25)">
                     <i class="fa fa-user-times"></i>
                   </span>
-                  <div class="card-data widgetCardData">
+                  <div class="card-data widgetCardData" style="box-shadow: 1px 2px 5px 0 rgba(252, 191, 85,0.25), 0 2px 10px 0 rgba(252, 191, 85,0.25)">
                     <h2 class="box-title mt-5" style="color: #2A3F54;">Open Requisitions</h2>
                     <h1>{{open}}</h1>
                     <a href="/erf/job-requisition-table-hr" title="Open Requisitions" class="anchor btn btn-default" style="background: #1ABB9C; color: #fff;">
@@ -45,10 +45,10 @@
             <div class="col-md-2">
               <div class="card-base">
                 <div class="card-icon">
-                  <span title="Closed Requisitions" class="imagecard widgetCardIcon">
+                  <span title="Closed Requisitions" class="imagecard widgetCardIcon" style="background: #0aaa4d !important; box-shadow: 1px 2px 5px 0 rgba(10, 170, 77,0.25), 0 2px 10px 0 rgba(10, 170, 77,0.25)">
                     <i class="fa fa-thumbs-up"></i>
                   </span>
-                  <div class="card-data widgetCardData">
+                  <div class="card-data widgetCardData" style="box-shadow: 1px 2px 5px 0 rgba(10, 170, 77,0.25), 0 2px 10px 0 rgba(10, 170, 77,0.25)">
                     <h2 class="box-title mt-5" style="color: #2A3F54;">Completed Requisitions</h2>
                     <h1>{{closed}}</h1>
                     <a href="/erf/job-requisition-all/closed" title="Completed Requisitions" class="anchor btn btn-default" style="background: #1ABB9C; color: #fff;">
@@ -96,10 +96,10 @@
             <div class="col-md-2">
               <div class="card-base">
                 <div class="card-icon">
-                  <span title="Crossed Deadline" class="imagecard widgetCardIcon">
+                  <span title="Crossed Deadline" class="imagecard widgetCardIcon" style="background: #fe5f55 !important; box-shadow: 1px 2px 5px 0 rgba(254, 95, 85,0.25), 0 2px 10px 0 rgba(254, 95, 85,0.25)">
                     <i class="fa fa-exclamation-triangle"></i>
                   </span>
-                  <div class="card-data widgetCardData">
+                  <div class="card-data widgetCardData" style=" box-shadow: 1px 2px 5px 0 rgba(254, 95, 85,0.25), 0 2px 10px 0 rgba(254, 95, 85,0.25)">
                     <h2 class="box-title mt-5" style="color: #2A3F54;">Crossed Deadline</h2>
                     <h1>{{dead_line}}</h1>
                     <a href="/erf/job-requisition-all/dead-line" title="Crossed Deadline" class="anchor btn btn-default" style="background: #1ABB9C; color: #fff;">
@@ -113,13 +113,275 @@
           </div>
 
           <div class="row mt-3">
+            <div class="col-md-5">
+              <div class="card-base">
+                <div class="card-icon">
+                  <span class="imagecard widgetCardIcon">
+                    <i class="fa fa-chart-line"></i>
+                  </span>
+                  <div class="card-data widgetCardData" style="background: #fff;">
+                    <h2 class="box-title mt-5" style="color: #2A3F54;">Reports</h2>
+                    <div class="card" style="border: none;">
+                      <div class="card-body">
+                        <div class="row">
+                          <form action="/erf/job-requisition-all/range" method="POST" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <div class="col-md-12">
+                              <div class="row">
+                                <div class="col-md-6">
+                                  <div class="form-group">
+                                    <label for="manager">Created by</label>
+                                    <select required class="form-control select2" name="manager" id="manager">
+                                      <option value="" selected disabled>Please Select</option>
+                                      <option value="all">All</option>
+                                      {% for i in manager %}
+                                      <option value="{{i.emp_id}}">{{i.emp_name}}</option>
+                                      {% endfor %}
+                                    </select>
+                                  </div>
+                                </div>
+                                <div class="col-md-6">
+                                  <div class="form-group">
+                                    <label for="report_status">Status</label>
+                                    <select required class="form-control select2" name="status" id="report_status">
+                                      <option value="" selected disabled>Please Select</option>
+                                      <option value="all">All</option>
+                                      <option value="open">Open Status</option>
+                                      <option value="closed">Completed Status</option>
+                                    </select>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="col-md-12">
+                              <div class="row">
+                                <div class="col-md-6">
+                                  <div class="form-group">
+                                    <label for="cam_start">Start Date</label>
+                                    <input type="date" onchange="cam_end_datefn()" name="start_date" required id="cam_start" class="form-control start">
+                                  </div>
+                                </div>
+                                <div class="col-md-6">
+                                  <div class="form-group">
+                                    <label for="cam_end">End Date</label>
+                                    <input type="date"  name="end_date" id="cam_end" required class="form-control end">
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="col-md-12">
+                              <button class="btn btn-success form-control">Submit</button>
+                            </div>
+                          </form>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="space"></div>
+              </div>
+            </div>
+            <div class="col-md-5">
+              <div class="card-base">
+                <div class="card-icon">
+                  <span class="imagecard widgetCardIcon">
+                    <i class="fa fa-chart-line"></i>
+                  </span>
+                  <div class="card-data widgetCardData" style="background: #fff;">
+                    <h2 class="box-title mt-5" style="color: #2A3F54;">Reports by designation</h2>
+                    <div class="card" style="border: none;">
+                      <div class="card-body">
+                        <div class="row">
+                          <form action="/erf/job-requisition-all/designation" method="POST" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <div class="col-md-12">
+                              <div class="row">
+                                <div class="col-md-6">
+                                  <div class="form-group">
+                                    <label for="department">Department</label>
+                                    <select required class="form-control select2" onchange="getDesig(this);" name="department" id="department">
+                                      <option value="" selected disabled>Please Select</option>
+                                      <option value="Operations">Operations</option>
+                                      <option value="Quality">Quality</option>
+                                      <option value="Command Center">Command Center</option>
+                                      <option value="Service Excellence">Service Excellence</option>
+                                      <option value="Human Resource">Human Resource</option>
+                                      <option value="IT">IT</option>
+                                      <option value="Admin">Admin</option>
+                                      <option value="L&D">L&D</option>
+                                      <option value="Sales & Marketing">Sales & Marketing</option>
+                                    </select>
+                                  </div>
+                                </div>
+                                <div class="col-md-6">
+                                  <div class="form-group">
+                                    <label for="designation">Designation</label>
+                                    <div id="dep_hr" class="d-none">
+                                      <select name="designation" class="form-control select2 " style="display:none !important;">
+                                        <option value="" selected disabled>Please Select</option>
+                                        <option value="Junior Recruiter">Junior Recruiter</option>
+                                        <option value="Recruiter">Recruiter</option>
+                                        <option value="Senior Recruiter">Senior Recruiter</option>
+                                        <option value="HR Executive">HR Executive</option>
+                                        <option value="Talent Acquisition Specialist/Recruitment Lead">Talent Acquisition Specialist/Recruitment Lead</option>
+                                        <option value="Talent Acquisition/Recruitment Manager">Talent Acquisition/Recruitment Manager</option>
+                                        <option value="Assistant Manager - Recruitment">Assistant Manager - Recruitment</option>
+                                        <option value="HRBP">HRBP</option>
+                                        <option value="HRBP Lead">HRBP Lead</option>
+                                        <option value="Assistant Manager - HRBP">Assistant Manager - HRBP</option>
+                                        <option value="Manager - HRBP">Manager - HRBP</option>
+                                        <option value="Employee Relations Specialist">Employee Relations Specialist</option>
+                                        <option value="Assistant Manager - Employee Relations">Assistant Manager - Employee Relations</option>
+                                        <option value="Manager - Employee Relations">Manager - Employee Relations</option>
+                                        <option value="Generalist">Generalist</option>
+                                        <option value="Onboarding Specialist">Onboarding Specialist</option>
+                                        <option value="Content Writer">Content Writer</option>
+                                        <option value="Human Resource Manager">Human Resource Manager</option>
+                                        <option value="Head - Human Resources">Head - Human Resources</option>
+                                      </select>
+                                    </div>
+                                    <div id="dep_default" class="">
+                                      <select id="designation" class="form-control select2">
+                                        <option value="" selected disabled>Please Select Department 1st</option>
+                                      </select>
+                                    </div>
+                                    <div id="dep_operations" class="d-none">
+                                      <select name="designation" class="form-control select2" id="dep_operations_select">
+                                        <option value="" selected disabled>Please Select</option>
+                                        <option value="CRO-Client Relationship Officer">CRO-Client Relationship Officer</option>
+                                        <option value="Patrolling Officer">Patrolling Officer</option>
+                                        <option value="SME-Subject Matter Expert">SME-Subject Matter Expert</option>
+                                        <option value="Assistant Team Leader">Assistant Team Leader</option>
+                                        <option value="Team Leader">Team Leader</option>
+                                        <option value="Assistant Manager">Assistant Manager</option>
+                                        <option value="Manager">Manager</option>
+                                        <option value="Senior Manager">Senior Manager</option>
+                                      </select>
+                                    </div>
+                                    <div id="dep_quality" class="d-none">
+                                      <select name="designation" class="form-control select2" id="dep_quality_select">
+                                        <option value="" selected disabled>Please Select</option>
+                                        <option value="Quality Analyst">Quality Analyst</option>
+                                        <option value="Team Leader">Team Leader</option>
+                                        <option value="Assistant Manager">Assistant Manager</option>
+                                        <option value="Manager">Manager</option>
+                                        <option value="Senior Manger">Senior Manger</option>
+                                        <option value="Head">Head</option>
+                                      </select>
+                                    </div>
+                                    <div id="dep_command_center" class="d-none">
+                                      <select name="designation" class="form-control select2" id="dep_command_center_select">
+                                        <option value="" selected disabled>Please Select</option>
+                                        <option value="MIS Executive">MIS Executive</option>
+                                        <option value="Data Analyst">Data Analyst</option>
+                                        <option value="PowerBI Developer">PowerBI Developer</option>
+                                        <option value="Web Developer">Web Developer</option>
+                                        <option value="Python Developer">Python Developer</option>
+                                        <option value="Team Leader">Team Leader</option>
+                                        <option value="Assistant Manager">Assistant Manager</option>
+                                        <option value="Manager">Manager</option>
+                                        <option value="MIS Manager">MIS Manager</option>
+                                        <option value="Head">Head</option>
+                                      </select>
+                                    </div>
+                                    <div id="dep_sevice_excellence" class="d-none">
+                                      <select name="designation" class="form-control select2" id="dep_sevice_excellence_select">
+                                        <option value="" selected disabled>Please Select</option>
+                                        <option value="Client Service Coordinator">Client Service Coordinator</option>
+                                        <option value="MIS Executive">MIS Executive</option>
+                                        <option value="Business Analyst">Business Analyst</option>
+                                        <option value="Data Analyst">Data Analyst</option>
+                                        <option value="Team Leader">Team Leader</option>
+                                        <option value="Assistant Manager">Assistant Manager</option>
+                                        <option value="Manager">Manager</option>
+                                        <option value="Head">Head</option>
+                                      </select>
+                                    </div>
+                                    <div id="dep_it" class="d-none">
+                                      <select name="designation" class="form-control select2" id="dep_it_select">
+                                        <option value="" selected disabled>Please Select</option>
+                                        <option value="System Admin - L1">System Admin - L1</option>
+                                        <option value="System Admin - L2">System Admin - L2</option>
+                                        <option value="Team Leader">Team Leader</option>
+                                        <option value="Assistant Manager">Assistant Manager</option>
+                                        <option value="Manager">Manager</option>
+                                      </select>
+                                    </div>
+                                    <div id="dep_admin" class="d-none">
+                                      <select name="designation" class="form-control select2" id="dep_admin_select">
+                                        <option value="" selected disabled>Please Select</option>
+                                        <option value="Office Boy">Office Boy</option>
+                                        <option value="Office Admin">Office Admin</option>
+                                        <option value="Admin Executive">Admin Executive</option>
+                                        <option value="Facility Lead">Facility Lead</option>
+                                        <option value="Assistant Manager">Assistant Manager</option>
+                                        <option value="Manager">Manager</option>
+                                        <option value="Head">Head</option>
+                                      </select>
+                                    </div>
+                                    <div id="dep_ld" class="d-none">
+                                      <select name="designation" class="form-control select2" id="dep_ld_select">
+                                        <option value="" selected disabled>Please Select</option>
+                                        <option value="Softskills Trainer">Softskills Trainer</option>
+                                        <option value="Process Trainer - Sales">Process Trainer - Sales</option>
+                                        <option value="Process Trainer - Customer Service">Process Trainer - Customer Service</option>
+                                        <option value="FLE Trainer">FLE Trainer</option>
+                                        <option value="Technical Trainer">Technical Trainer</option>
+                                        <option value="Language Trainer">Language Trainer</option>
+                                        <option value="Team Leader">Team Leader</option>
+                                        <option value="Assistant Manager">Assistant Manager</option>
+                                        <option value="Manager">Manager</option>
+                                        <option value="Head">Head</option>
+                                      </select>
+                                    </div>
+                                    <div id="dep_sales" class="d-none">
+                                      <select name="designation" class="form-control select2" id="dep_sales_select">
+                                        <option value="" selected disabled>Please Select</option>
+                                        <option value="Content Developer">Content Developer</option>
+                                        <option value="Business Development Executive">Business Development Executive</option>
+                                        <option value="Business Development Manager">Business Development Manager</option>
+                                        <option value="Head">Head</option>
+                                      </select>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="col-md-12">
+                              <div class="row">
+                                <div class="col-md-6">
+                                  <div class="form-group">
+                                    <label for="cam_start_des">Start Date</label>
+                                    <input type="date" onchange="cam_end_des_datefn()" name="start_date" id="cam_start_des" class="form-control start">
+                                  </div>
+                                </div>
+                                <div class="col-md-6">
+                                  <div class="form-group">
+                                    <label for="cam_end_des">End Date</label>
+                                    <input type="date"  name="end_date" id="cam_end_des" class="form-control end">
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="col-md-12">
+                              <button class="btn btn-success form-control">Submit</button>
+                            </div>
+                          </form>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="space"></div>
+              </div>
+            </div>
             <div class="col-md-2">
               <div class="card-base">
                 <div class="card-icon">
                   <span title="Waiting For Approval" class="imagecard widgetCardIcon">
                     <i class="fa fa-times"></i>
                   </span>
-                  <div class="card-data widgetCardData">
+                  <div class="card-data widgetCardData" style="height:340px;">
                     <h2 class="box-title mt-5" style="color: #2A3F54;">Deletion Requests</h2>
                     <h1>{{deletion}}</h1>
                     <a href="/erf/job-requisition-all/deletion" title="Deletion Requests" class="anchor btn btn-default" style="background: #1ABB9C; color: #fff;">
@@ -130,252 +392,6 @@
                 <div class="space"></div>
               </div>
             </div>
-            <div class="col-md-4">
-              <div class="card">
-                <div class="card-header">
-                  <h5>Reports</h5>
-                </div>
-                <div class="card-body">
-                  <div class="row">
-                    <form action="/erf/job-requisition-all/range" method="POST" enctype="multipart/form-data">
-                      {% csrf_token %}
-                      <div class="col-md-12">
-                        <div class="row">
-                          <div class="col-md-6">
-                            <div class="form-group">
-                              <label for="manager">Created by</label>
-                              <select required class="form-control select2" name="manager" id="manager">
-                                <option value="" selected disabled>Please Select</option>
-                                <option value="all">All</option>
-                                {% for i in manager %}
-                                <option value="{{i.emp_id}}">{{i.emp_name}}</option>
-                                {% endfor %}
-                              </select>
-                            </div>
-                          </div>
-                          <div class="col-md-6">
-                            <div class="form-group">
-                              <label for="report_status">Status</label>
-                              <select required class="form-control select2" name="status" id="report_status">
-                                <option value="" selected disabled>Please Select</option>
-                                <option value="all">All</option>
-                                <option value="open">Open Status</option>
-                                <option value="closed">Completed Status</option>
-                              </select>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="col-md-12">
-                        <div class="row">
-                          <div class="col-md-6">
-                            <div class="form-group">
-                              <label for="cam_start">Start Date</label>
-                              <input type="date" onchange="cam_end_datefn()" name="start_date" required id="cam_start" class="form-control start">
-                            </div>
-                          </div>
-                          <div class="col-md-6">
-                            <div class="form-group">
-                              <label for="cam_end">End Date</label>
-                              <input type="date"  name="end_date" id="cam_end" required class="form-control end">
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="col-md-12">
-                        <button class="btn btn-success form-control">Submit</button>
-                      </div>
-                    </form>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="col-md-4">
-            <div class="card">
-              <div class="card-header">
-                <h5>Reports by designation</h5>
-              </div>
-              <div class="card-body">
-                <div class="row">
-                  <form action="/erf/job-requisition-all/designation" method="POST" enctype="multipart/form-data">
-                    {% csrf_token %}
-                    <div class="col-md-12">
-                      <div class="row">
-                        <div class="col-md-6">
-                          <div class="form-group">
-                            <label for="department">Department</label>
-                            <select required class="form-control select2" onchange="getDesig(this);" name="department" id="department">
-                              <option value="" selected disabled>Please Select</option>
-                              <option value="Operations">Operations</option>
-                              <option value="Quality">Quality</option>
-                              <option value="Command Center">Command Center</option>
-                              <option value="Service Excellence">Service Excellence</option>
-                              <option value="Human Resource">Human Resource</option>
-                              <option value="IT">IT</option>
-                              <option value="Admin">Admin</option>
-                              <option value="L&D">L&D</option>
-                              <option value="Sales & Marketing">Sales & Marketing</option>
-                            </select>
-                          </div>
-                        </div>
-                        <div class="col-md-6">
-                          <div class="form-group">
-                            <label for="designation">Designation</label>
-                            <div id="dep_hr" class="d-none">
-                              <select name="designation" class="form-control select2 " style="display:none !important;">
-                                <option value="" selected disabled>Please Select</option>
-                                <option value="Junior Recruiter">Junior Recruiter</option>
-                                <option value="Recruiter">Recruiter</option>
-                                <option value="Senior Recruiter">Senior Recruiter</option>
-                                <option value="HR Executive">HR Executive</option>
-                                <option value="Talent Acquisition Specialist/Recruitment Lead">Talent Acquisition Specialist/Recruitment Lead</option>
-                                <option value="Talent Acquisition/Recruitment Manager">Talent Acquisition/Recruitment Manager</option>
-                                <option value="Assistant Manager - Recruitment">Assistant Manager - Recruitment</option>
-                                <option value="HRBP">HRBP</option>
-                                <option value="HRBP Lead">HRBP Lead</option>
-                                <option value="Assistant Manager - HRBP">Assistant Manager - HRBP</option>
-                                <option value="Manager - HRBP">Manager - HRBP</option>
-                                <option value="Employee Relations Specialist">Employee Relations Specialist</option>
-                                <option value="Assistant Manager - Employee Relations">Assistant Manager - Employee Relations</option>
-                                <option value="Manager - Employee Relations">Manager - Employee Relations</option>
-                                <option value="Generalist">Generalist</option>
-                                <option value="Onboarding Specialist">Onboarding Specialist</option>
-                                <option value="Content Writer">Content Writer</option>
-                                <option value="Human Resource Manager">Human Resource Manager</option>
-                                <option value="Head - Human Resources">Head - Human Resources</option>
-                              </select>
-                            </div>
-                            <div id="dep_default" class="">
-                              <select id="designation" class="form-control select2">
-                                <option value="" selected disabled>Please Select Department 1st</option>
-                              </select>
-                            </div>
-                            <div id="dep_operations" class="d-none">
-                              <select name="designation" class="form-control select2" id="dep_operations_select">
-                                <option value="" selected disabled>Please Select</option>
-                                <option value="CRO-Client Relationship Officer">CRO-Client Relationship Officer</option>
-                                <option value="Patrolling Officer">Patrolling Officer</option>
-                                <option value="SME-Subject Matter Expert">SME-Subject Matter Expert</option>
-                                <option value="Assistant Team Leader">Assistant Team Leader</option>
-                                <option value="Team Leader">Team Leader</option>
-                                <option value="Assistant Manager">Assistant Manager</option>
-                                <option value="Manager">Manager</option>
-                                <option value="Senior Manager">Senior Manager</option>
-                              </select>
-                            </div>
-                            <div id="dep_quality" class="d-none">
-                              <select name="designation" class="form-control select2" id="dep_quality_select">
-                                <option value="" selected disabled>Please Select</option>
-                                <option value="Quality Analyst">Quality Analyst</option>
-                                <option value="Team Leader">Team Leader</option>
-                                <option value="Assistant Manager">Assistant Manager</option>
-                                <option value="Manager">Manager</option>
-                                <option value="Senior Manger">Senior Manger</option>
-                                <option value="Head">Head</option>
-                              </select>
-                            </div>
-                            <div id="dep_command_center" class="d-none">
-                              <select name="designation" class="form-control select2" id="dep_command_center_select">
-                                <option value="" selected disabled>Please Select</option>
-                                <option value="MIS Executive">MIS Executive</option>
-                                <option value="Data Analyst">Data Analyst</option>
-                                <option value="PowerBI Developer">PowerBI Developer</option>
-                                <option value="Web Developer">Web Developer</option>
-                                <option value="Python Developer">Python Developer</option>
-                                <option value="Team Leader">Team Leader</option>
-                                <option value="Assistant Manager">Assistant Manager</option>
-                                <option value="Manager">Manager</option>
-                                <option value="MIS Manager">MIS Manager</option>
-                                <option value="Head">Head</option>
-                              </select>
-                            </div>
-                            <div id="dep_sevice_excellence" class="d-none">
-                              <select name="designation" class="form-control select2" id="dep_sevice_excellence_select">
-                                <option value="" selected disabled>Please Select</option>
-                                <option value="Client Service Coordinator">Client Service Coordinator</option>
-                                <option value="MIS Executive">MIS Executive</option>
-                                <option value="Business Analyst">Business Analyst</option>
-                                <option value="Data Analyst">Data Analyst</option>
-                                <option value="Team Leader">Team Leader</option>
-                                <option value="Assistant Manager">Assistant Manager</option>
-                                <option value="Manager">Manager</option>
-                                <option value="Head">Head</option>
-                              </select>
-                            </div>
-                            <div id="dep_it" class="d-none">
-                              <select name="designation" class="form-control select2" id="dep_it_select">
-                                <option value="" selected disabled>Please Select</option>
-                                <option value="System Admin - L1">System Admin - L1</option>
-                                <option value="System Admin - L2">System Admin - L2</option>
-                                <option value="Team Leader">Team Leader</option>
-                                <option value="Assistant Manager">Assistant Manager</option>
-                                <option value="Manager">Manager</option>
-                              </select>
-                            </div>
-                            <div id="dep_admin" class="d-none">
-                              <select name="designation" class="form-control select2" id="dep_admin_select">
-                                <option value="" selected disabled>Please Select</option>
-                                <option value="Office Boy">Office Boy</option>
-                                <option value="Office Admin">Office Admin</option>
-                                <option value="Admin Executive">Admin Executive</option>
-                                <option value="Facility Lead">Facility Lead</option>
-                                <option value="Assistant Manager">Assistant Manager</option>
-                                <option value="Manager">Manager</option>
-                                <option value="Head">Head</option>
-                              </select>
-                            </div>
-                            <div id="dep_ld" class="d-none">
-                              <select name="designation" class="form-control select2" id="dep_ld_select">
-                                <option value="" selected disabled>Please Select</option>
-                                <option value="Softskills Trainer">Softskills Trainer</option>
-                                <option value="Process Trainer - Sales">Process Trainer - Sales</option>
-                                <option value="Process Trainer - Customer Service">Process Trainer - Customer Service</option>
-                                <option value="FLE Trainer">FLE Trainer</option>
-                                <option value="Technical Trainer">Technical Trainer</option>
-                                <option value="Language Trainer">Language Trainer</option>
-                                <option value="Team Leader">Team Leader</option>
-                                <option value="Assistant Manager">Assistant Manager</option>
-                                <option value="Manager">Manager</option>
-                                <option value="Head">Head</option>
-                              </select>
-                            </div>
-                            <div id="dep_sales" class="d-none">
-                              <select name="designation" class="form-control select2" id="dep_sales_select">
-                                <option value="" selected disabled>Please Select</option>
-                                <option value="Content Developer">Content Developer</option>
-                                <option value="Business Development Executive">Business Development Executive</option>
-                                <option value="Business Development Manager">Business Development Manager</option>
-                                <option value="Head">Head</option>
-                              </select>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="col-md-12">
-                      <div class="row">
-                        <div class="col-md-6">
-                          <div class="form-group">
-                            <label for="cam_start_des">Start Date</label>
-                            <input type="date" onchange="cam_end_des_datefn()" name="start_date" id="cam_start_des" class="form-control start">
-                          </div>
-                        </div>
-                        <div class="col-md-6">
-                          <div class="form-group">
-                            <label for="cam_end_des">End Date</label>
-                            <input type="date"  name="end_date" id="cam_end_des" class="form-control end">
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="col-md-12">
-                      <button class="btn btn-success form-control">Submit</button>
-                    </div>
-                  </form>
-                </div>
-              </div>
-            </div>
-          </div>
           </div>
           {% if request.user.profile.emp_desi in management %}
           <div class="row mt-3">
