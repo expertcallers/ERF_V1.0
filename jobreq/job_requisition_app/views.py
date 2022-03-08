@@ -82,6 +82,7 @@ def AddEmail(request):
     if request.method == "POST":
         emp_id = request.POST["emp_id"]
         email = request.POST["email"]
+        profile = Profile.objects.all()
         digits = "0123456789"
         OTP = ""
         for i in range(6):
@@ -91,6 +92,11 @@ def AddEmail(request):
             messages.info(request,"OTP is sent to your email ID Entered. Please Verify it. Avoid Clicking multiple times.")
             return redirect("/erf/verify-email")
         except Profile.DoesNotExist:
+            for i in profile:
+                if i.emp_email == email:
+                    m = "The Email ID Entered is already in use by someone else. Please use another Email."
+                    messages.info(request, m)
+                    return redirect("/erf/add-email")
             e = Profile.objects.get(emp_id=emp_id)
             e.emp_email = email
             e.otp = OTP
@@ -497,26 +503,48 @@ def job_requisition(request):
             a.edited_by = [now_datetime, req_raised_by, created_by_id, "Created"]
             a.save()
             messages.info(request, "Employee Requisition Added Successfully !!")
-            action = "Created"
-            subject = action + " - Employee Requisition [" + str(e.id) +"]"
-            html_path = 'email.html'
-            data = {'id': e.id, "created_date": edited_date, "hc": hc_req, "department": department,
-                    "position": designation,
-                    "deadline": dead_line, "campaign": campaign, "user": user.emp_name, "action": action,
-                    "status": "Pending"}
-            email_template = get_template(html_path).render(data)
-            manager_email = Profile.objects.get(emp_id=manager_id).emp_email
-            try:
-                rm1_email = Profile.objects.get(emp_id=user.emp_rm1_id).emp_email
-            except Profile.DoesNotExist:
-                rm1_email = request.user.profile.emp_email
-            to = [request.user.profile.emp_email, "aparna.ks@expertcallers.com", manager_email, rm1_email]
-            email_msg = EmailMessage(subject,
-                                     email_template, 'erf@expertcallers.com',
-                                     to,
-                                     reply_to=['erf@expertcallers.com'])
-            email_msg.content_subtype = 'html'
-            email_msg.send(fail_silently=False)
+            if user.emp_desi != "Assistant Manager":
+                action = "Created"
+                subject = action + " - Employee Requisition [" + str(e.id) + "]"
+                html_path = 'email.html'
+                data = {'id': e.id, "created_date": edited_date, "hc": hc_req, "department": department,
+                        "position": designation,
+                        "deadline": dead_line, "campaign": campaign, "user": user.emp_name, "action": action,
+                        "status": "Pending"}
+                email_template = get_template(html_path).render(data)
+                manager_email = Profile.objects.get(emp_id=manager_id).emp_email
+                try:
+                    rm1_email = Profile.objects.get(emp_id=user.emp_rm1_id).emp_email
+                except Profile.DoesNotExist:
+                    rm1_email = request.user.profile.emp_email
+                to = [request.user.profile.emp_email, rm1_email]
+                email_msg = EmailMessage(subject,
+                                         email_template, 'erf@expertcallers.com',
+                                         to,
+                                         reply_to=['erf@expertcallers.com'])
+                email_msg.content_subtype = 'html'
+                email_msg.send(fail_silently=False)
+            else:
+                action = "Created"
+                subject = action + " - Employee Requisition [" + str(e.id) +"]"
+                html_path = 'email.html'
+                data = {'id': e.id, "created_date": edited_date, "hc": hc_req, "department": department,
+                        "position": designation,
+                        "deadline": dead_line, "campaign": campaign, "user": user.emp_name, "action": action,
+                        "status": "Pending"}
+                email_template = get_template(html_path).render(data)
+                manager_email = Profile.objects.get(emp_id=manager_id).emp_email
+                try:
+                    rm1_email = Profile.objects.get(emp_id=user.emp_rm1_id).emp_email
+                except Profile.DoesNotExist:
+                    rm1_email = request.user.profile.emp_email
+                to = [request.user.profile.emp_email, "aparna.ks@expertcallers.com", manager_email, rm1_email]
+                email_msg = EmailMessage(subject,
+                                         email_template, 'erf@expertcallers.com',
+                                         to,
+                                         reply_to=['erf@expertcallers.com'])
+                email_msg.content_subtype = 'html'
+                email_msg.send(fail_silently=False)
             if request.user.profile.emp_desi in am_mgr_list:
                 return redirect("/erf/manager-dashboard")
             elif request.user.profile.emp_desi in hr_list:
