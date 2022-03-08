@@ -16,18 +16,21 @@ from django.contrib import messages
 from django.template.loader import get_template
 from .models import *
 
-# Create your views here.
+# For HTML Scripts
 number = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
-# Designation List
+# Login
 hr_list = ['HR', 'HR Manager', 'Manager ER', 'HR Lead', 'Sr Recruiter', 'MIS Executive HR', 'Lead HRBP',
            'Employee Relations Specialist', 'Payroll Specialist', 'Recruiter', 'HR Generalist', 'Associate Director']
 am_mgr_list = ['Assistant Manager', 'Learning and Development Head', 'Quality Head', 'Operations Manager',
                'Service Delivery Manager', 'Command Centre Head', 'Manager']
+# Edit/Update
 edit_list = ['HR', 'HR Manager', 'Manager ER', 'HR Lead',
              'Sr Recruiter', 'MIS Executive HR', 'Lead HRBP', 'Employee Relations Specialist', 'Payroll Specialist',
              'Recruiter', 'HR Generalist']
+# Frontend filtering managers
 mgr_list = ['Learning and Development Head', 'Quality Head', 'Operations Manager', 'Service Delivery Manager',
             'Command Centre Head', 'Manager']
+# Frontend export option
 management_list = ['Associate Director']
 
 def index(request):
@@ -36,6 +39,7 @@ def index(request):
 
 
 def Login(request):
+
     if request.method == "POST":
         username = request.POST["user"]
         password = request.POST["pass"]
@@ -431,7 +435,7 @@ def job_requisition(request):
             except Campaigns.DoesNotExist:
                 cam = Campaigns()
                 cam.campaign_name = new_campaign
-                cam.manager = "Created while adding Request"
+                cam.manager = "Created while adding Request "+ str(request.user.profile.emp_id)
                 cam.manager_id = "0000"
                 cam.save()
                 campaign = new_campaign
@@ -788,7 +792,7 @@ def EditRequest(request):
                     messages.info(request, "Invalid Request!! You have been logged out :)")
                     return redirect("/erf/")
         else:
-            messages.info(request, "Can not Edit Now. Time limit has been exceeded :)")
+            messages.info(request, "Can not edit now. Time limit has been exceeded :)")
             if designation in hr_list:
                 return redirect("/erf/hr-dashboard")
             elif designation in am_mgr_list:
