@@ -134,6 +134,7 @@
 
 
 <!-- Delete Approval Pop-Up -->
+{% if request.user.profile.emp_desi in editaccess and i.deletion == True and i.ticket_status == True %}
     {% for i in job %}
       <div class="modal fade" id="delete_approval_{{i.id}}" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
@@ -212,9 +213,11 @@
         </div>
       </div>
     {% endfor %}
+{% endif %}
 <!-- Delete Approval Pop-Up -->
 
 <!-- Delete Pop-Up -->
+{% if i.final_status == False and i.deletion == False and i.initial_status == False and request.user.profile.emp_id == i.created_by_id and i.ticket_status == True %}
     {% for i in job %}
       <div class="modal fade" id="delete_{{i.id}}" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
@@ -283,10 +286,12 @@
         </div>
       </div>
     {% endfor %}
+{% endif %}
 <!-- Delete Pop-Up -->
 
 
 <!-- Start approval on created by AM Pop-Up -->
+{% if i.manager_approval == False and request.user.profile.emp_desi in manager and i.created_by_rm1_id == request.user.profile.emp_id %}
     {% for i in job %}
       <div class="modal fade" id="create_approval_{{i.id}}" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
@@ -359,12 +364,11 @@
         </div>
       </div>
     {% endfor %}
+{% endif %}
     <!-- End approval on created by AM Pop-Up -->
 
-
-
 <!-- Start approval Pop-Up -->
-
+{% if i.final_status == False and request.user.profile.emp_desi in manager and i.initial_status == True %}
     {% for i in job %}
       <div class="modal fade" id="approval_{{i.id}}" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
@@ -449,6 +453,7 @@
         </div>
       </div>
     {% endfor %}
+{% endif %}
     <!-- End approval Pop-Up -->
 
     <!-- Start View Pop-Up -->
