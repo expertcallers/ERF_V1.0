@@ -193,6 +193,7 @@ def EditEmail(request):
             except Profile.DoesNotExist:
                 e = Profile.objects.get(emp_id=emp_id)
                 e.emp_email = email
+                e.otp = OTP
                 e.email_verify = False
                 e.otp_time = datetime.datetime.now()
                 e.save()
