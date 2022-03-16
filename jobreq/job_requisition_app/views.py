@@ -235,8 +235,8 @@ def forgotPassword(request):
                     profile.save()
                     subject = "Password Reset Link of ERF"
                     email_template = "Click on the link Below to reset your password. Remember it is valid only for " \
-                                     "5 Min<br><br><a href='http://127.0.0.1:8000/erf/reset-password/"+emp_id+"/"+OTP+"'>" \
-                                     "http://127.0.0.1:8000/erf/reset-password</a>"
+                                     "5 Min<br><br><a href='http://dashboard.ecpl/erf/reset-password/"+emp_id+"/"+OTP+"'>" \
+                                     "http://dashboard.ecpl/erf/reset-password/"+emp_id+"/"+OTP+"</a>"
                     to = [email]
                     email_msg = EmailMessage(subject,
                                              email_template, 'erf@expertcallers.com',
