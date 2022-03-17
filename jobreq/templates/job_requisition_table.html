@@ -134,326 +134,332 @@
 
 
 <!-- Delete Approval Pop-Up -->
-{% if request.user.profile.emp_desi in editaccess and i.deletion == True and i.ticket_status == True %}
-    {% for i in job %}
-      <div class="modal fade" id="delete_approval_{{i.id}}" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="delete_approval">Delete Request ID: {{i.id}}</h5>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            <form action="/erf/delete/approve" method="POST" enctype="multipart/form-data">
-              {% csrf_token %}
-              <div class="modal-body">
-                <div class="row">
-                  <div class="col-md-4">
-                    <div class="form-group">
-                      <label for="delete_approval{{i.id}}req_date">Requested Date</label>
-                      <input type="text" readonly value="{{i.edited_date}}" id="delete_approval{{i.id}}req_date" required class="form-control">
+{% for i in job %}
+  {% if request.user.profile.emp_desi in editaccess and i.deletion == True and i.ticket_status == True %}
+        <div class="modal fade" id="delete_approval_{{i.id}}" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+          <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="delete_approval">Delete Request ID: {{i.id}}</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <form action="/erf/delete/approve" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="modal-body">
+                  <div class="row">
+                    <div class="col-md-4">
+                      <div class="form-group">
+                        <label for="delete_approval{{i.id}}req_date">Requested Date</label>
+                        <input type="text" readonly value="{{i.edited_date}}" id="delete_approval{{i.id}}req_date" required class="form-control">
+                      </div>
                     </div>
-                  </div>
-                  <div class="col-md-4">
-                    <div class="form-group">
-                      <label for="delete_approval{{i.id}}req_rais_by">Request Raised By</label>
-                      <input type="text" readonly value="{{i.req_raised_by}}" id="delete_approval{{i.id}}req_rais_by" required class="form-control">
+                    <div class="col-md-4">
+                      <div class="form-group">
+                        <label for="delete_approval{{i.id}}req_rais_by">Request Raised By</label>
+                        <input type="text" readonly value="{{i.req_raised_by}}" id="delete_approval{{i.id}}req_rais_by" required class="form-control">
+                      </div>
                     </div>
-                  </div>
-                  <div class="col-md-4">
-                    <div class="form-group">
-                      <label for="delete_approval{{i.id}}hc_required">HC Required</label>
-                      <input type="text" readonly value="{{i.hc_req}}" id="delete_approval{{i.id}}hc_required" required class="form-control">
+                    <div class="col-md-4">
+                      <div class="form-group">
+                        <label for="delete_approval{{i.id}}hc_required">HC Required</label>
+                        <input type="text" readonly value="{{i.hc_req}}" id="delete_approval{{i.id}}hc_required" required class="form-control">
+                      </div>
                     </div>
-                  </div>
-                  <div class="col-md-4">
-                    <div class="form-group">
-                      <label for="delete_approval{{i.id}}campaign">Campaign</label>
-                      <input type="text" readonly value="{{i.campaign}}" id="delete_approval{{i.id}}campaign" required class="form-control">
+                    <div class="col-md-4">
+                      <div class="form-group">
+                        <label for="delete_approval{{i.id}}campaign">Campaign</label>
+                        <input type="text" readonly value="{{i.campaign}}" id="delete_approval{{i.id}}campaign" required class="form-control">
+                      </div>
                     </div>
-                  </div>
-                  <div class="col-md-4">
-                    <div class="form-group">
-                      <label for="delete_approval{{i.id}}department">Department</label>
-                      <input type="text" readonly value="{{i.department}}" id="delete_approval{{i.id}}department" required class="form-control">
+                    <div class="col-md-4">
+                      <div class="form-group">
+                        <label for="delete_approval{{i.id}}department">Department</label>
+                        <input type="text" readonly value="{{i.department}}" id="delete_approval{{i.id}}department" required class="form-control">
+                      </div>
                     </div>
-                  </div>
-                  <div class="col-md-4">
-                    <div class="form-group">
-                      <label for="delete_approval{{i.id}}designation">Role/Designation</label>
-                      <input type="text" readonly value="{{i.designation}}" id="delete_approval{{i.id}}designation" required class="form-control">
+                    <div class="col-md-4">
+                      <div class="form-group">
+                        <label for="delete_approval{{i.id}}designation">Role/Designation</label>
+                        <input type="text" readonly value="{{i.designation}}" id="delete_approval{{i.id}}designation" required class="form-control">
+                      </div>
                     </div>
-                  </div>
-                  <div class="col-md-6">
-                    <div class="form-group">
-                      <label for="delete_approval{{i.id}}Reason">Reason For Deleting</label>
-                      <textarea id="delete_approval{{i.id}}Reason" readonly name="reason" class="form-control">{{i.reason_for_deleting}}</textarea>
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <label for="delete_approval{{i.id}}Reason">Reason For Deleting</label>
+                        <textarea id="delete_approval{{i.id}}Reason" readonly name="reason" class="form-control">{{i.reason_for_deleting}}</textarea>
+                      </div>
                     </div>
-                  </div>
-                  <div class="col-md-6">
-                    <div class="form-group">
-                      <label for="delete_approval{{i.id}}Approval">Approval</label>
-                      <select id="delete_approval{{i.id}}Approval" name="response" required class="form-control">
-                        <option value="" selected disabled>Please Select</option>
-                        <option value="Approve">Approve</option>
-                        <option value="Reject">Reject</option>
-                      </select>
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <label for="delete_approval{{i.id}}Approval">Approval</label>
+                        <select id="delete_approval{{i.id}}Approval" name="response" required class="form-control">
+                          <option value="" selected disabled>Please Select</option>
+                          <option value="Approve">Approve</option>
+                          <option value="Reject">Reject</option>
+                        </select>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-              <div class="modal-footer">
-                <button type="submit" class="btn btn-success">Submit</button>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-              </div>
-              <input type="hidden" name="id" value="{{i.id}}">
-            </form>
+                <div class="modal-footer">
+                  <button type="submit" class="btn btn-success">Submit</button>
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+                <input type="hidden" name="id" value="{{i.id}}">
+              </form>
+            </div>
           </div>
         </div>
-      </div>
-    {% endfor %}
-{% endif %}
+  {% endif %}
+{% endfor %}
+
 <!-- Delete Approval Pop-Up -->
 
 <!-- Delete Pop-Up -->
-{% if i.final_status == False and i.deletion == False and i.initial_status == False and request.user.profile.emp_id == i.created_by_id and i.ticket_status == True %}
-    {% for i in job %}
-      <div class="modal fade" id="delete_{{i.id}}" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="Delete">Delete Request ID: {{i.id}}</h5>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            <form action="/erf/delete/request" method="POST" enctype="multipart/form-data">
-              {% csrf_token %}
-              <div class="modal-body">
-                <div class="row">
-                  <div class="col-md-4">
-                    <div class="form-group">
-                      <label for="delete_{{i.id}}req_date">Requested Date</label>
-                      <input type="text" readonly value="{{i.edited_date}}" id="delete_{{i.id}}req_date" required class="form-control">
+
+{% for i in job %}
+  {% if i.final_status == False and i.deletion == False and i.initial_status == False and request.user.profile.emp_id == i.created_by_id and i.ticket_status == True %}
+        <div class="modal fade" id="delete_{{i.id}}" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+          <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="Delete">Delete Request ID: {{i.id}}</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <form action="/erf/delete/request" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="modal-body">
+                  <div class="row">
+                    <div class="col-md-4">
+                      <div class="form-group">
+                        <label for="delete_{{i.id}}req_date">Requested Date</label>
+                        <input type="text" readonly value="{{i.edited_date}}" id="delete_{{i.id}}req_date" required class="form-control">
+                      </div>
                     </div>
-                  </div>
-                  <div class="col-md-4">
-                    <div class="form-group">
-                      <label for="delete_{{i.id}}req_rais_by">Request Raised By</label>
-                      <input type="text" readonly value="{{i.req_raised_by}}" id="delete_{{i.id}}req_rais_by" required class="form-control">
+                    <div class="col-md-4">
+                      <div class="form-group">
+                        <label for="delete_{{i.id}}req_rais_by">Request Raised By</label>
+                        <input type="text" readonly value="{{i.req_raised_by}}" id="delete_{{i.id}}req_rais_by" required class="form-control">
+                      </div>
                     </div>
-                  </div>
-                  <div class="col-md-4">
-                    <div class="form-group">
-                      <label for="delete_{{i.id}}hc_required">HC Required</label>
-                      <input type="text" readonly value="{{i.hc_req}}" id="delete_{{i.id}}hc_required" required class="form-control">
+                    <div class="col-md-4">
+                      <div class="form-group">
+                        <label for="delete_{{i.id}}hc_required">HC Required</label>
+                        <input type="text" readonly value="{{i.hc_req}}" id="delete_{{i.id}}hc_required" required class="form-control">
+                      </div>
                     </div>
-                  </div>
-                  <div class="col-md-4">
-                    <div class="form-group">
-                      <label for="delete_{{i.id}}campaign">Campaign</label>
-                      <input type="text" readonly value="{{i.campaign}}" id="delete_{{i.id}}campaign" required class="form-control">
+                    <div class="col-md-4">
+                      <div class="form-group">
+                        <label for="delete_{{i.id}}campaign">Campaign</label>
+                        <input type="text" readonly value="{{i.campaign}}" id="delete_{{i.id}}campaign" required class="form-control">
+                      </div>
                     </div>
-                  </div>
-                  <div class="col-md-4">
-                    <div class="form-group">
-                      <label for="delete_{{i.id}}department">Department</label>
-                      <input type="text" readonly value="{{i.department}}" id="delete_{{i.id}}department" required class="form-control">
+                    <div class="col-md-4">
+                      <div class="form-group">
+                        <label for="delete_{{i.id}}department">Department</label>
+                        <input type="text" readonly value="{{i.department}}" id="delete_{{i.id}}department" required class="form-control">
+                      </div>
                     </div>
-                  </div>
-                  <div class="col-md-4">
-                    <div class="form-group">
-                      <label for="delete_{{i.id}}designation">Role/Designation</label>
-                      <input type="text" readonly value="{{i.designation}}" id="delete_{{i.id}}designation" required class="form-control">
+                    <div class="col-md-4">
+                      <div class="form-group">
+                        <label for="delete_{{i.id}}designation">Role/Designation</label>
+                        <input type="text" readonly value="{{i.designation}}" id="delete_{{i.id}}designation" required class="form-control">
+                      </div>
                     </div>
-                  </div>
-                  <div class="col-md-6">
-                    <div class="form-group">
-                      <label for="delete_{{i.id}}Reason">Reason For Deleting</label>
-                      <textarea id="delete_{{i.id}}Reason" required name="reason" class="form-control"></textarea>
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <label for="delete_{{i.id}}Reason">Reason For Deleting</label>
+                        <textarea id="delete_{{i.id}}Reason" required name="reason" class="form-control"></textarea>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-              <div class="modal-footer">
-                <button type="submit" class="btn btn-success">Submit</button>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-              </div>
-              <input type="hidden" name="id" value="{{i.id}}">
-            </form>
+                <div class="modal-footer">
+                  <button type="submit" class="btn btn-success">Submit</button>
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+                <input type="hidden" name="id" value="{{i.id}}">
+              </form>
+            </div>
           </div>
         </div>
-      </div>
-    {% endfor %}
-{% endif %}
+  {% endif %}
+{% endfor %}
 <!-- Delete Pop-Up -->
 
 
 <!-- Start approval on created by AM Pop-Up -->
-{% if i.manager_approval == False and request.user.profile.emp_desi in manager and i.created_by_rm1_id == request.user.profile.emp_id %}
-    {% for i in job %}
-      <div class="modal fade" id="create_approval_{{i.id}}" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="CreateApprove">Request ID: {{i.id}}</h5>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            <form action="/erf/initial-approval" method="POST" enctype="multipart/form-data">
-              {% csrf_token %}
-              <div class="modal-body">
-                <div class="row">
-                  <div class="col-md-4">
-                    <div class="form-group">
-                      <label for="cre_app_{{i.id}}req_date">Requested Date</label>
-                      <input type="text" readonly value="{{i.edited_date}}" id="cre_app_{{i.id}}req_date" required class="form-control">
+
+{% for i in job %}
+  {% if i.manager_approval == False and request.user.profile.emp_desi in manager and i.created_by_rm1_id == request.user.profile.emp_id %}
+        <div class="modal fade" id="create_approval_{{i.id}}" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+          <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="CreateApprove">Request ID: {{i.id}}</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <form action="/erf/initial-approval" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="modal-body">
+                  <div class="row">
+                    <div class="col-md-4">
+                      <div class="form-group">
+                        <label for="cre_app_{{i.id}}req_date">Requested Date</label>
+                        <input type="text" readonly value="{{i.edited_date}}" id="cre_app_{{i.id}}req_date" required class="form-control">
+                      </div>
                     </div>
-                  </div>
-                  <div class="col-md-4">
-                    <div class="form-group">
-                      <label for="cre_app_{{i.id}}req_rais_by">Request Raised By</label>
-                      <input type="text" readonly value="{{i.req_raised_by}}" id="cre_app_{{i.id}}req_rais_by" required class="form-control">
+                    <div class="col-md-4">
+                      <div class="form-group">
+                        <label for="cre_app_{{i.id}}req_rais_by">Request Raised By</label>
+                        <input type="text" readonly value="{{i.req_raised_by}}" id="cre_app_{{i.id}}req_rais_by" required class="form-control">
+                      </div>
                     </div>
-                  </div>
-                  <div class="col-md-4">
-                    <div class="form-group">
-                      <label for="cre_app_{{i.id}}hc_required">HC Required</label>
-                      <input type="text" readonly value="{{i.hc_req}}" id="cre_app_{{i.id}}hc_required" required class="form-control">
+                    <div class="col-md-4">
+                      <div class="form-group">
+                        <label for="cre_app_{{i.id}}hc_required">HC Required</label>
+                        <input type="text" readonly value="{{i.hc_req}}" id="cre_app_{{i.id}}hc_required" required class="form-control">
+                      </div>
                     </div>
-                  </div>
-                  <div class="col-md-4">
-                    <div class="form-group">
-                      <label for="cre_app_{{i.id}}campaign">Campaign</label>
-                      <input type="text" readonly value="{{i.campaign}}" id="cre_app_{{i.id}}campaign" required class="form-control">
+                    <div class="col-md-4">
+                      <div class="form-group">
+                        <label for="cre_app_{{i.id}}campaign">Campaign</label>
+                        <input type="text" readonly value="{{i.campaign}}" id="cre_app_{{i.id}}campaign" required class="form-control">
+                      </div>
                     </div>
-                  </div>
-                  <div class="col-md-4">
-                    <div class="form-group">
-                      <label for="cre_app_{{i.id}}department">Department</label>
-                      <input type="text" readonly value="{{i.department}}" id="cre_app_{{i.id}}department" required class="form-control">
+                    <div class="col-md-4">
+                      <div class="form-group">
+                        <label for="cre_app_{{i.id}}department">Department</label>
+                        <input type="text" readonly value="{{i.department}}" id="cre_app_{{i.id}}department" required class="form-control">
+                      </div>
                     </div>
-                  </div>
-                  <div class="col-md-4">
-                    <div class="form-group">
-                      <label for="cre_app_{{i.id}}designation">Role/Designation</label>
-                      <input type="text" readonly value="{{i.designation}}" id="cre_app_{{i.id}}designation" required class="form-control">
+                    <div class="col-md-4">
+                      <div class="form-group">
+                        <label for="cre_app_{{i.id}}designation">Role/Designation</label>
+                        <input type="text" readonly value="{{i.designation}}" id="cre_app_{{i.id}}designation" required class="form-control">
+                      </div>
                     </div>
-                  </div>
-                  <div class="col-md-4">
-                    <div class="form-group">
-                      <label for="cre_app_{{i.id}}Approval">Approval</label>
-                      <select id="cre_app_{{i.id}}Approval" name="response" required class="form-control">
-                        <option value="" selected disabled>Please Select</option>
-                        <option value="Approve">Approve</option>
-                        <option value="Reject">Reject</option>
-                      </select>
+                    <div class="col-md-4">
+                      <div class="form-group">
+                        <label for="cre_app_{{i.id}}Approval">Approval</label>
+                        <select id="cre_app_{{i.id}}Approval" name="response" required class="form-control">
+                          <option value="" selected disabled>Please Select</option>
+                          <option value="Approve">Approve</option>
+                          <option value="Reject">Reject</option>
+                        </select>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-              <div class="modal-footer">
-                <button type="submit" class="btn btn-success">Submit</button>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-              </div>
-              <input type="hidden" name="id" value="{{i.id}}">
-            </form>
+                <div class="modal-footer">
+                  <button type="submit" class="btn btn-success">Submit</button>
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+                <input type="hidden" name="id" value="{{i.id}}">
+              </form>
+            </div>
           </div>
         </div>
-      </div>
-    {% endfor %}
-{% endif %}
+  {% endif %}
+{% endfor %}
+
     <!-- End approval on created by AM Pop-Up -->
 
 <!-- Start approval Pop-Up -->
-{% if i.final_status == False and request.user.profile.emp_desi in manager and i.initial_status == True %}
-    {% for i in job %}
-      <div class="modal fade" id="approval_{{i.id}}" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="Approve">Request ID: {{i.id}}</h5>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            <form action="/erf/approval" method="POST" enctype="multipart/form-data">
-              {% csrf_token %}
-              <div class="modal-body">
-                <div class="row">
-                  <div class="col-md-4">
-                    <div class="form-group">
-                      <label for="app_{{i.id}}req_date">Requested Date</label>
-                      <input type="text" readonly value="{{i.edited_date}}" id="app_{{i.id}}req_date" required class="form-control">
-                    </div>
-                  </div>
-                  <div class="col-md-4">
-                    <div class="form-group">
-                      <label for="app_{{i.id}}req_rais_by">Request Raised By</label>
-                      <input type="text" readonly value="{{i.req_raised_by}}" id="app_{{i.id}}req_rais_by" required class="form-control">
-                    </div>
-                  </div>
-                  <div class="col-md-4">
-                    <div class="form-group">
-                      <label for="app_{{i.id}}hc_required">HC Required</label>
-                      <input type="text" readonly value="{{i.hc_req}}" id="app_{{i.id}}hc_required" required class="form-control">
-                    </div>
-                  </div>
-                  <div class="col-md-4">
-                    <div class="form-group">
-                      <label for="app_{{i.id}}campaign">Campaign</label>
-                      <input type="text" readonly value="{{i.campaign}}" id="app_{{i.id}}campaign" required class="form-control">
-                    </div>
-                  </div>
-                  <div class="col-md-4">
-                    <div class="form-group">
-                      <label for="v_{{i.id}}department">Department</label>
-                      <input type="text" readonly value="{{i.department}}" id="app_{{i.id}}department" required class="form-control">
-                    </div>
-                  </div>
-                  <div class="col-md-4">
-                    <div class="form-group">
-                      <label for="v_{{i.id}}designation">Role/Designation</label>
-                      <input type="text" readonly value="{{i.designation}}" id="app_{{i.id}}designation" required class="form-control">
-                    </div>
-                  </div>
-                  <div class="col-md-4">
-                    <div class="form-group">
-                      <label for="app_{{i.id}}closedon">Closed on</label>
-                      <input type="text" readonly value="{{i.closure_date}}" id="app_{{i.id}}closedon" required class="form-control">
-                    </div>
-                  </div>
-                  <div class="col-md-4">
-                    <div class="form-group">
-                      <label for="app_{{i.id}}closedby">Closed By</label>
-                      <input type="text" readonly value="{{i.closed_by}}" id="app_{{i.id}}closedby" required class="form-control">
-                    </div>
-                  </div>
-                  <div class="col-md-4">
-                    <div class="form-group">
-                      <label for="app_{{i.id}}Approval">Approval</label>
-                      <select id="app_{{i.id}}Approval" name="response" required class="form-control">
-                        <option value="" selected disabled>Please Select</option>
-                        <option value="Approve">Approve</option>
-                        <option value="Reject">Reject</option>
-                      </select>
-                    </div>
-                  </div>
+
+{% for i in job %}
+    {% if i.final_status == False and request.user.profile.emp_desi in manager and i.initial_status == True %}
+          <div class="modal fade" id="approval_{{i.id}}" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="Approve">Request ID: {{i.id}}</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
                 </div>
+                <form action="/erf/approval" method="POST" enctype="multipart/form-data">
+                  {% csrf_token %}
+                  <div class="modal-body">
+                    <div class="row">
+                      <div class="col-md-4">
+                        <div class="form-group">
+                          <label for="app_{{i.id}}req_date">Requested Date</label>
+                          <input type="text" readonly value="{{i.edited_date}}" id="app_{{i.id}}req_date" required class="form-control">
+                        </div>
+                      </div>
+                      <div class="col-md-4">
+                        <div class="form-group">
+                          <label for="app_{{i.id}}req_rais_by">Request Raised By</label>
+                          <input type="text" readonly value="{{i.req_raised_by}}" id="app_{{i.id}}req_rais_by" required class="form-control">
+                        </div>
+                      </div>
+                      <div class="col-md-4">
+                        <div class="form-group">
+                          <label for="app_{{i.id}}hc_required">HC Required</label>
+                          <input type="text" readonly value="{{i.hc_req}}" id="app_{{i.id}}hc_required" required class="form-control">
+                        </div>
+                      </div>
+                      <div class="col-md-4">
+                        <div class="form-group">
+                          <label for="app_{{i.id}}campaign">Campaign</label>
+                          <input type="text" readonly value="{{i.campaign}}" id="app_{{i.id}}campaign" required class="form-control">
+                        </div>
+                      </div>
+                      <div class="col-md-4">
+                        <div class="form-group">
+                          <label for="v_{{i.id}}department">Department</label>
+                          <input type="text" readonly value="{{i.department}}" id="app_{{i.id}}department" required class="form-control">
+                        </div>
+                      </div>
+                      <div class="col-md-4">
+                        <div class="form-group">
+                          <label for="v_{{i.id}}designation">Role/Designation</label>
+                          <input type="text" readonly value="{{i.designation}}" id="app_{{i.id}}designation" required class="form-control">
+                        </div>
+                      </div>
+                      <div class="col-md-4">
+                        <div class="form-group">
+                          <label for="app_{{i.id}}closedon">Closed on</label>
+                          <input type="text" readonly value="{{i.closure_date}}" id="app_{{i.id}}closedon" required class="form-control">
+                        </div>
+                      </div>
+                      <div class="col-md-4">
+                        <div class="form-group">
+                          <label for="app_{{i.id}}closedby">Closed By</label>
+                          <input type="text" readonly value="{{i.closed_by}}" id="app_{{i.id}}closedby" required class="form-control">
+                        </div>
+                      </div>
+                      <div class="col-md-4">
+                        <div class="form-group">
+                          <label for="app_{{i.id}}Approval">Approval</label>
+                          <select id="app_{{i.id}}Approval" name="response" required class="form-control">
+                            <option value="" selected disabled>Please Select</option>
+                            <option value="Approve">Approve</option>
+                            <option value="Reject">Reject</option>
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="submit" class="btn btn-success">Submit</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                  </div>
+                  <input type="hidden" name="id" value="{{i.id}}">
+                </form>
               </div>
-              <div class="modal-footer">
-                <button type="submit" class="btn btn-success">Submit</button>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-              </div>
-              <input type="hidden" name="id" value="{{i.id}}">
-            </form>
+            </div>
           </div>
-        </div>
-      </div>
-    {% endfor %}
-{% endif %}
+    {% endif %}
+{% endfor %}
+
     <!-- End approval Pop-Up -->
 
     <!-- Start View Pop-Up -->
