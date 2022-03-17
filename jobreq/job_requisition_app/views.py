@@ -749,8 +749,7 @@ def jobRequisitionEditView(request, id):
             today = date.today()
             campaigns = Campaigns.objects.all()
             employees = AllAgents.objects.all()
-            interviewers = Interviewers.objects.all()
-            data = {"today": today, "job": job, "number": number, "employees": employees, "campaigns": campaigns,"interviewers":interviewers}
+            data = {"today": today, "job": job, "number": number, "employees": employees, "campaigns": campaigns}
             return render(request, "job_requisition_edit.html", data)
         except JobRequisition.DoesNotExist:
             messages.info(request, "Invalid Request!!")
