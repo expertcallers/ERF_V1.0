@@ -107,7 +107,7 @@ def AddEmail(request):
             e.otp_time = datetime.datetime.now()
             e.save()
             subject = "Your OTP for ERF"
-            email_template = "Your OTP for ERF is <b>" + str(OTP) + "</b> Valid only for 5 Minutes."
+            email_template = "Your OTP for ERF is <b>" + str(OTP) + "</b> Valid only for 5 Minutes.<br><br>"
             to = [email]
             email_msg = EmailMessage(subject,
                                      email_template, 'erf@expertcallers.com',
@@ -156,7 +156,7 @@ def VerifyEmail(request):
             e.otp_time = datetime.datetime.now()
             e.save()
             subject = "Your OTP for ERF"
-            email_template = "Your OTP for ERF is <b>" + str(OTP) + "</b> Valid only for 5 Minutes."
+            email_template = "Your OTP for ERF is <b>" + str(OTP) + "</b> Valid only for 5 Minutes.<br><br>"
             to = [request.user.profile.emp_email]
             email_msg = EmailMessage(subject,
                                      email_template, 'erf@expertcallers.com',
@@ -198,7 +198,7 @@ def EditEmail(request):
                 e.otp_time = datetime.datetime.now()
                 e.save()
                 subject = "Your OTP for ERF"
-                email_template = "Your OTP for ERF is <b>" + str(OTP) + "</b> Valid only for 5 Minutes."
+                email_template = "Your OTP for ERF is <b>" + str(OTP) + "</b> Valid only for 5 Minutes.<br><br>"
                 to = [email]
                 email_msg = EmailMessage(subject,
                                          email_template, 'erf@expertcallers.com',
@@ -236,7 +236,7 @@ def forgotPassword(request):
                     subject = "Password Reset Link of ERF"
                     email_template = "Click on the link Below to reset your password. Remember it is valid only for " \
                                      "5 Min<br><br><a href='http://dashboard.ecpl/erf/reset-password/"+emp_id+"/"+OTP+"'>" \
-                                     "http://dashboard.ecpl/erf/reset-password/"+emp_id+"/"+OTP+"</a>"
+                                     "http://dashboard.ecpl/erf/reset-password/"+emp_id+"/"+OTP+"</a><br><br>"
                     to = [email]
                     email_msg = EmailMessage(subject,
                                              email_template, 'erf@expertcallers.com',
@@ -296,7 +296,7 @@ def resetPassword(request,emp_id,otp):
             subject = "Password Reset Link of ERF"
             email_template = "Click on the link Below to reset your password. Remember it is valid only for " \
                              "5 Min<br><br><a href='http://127.0.0.1:8000/erf/reset-password/" + emp_id + "/" + OTP + "'>" \
-                             "http://127.0.0.1:8000/erf/reset-password</a>"
+                             "http://127.0.0.1:8000/erf/reset-password</a><br><br>"
             to = [profile.emp_email]
             email_msg = EmailMessage(subject,
                                      email_template, 'erf@expertcallers.com',
@@ -387,14 +387,14 @@ def job_requisition(request):
         new_weekday = datetime.datetime.now(pytz.timezone('Asia/Kolkata')).weekday()
         if weekday < 5:
             if time > today7pm:
-                edited_date = datetime.datetime.today() + datetime.timedelta(days=1)
+                edited_date = (datetime.datetime.today() + datetime.timedelta(days=1)).replace(hour=9, minute=0, second=0, microsecond=0)
                 new_weekday = edited_date.weekday()
         if new_weekday == 5:
-            edited_date = datetime.datetime.today() + datetime.timedelta(days=2)
+            edited_date = (datetime.datetime.today() + datetime.timedelta(days=2)).replace(hour=9, minute=0, second=0, microsecond=0)
         elif new_weekday == 6:
-            edited_date = datetime.datetime.today() + datetime.timedelta(days=1)
+            edited_date = (datetime.datetime.today() + datetime.timedelta(days=1)).replace(hour=9, minute=0, second=0, microsecond=0)
         else:
-            edited_date = datetime.datetime.now(pytz.timezone('Asia/Kolkata'))
+            edited_date = edited_date.replace(hour=9, minute=0, second=0, microsecond=0)
         hc_req = request.POST["hc_required"]
         req_raised_by = request.POST["req_rais_by"]
         created_by_id = request.user.profile.emp_id
@@ -815,14 +815,14 @@ def job_requisition_manager_edit(request):
         new_weekday = datetime.datetime.now(pytz.timezone('Asia/Kolkata')).weekday()
         if weekday < 5:
             if time > today7pm:
-                edited_date = datetime.datetime.today() + datetime.timedelta(days=1)
+                edited_date = (datetime.datetime.today() + datetime.timedelta(days=1)).replace(hour=9, minute=0, second=0, microsecond=0)
                 new_weekday = edited_date.weekday()
         if new_weekday == 5:
-            edited_date = datetime.datetime.today() + datetime.timedelta(days=2)
+            edited_date = (datetime.datetime.today() + datetime.timedelta(days=2)).replace(hour=9, minute=0, second=0, microsecond=0)
         elif new_weekday == 6:
-            edited_date = datetime.datetime.today() + datetime.timedelta(days=1)
+            edited_date = (datetime.datetime.today() + datetime.timedelta(days=1)).replace(hour=9, minute=0, second=0, microsecond=0)
         else:
-            edited_date = datetime.datetime.now(pytz.timezone('Asia/Kolkata'))
+            edited_date = edited_date.replace(hour=9, minute=0, second=0, microsecond=0)
 
         hc_req = request.POST["hc_required"]
         req_raised_by = request.POST["req_rais_by"]
@@ -1966,7 +1966,7 @@ def SendMail(request):
     send = request.POST["send"]
     name = AllAgents.objects.get(emp_id=emp_id).emp_name
     subject = "New Internal Movement"
-    email_template = "Name: "+name+"<br> Emp ID: "+emp_id+"<br> Old Campaign: "+oldcampaign+"<br> New Campaign: "+newcampaign
+    email_template = "Name: "+name+"<br> Emp ID: "+emp_id+"<br> Old Campaign: "+oldcampaign+"<br> New Campaign: "+newcampaign+"<br><br>"
     to = ["ta@expertcallers.com","dina@expertcallers.com","joseph@expertcallers.com"]
     email_msg = EmailMessage(subject,
                              email_template, 'erf@expertcallers.com',
