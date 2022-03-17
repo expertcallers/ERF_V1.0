@@ -385,6 +385,7 @@ def job_requisition(request):
         time = datetime.datetime.now(pytz.timezone('Asia/Kolkata')).time()
         today7pm = time.replace(hour=19, minute=0, second=0, microsecond=0)
         new_weekday = datetime.datetime.now(pytz.timezone('Asia/Kolkata')).weekday()
+        edited_date = datetime.datetime.today()
         if weekday < 5:
             if time > today7pm:
                 edited_date = (datetime.datetime.today() + datetime.timedelta(days=1)).replace(hour=9, minute=0, second=0, microsecond=0)
@@ -812,6 +813,7 @@ def job_requisition_manager_edit(request):
         time = datetime.datetime.now(pytz.timezone('Asia/Kolkata')).time()
         today7pm = time.replace(hour=19, minute=0, second=0, microsecond=0)
         new_weekday = datetime.datetime.now(pytz.timezone('Asia/Kolkata')).weekday()
+        edited_date = datetime.datetime.today()
         if weekday < 5:
             if time > today7pm:
                 edited_date = (datetime.datetime.today() + datetime.timedelta(days=1)).replace(hour=9, minute=0, second=0, microsecond=0)
