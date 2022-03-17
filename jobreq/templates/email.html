@@ -155,9 +155,9 @@ a[x-apple-data-detectors='true'] {
 <p style="font-size: 14px; line-height: 170%;">&nbsp;</p>
 <p style="font-size: 14px; line-height: 170%;"><span style="font-size: 16px; line-height: 27.2px;">
   {% if action == "Rejected Deletion Request" or action == "Approved Deletion Request" or  action == "Requested for Deletion"  %}
-  {{user}} have {{action}} of the below Employee Requisition.
+  {{user}} has {{action}} of the below Employee Requisition.
   {% else %}
-  {{user}} have {{action}} {% if action == "Created" %}a job requisition with the following details. {% else %}the below Employee Requisition.  {% endif %}
+  {{user}} has {{action}} {% if action == "Created" %}a job requisition with the following details. {% else %}the below Employee Requisition.  {% endif %}
   {% endif %}
 </span></p>
   </div>
