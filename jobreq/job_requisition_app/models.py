@@ -33,6 +33,15 @@ class Campaigns(models.Model):
         return self.campaign_name
 
 
+class Tickets(models.Model):
+    job_requisition_id = models.CharField(max_length=20,null=True,blank=True)
+    created_by = models.CharField(max_length=150)
+    created_by_id = models.CharField(max_length=30)
+    created_date = models.DateField()
+    edited_by = models.TextField(null=True,blank=True)
+
+
+
 class JobRequisition(models.Model):
     unique_id = models.CharField(max_length=500,null=True,blank=True)
     manager_approval = models.BooleanField(default=False)
@@ -371,15 +380,8 @@ class JobRequisition(models.Model):
     candidate_remark = models.TextField(null=True,blank=True)
     initial_status = models.BooleanField(default=False)
     final_status = models.BooleanField(default=False)
+    ticket_id = models.OneToOneField(Tickets,null=True,blank=True,on_delete=models.CASCADE)
 
-
-
-class Tickets(models.Model):
-    job_requisition_id = models.CharField(max_length=10)
-    created_by = models.CharField(max_length=150)
-    created_by_id = models.CharField(max_length=30)
-    created_date = models.DateField()
-    edited_by = models.TextField(null=True,blank=True)
 
 
 class Employee(models.Model):

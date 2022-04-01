@@ -423,11 +423,19 @@ def job_requisition(request):
         replace_reason = request.POST["replace_reason"]
         manager_id = request.POST["manager"]
         manager = Profile.objects.get(emp_id=manager_id).emp_name
-        dead_line = int(request.POST["dead_line"])
         campaign = request.POST["campaign"]
         pricing = request.POST["pricing"]
         unique_id = request.POST["csrfmiddlewaretoken"]
-        dead_line = edited_date + datetime.timedelta(days=dead_line)
+
+
+        dead_line = int(request.POST["dead_line"])
+        new_edited_date = edited_date
+        dead_line = new_edited_date + datetime.timedelta(days=dead_line)
+        while new_edited_date <= dead_line:
+            a = new_edited_date.weekday()
+            if a == 5 or a == 6:
+                dead_line += datetime.timedelta(days=1)
+            new_edited_date += datetime.timedelta(days=1)
         new_campaign = request.POST.get("new_campaign")
         if new_campaign:
             try:
@@ -508,6 +516,9 @@ def job_requisition(request):
             now_datetime = datetime.datetime.now().strftime('%b %d,%Y %H:%M:%S')
             a.edited_by = [now_datetime, req_raised_by, created_by_id, "Created"]
             a.save()
+            edit = JobRequisition.objects.get(id=e.id)
+            edit.ticket_id = a
+            edit.save()
             messages.info(request, "Employee Requisition Added Successfully !!")
             if user.emp_desi != "Assistant Manager":
                 action = "Created"
@@ -855,6 +866,7 @@ def job_requisition_manager_edit(request):
         dead_line = request.POST["dead_line"]
         campaign = request.POST["campaign"]
         id = request.POST["id"]
+        pricing = request.POST["pricing"]
 
         csrf = request.POST["csrfmiddlewaretoken"]
 
@@ -871,6 +883,68 @@ def job_requisition_manager_edit(request):
 
         except JobRequisition.DoesNotExist:
             e = JobRequisition.objects.get(id=id)
+            content = ""
+            if e.pricing != pricing:
+                content += "Edited Pricing from " + e.pricing + " to " + pricing + ", "
+            if e.campaign != campaign:
+                content += "Edited Campaign from " + e.campaign + " to " + campaign + ", "
+            if str(e.dead_line) != dead_line:
+                content += "Edited Dead Line from " + str(e.dead_line) + " to " + dead_line + ", "
+            if e.type_of_working != type_of_working:
+                content += "Edited Type of Working from " + e.type_of_working + " to " + type_of_working + ", "
+            if str(e.hc_req) != hc_req:
+                content += "Edited HC Required from " + str(e.hc_req) + " to " + hc_req + ", "
+            if e.created_by_manager != manager:
+                content += "Edited Manager from " + e.created_by_manager + " to " + manager + ", "
+            if e.department != department:
+                content += "Edited Department from " + e.department + " to " + department + ", "
+            if e.designation != designation:
+                content += "Edited Designation from " + e.designation + " to " + designation + ", "
+            if e.process_type_one != process_typ_one:
+                content += "Edited Process Type One from " + e.process_type_one + " to " + process_typ_one + ", "
+            if e.process_type_two != process_typ_two:
+                content += "Edited Process Type Two from " + e.process_type_two + " to " + process_typ_two + ", "
+            if e.process_type_three != process_typ_three:
+                content += "Edited Process Type Three from" + e.process_type_three + " to " + process_typ_three + ", "
+            if str(e.salary_rang_frm) != salary_rang_frm:
+                content += "Edited Salary Range From from " + str(e.salary_rang_frm) + " to " + salary_rang_frm + ", "
+            if str(e.salary_rang_to) != salary_rang_to:
+                content += "Edited Salary Range To from " + str(e.salary_rang_to) + " to " + salary_rang_to + ", "
+            if e.qualification != qualification:
+                content += "Edited Qualification from " + e.qualification + " to " + qualification + ", "
+            if e.other_quali != other_quali:
+                content += "Edited Other Qualification from " + e.other_quali + " to " + other_quali + ", "
+            if e.skills_set != skills_set:
+                content += "Edited Skill Set from " + e.skills_set + " to " + skills_set + ", "
+            if str(e.languages) != str(languages):
+                content += "Edited Languages from " + str(e.languages) + " to " + str(languages) + ", "
+            if e.shift_timing != shift_timing:
+                content += "Edited Type of Shift Timing from " + e.shift_timing + " to " + shift_timing + ", "
+            if e.shift_timing_frm != shift_timing_frm:
+                content += "Edited Shift Timing From from " + e.shift_timing_frm + " to " + shift_timing_frm + ", "
+            if e.shift_timing_to != shift_timing_to:
+                content += "Edited Shift Timing To from " + e.shift_timing_to + " to " + shift_timing_to + ", "
+            if e.working_from != working_from:
+                content += "Edited Working From from " + e.working_from + " to " + working_from + ", "
+            if e.working_to != working_to:
+                content += "Edited Working To from " + e.working_to + " to " + working_to + ", "
+            if e.requisition_type != requisition_typ:
+                content += "Edited Requisition Type from " + e.requisition_type + " to " + requisition_typ + ", "
+            if e.reason_for_replace != replace_reason:
+                content += "Edited Reason For Replace from " + e.reason_for_replace + " to " + replace_reason + ", "
+            if week_no_days:
+                if e.week_no_days != week_no_days:
+                    content += "Edited Number of Week offs from " + e.week_no_days + " to " + week_no_days + ", "
+            if week_from:
+                if e.week_from != week_from:
+                    content += "Edited Week off 1 from " + e.week_from + " to " + week_from + ", "
+            if week_to:
+                if e.week_to != week_to:
+                    content += "Edited Week off 2 from " + e.week_to + " to " + week_to + ", "
+            if content == "":
+                content = "Nothing"
+
+            e.pricing = pricing
             e.edited_date = edited_date
             e.unique_id = csrf
             e.campaign = campaign
@@ -906,11 +980,10 @@ def job_requisition_manager_edit(request):
             e.reason_for_replace = replace_reason
             e.created_by_id = created_by_id
             e.save()
-
             a = Tickets.objects.get(job_requisition_id=id)
             now_datetime = datetime.datetime.now().strftime('%b %d,%Y %H:%M:%S')
             edited_by = str(
-                [now_datetime, request.user.profile.emp_name, request.user.profile.emp_id, "Edited the request"])
+                [now_datetime, request.user.profile.emp_name, request.user.profile.emp_id, "( "+content+" )"])
             previous = a.edited_by
             adding = previous + ",\n" + edited_by
             a.edited_by = adding
@@ -923,7 +996,7 @@ def job_requisition_manager_edit(request):
             data = {'id': e.id, "created_date": e.edited_date, "hc": e.hc_req, "department": e.department,
                     "position": e.designation,
                     "deadline": e.dead_line, "campaign": e.campaign, "user": request.user.profile.emp_name,
-                    "action": action, "status": e.request_status}
+                    "action": action, "status": e.request_status,"content":content}
             email_template = get_template(html_path).render(data)
             manager_email = Profile.objects.get(emp_id=manager_id).emp_email
             try:

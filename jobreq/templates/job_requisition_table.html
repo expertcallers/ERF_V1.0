@@ -114,6 +114,9 @@
                                     {% if request.user.profile.emp_desi in editaccess and i.deletion == True and i.ticket_status == True %}
                                         <button class="btn btn-dark btn-sm" data-toggle="modal" data-target="#delete_approval_{{i.id}}">Approve</button>
                                     {% endif %}
+                                    {% if request.user.profile.emp_desi in editaccess and i.ticket_status == True %}
+                                        <button class="btn btn-warning btn-sm" data-toggle="modal" data-target="#history_{{i.id}}">History</button>
+                                    {% endif %}
                                   </div>
                                 </td>
                             </tr>
@@ -131,6 +134,37 @@
 
         </div>
         <!-- /page content -->
+
+
+<!-- Delete Approval Pop-Up -->
+{% for i in job %}
+  {% if request.user.profile.emp_desi in editaccess and i.ticket_status == True %}
+        <div class="modal fade" id="history_{{i.id}}" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+          <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="hist_approval">History of Request ID: {{i.id}}</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <div class="row">
+                  <div class="col-md-12">
+                    <textarea disabled class="form-control">{{i.ticket_id.edited_by}}</textarea>
+                  </div>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              </div>
+            </div>
+          </div>
+        </div>
+  {% endif %}
+{% endfor %}
+
+<!-- Delete Approval Pop-Up -->
 
 
 <!-- Delete Approval Pop-Up -->

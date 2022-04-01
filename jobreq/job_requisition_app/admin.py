@@ -16,6 +16,7 @@ class TicketSearch(admin.ModelAdmin):
 class CampaigntSearch(admin.ModelAdmin):
     search_fields = ("campaign_name", 'manager', 'manager_id')
     list_display = ("campaign_name", 'manager', 'manager_id')
+
 class InterSearch(admin.ModelAdmin):
     search_fields = ('emp_name','emp_id')
     list_display = ('emp_name','emp_id')

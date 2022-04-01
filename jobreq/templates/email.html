@@ -159,6 +159,13 @@ a[x-apple-data-detectors='true'] {
   {% else %}
   {{user}} has {{action}} {% if action == "Created" %}a job requisition with the following details. {% else %}the below Employee Requisition.  {% endif %}
   {% endif %}
+  {% if content %}
+  <br>
+  {{content}}
+  {% endif %}
+
+
+
 </span></p>
   </div>
 
