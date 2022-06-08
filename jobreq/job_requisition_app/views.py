@@ -1640,20 +1640,18 @@ def createUserandProfile(request):
     for i in emp:
         user = User.objects.filter(username=i.emp_id)
         if user.exists():
-            print(i.emp_name + ' ' + 'exist')
             usr = User.objects.get(username=i.emp_id)
             prof = Profile.objects.filter(emp_id = i.emp_id)
             if prof.exists():
                 pass
             else:
-                profile = Profile.objects.create(
+                Profile.objects.create(
                 emp_id=i.emp_id, emp_name=i.emp_name, emp_desi=i.emp_desi,
                 emp_rm1=i.emp_rm1, emp_rm1_id=i.emp_rm1_id, emp_rm2=i.emp_rm2, emp_rm2_id=i.emp_rm2_id,
                 emp_rm3=i.emp_rm3,
                 emp_rm3_id=i.emp_rm3_id,
                 emp_process=i.emp_process, user=usr
-            )
-            profile.save()
+                )
         else:
             usr = User.objects.create_user(username=i.emp_id, password=str(i.emp_id))
 
@@ -1666,7 +1664,6 @@ def createUserandProfile(request):
             )
             profile.save()
             usr.save()
-            print('created' + i.emp_name)
 
 
 @login_required
