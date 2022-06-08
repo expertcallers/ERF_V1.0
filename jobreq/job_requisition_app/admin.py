@@ -33,11 +33,21 @@ class EmployeeSearch(ImportExportModelAdmin):
     list_display = ('emp_name','emp_id', 'emp_desi','emp_process',"emp_rm1","emp_rm2","emp_rm3")
     resource_class = EmployeeResourse
 
+class AllAgentsResourse(resources.ModelResource):
+  class Meta:
+      model = Employee
+      import_id_fields = ('emp_id',)
+
+class AllAgentsSearch(ImportExportModelAdmin):
+    search_fields = ('emp_name','emp_id',"emp_desi")
+    list_display = ('emp_name','emp_id', 'emp_desi','emp_process',"emp_rm1","emp_rm2","emp_rm3")
+    resource_class = AllAgentsResourse
+
 
 admin.site.register(Profile, ProfileSearch)
 admin.site.register(JobRequisition, JobSearch)
 admin.site.register(Tickets, TicketSearch)
 admin.site.register(Employee, EmployeeSearch)
 admin.site.register(Campaigns,CampaigntSearch)
-admin.site.register(AllAgents, ProfileSearch)
+admin.site.register(AllAgents, AllAgentsSearch)
 admin.site.register(LoginHistory)
