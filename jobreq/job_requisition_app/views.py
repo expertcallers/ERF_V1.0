@@ -20,13 +20,14 @@ from .models import *
 number = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
 # Login
 hr_list = ['HR', 'HR Manager', 'Manager ER', 'HR Lead', 'Sr Recruiter', 'MIS Executive HR', 'Lead HRBP',
-           'Employee Relations Specialist', 'Payroll Specialist', 'Recruiter', 'HR Generalist', 'Associate Director']
+           'Employee Relations Specialist', 'Payroll Specialist', 'Recruiter', 'HR Generalist', 'Associate Director',
+           'Junior Recruiter']
 am_mgr_list = ['Assistant Manager', 'Learning and Development Head', 'Quality Head', 'Operations Manager',
                'Service Delivery Manager', 'Command Centre Head', 'Manager']
 # Edit/Update
 edit_list = ['HR', 'HR Manager', 'Manager ER', 'HR Lead',
              'Sr Recruiter', 'MIS Executive HR', 'Lead HRBP', 'Employee Relations Specialist', 'Payroll Specialist',
-             'Recruiter', 'HR Generalist']
+             'Recruiter', 'Junior Recruiter', 'HR Generalist']
 # Frontend filtering managers
 mgr_list = ['Learning and Development Head', 'Quality Head', 'Operations Manager', 'Service Delivery Manager',
             'Command Centre Head', 'Manager']
@@ -37,9 +38,7 @@ def index(request):
     logout(request)
     return render(request, "index.html")
 
-
 def Login(request):
-
     if request.method == "POST":
         username = request.POST["user"]
         password = request.POST["pass"]
