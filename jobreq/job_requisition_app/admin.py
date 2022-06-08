@@ -35,7 +35,7 @@ class EmployeeSearch(ImportExportModelAdmin):
 
 class AllAgentsResourse(resources.ModelResource):
   class Meta:
-      model = Employee
+      model = AllAgents
       import_id_fields = ('emp_id',)
 
 class AllAgentsSearch(ImportExportModelAdmin):
@@ -48,6 +48,6 @@ admin.site.register(Profile, ProfileSearch)
 admin.site.register(JobRequisition, JobSearch)
 admin.site.register(Tickets, TicketSearch)
 admin.site.register(Employee, EmployeeSearch)
-admin.site.register(Campaigns,CampaigntSearch)
+admin.site.register(Campaigns, CampaigntSearch)
 admin.site.register(AllAgents, AllAgentsSearch)
 admin.site.register(LoginHistory)
